@@ -1,0 +1,62 @@
+name: Deploy Demo Next.js to Server
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Prepare Release Folder
+        run: |
+          rm -rf release
+          mkdir -p release
+          cp -r .next public start.sh server.js package.json package-lock.json release/
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p /home/demo.rojgariindia.com/app
+            rm -rf /home/demo.rojgariindia.com/app/*
+            exit
+      - name: Upload release to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "release/*"
+          target: "/home/demo.rojgariindia.com/app"
+
+      - name: Run PM2 on server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/demo.rojgariindia.com/app
+            chmod +x start.sh
+            npm install --omit=dev
+            pm2 reload demo-next || pm2 start start.sh --name demo-next
+            pm2 save
