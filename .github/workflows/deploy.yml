@@ -2,61 +2,63 @@ name: Deploy Demo Next.js to Server
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm install
 
       - name: Build Next.js
         run: npm run build
 
-      - name: Prepare Release Folder
+      - name: Prepare release folder
         run: |
           rm -rf release
-          mkdir -p release
+          mkdir release
           cp -r .next public start.sh server.js package.json package-lock.json release/
 
-      - name: Deploy to Server
+      - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
-          username: root
+          username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            cd /home/demo.rojgariindia.com/app
+            rm -rf *
             mkdir -p /home/demo.rojgariindia.com/app
-            rm -rf /home/demo.rojgariindia.com/app/*
             exit
+
       - name: Upload release to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
-          username: root
+          username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "release/*"
           target: "/home/demo.rojgariindia.com/app"
 
-      - name: Run PM2 on server
+      - name: Restart PM2 on server
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
-          username: root
+          username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/demo.rojgariindia.com/app
             chmod +x start.sh
-            npm install --omit=dev
-            pm2 reload demo-next || pm2 start start.sh --name demo-next
+            pm2 reload rojgari-demo || pm2 start start.sh --name rojgari-demo
             pm2 save
