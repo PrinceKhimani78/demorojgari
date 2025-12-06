@@ -182,7 +182,7 @@ const AboutUs = () => {
           >
             {jobTyperSeen && (
               <Typewriter
-                words={["Follow our steps we will help you. Test"]}
+                words={["Follow our steps we will help you."]}
                 typeSpeed={90}
                 deleteSpeed={0}
                 delaySpeed={800}
