@@ -1,7 +1,10 @@
 #!/bin/bash
+
+export NODE_ENV=production
+export PORT=3021
+
 cd /home/demo.rojgariindia.com/app/release
 
-echo ">>> Starting Demo Next.js on port 3020"
+echo ">>> Starting Demo Next.js on port 3021"
 
-# Use node_modules next binary
-./node_modules/.bin/next start -p 3020 -H 0.0.0.0
+exec ./node_modules/.bin/next start -p 3021 -H 0.0.0.0
