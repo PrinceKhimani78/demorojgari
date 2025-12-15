@@ -1,10 +1,10 @@
 #!/bin/bash
 
 export NODE_ENV=production
-export PORT=3021
+export PORT=3020
 
-cd /home/demo.rojgariindia.com/app/release
+cd /home/rojgariindia.com/app
 
-echo ">>> Starting Demo Next.js on port 3021"
+echo ">>> Starting rojgariindia.com (custom Next.js server) on port 3020"
 
-exec ./node_modules/.bin/next start -p 3021 -H 0.0.0.0
+exec node server.js
