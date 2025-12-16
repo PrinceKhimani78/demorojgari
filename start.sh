@@ -6,5 +6,6 @@ export PORT=3021
 
 cd /home/demo.rojgariindia.com/app/release
 
-# Use local Next binary
-exec node_modules/.bin/next start -p 3021
+chmod +x ./node_modules/.bin/next
+
+exec ./node_modules/.bin/next start -p 3021
