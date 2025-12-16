@@ -61,7 +61,9 @@ jobs:
           script: |
             cd /home/demo.rojgariindia.com/app/release
             npm install --omit=dev
-            chmod +x start.sh
+            rm -rf .next
+            npm run build
+
             pm2 delete rojgari-demo || true
-            pm2 start start.sh --name rojgari-demo
+            pm2 start npm --name rojgari-demo -- start
             pm2 save
