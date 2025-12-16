@@ -19,7 +19,7 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
 
       - name: Build
@@ -28,13 +28,12 @@ jobs:
       - name: Prepare release
         run: |
           rm -rf release
-          mkdir -p release
+          mkdir release
           cp -r .next/standalone/* release/
-          cp -r .next/static release/.next/
-          cp -r public release/
-          cp package.json release/
+          cp -r .next/static release/.next/static
+          cp -r public release/public
 
-      - name: Setup SSH Agent
+      - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -42,14 +41,15 @@ jobs:
       - name: Deploy
         run: |
           rsync -az --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
             release/ \
             ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }}:/home/demo.rojgariindia.com/app/release/
 
       - name: Restart PM2
         run: |
-          ssh ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-            cd /home/demo.rojgariindia.com/app/release
+          ssh -o StrictHostKeyChecking=no \
+          ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
             pm2 delete rojgari-demo || true
-            pm2 start server.js --name rojgari-demo
+            pm2 start /home/demo.rojgariindia.com/app/release/server.js --name rojgari-demo
             pm2 save
           EOF
