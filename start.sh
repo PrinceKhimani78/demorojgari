@@ -2,7 +2,7 @@
 set -e
 
 export NODE_ENV=production
-export PORT=3000
+export PORT=3021
 
 cd /home/demo.rojgariindia.com/app/release
 
