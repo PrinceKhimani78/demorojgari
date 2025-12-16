@@ -1,4 +1,8 @@
 #!/bin/bash
+set -e
+
 export NODE_ENV=production
 export PORT=3021
-exec /usr/bin/node node_modules/next/dist/bin/next start -p 3021
+
+cd /home/demo.rojgariindia.com/app/release
+exec npx next start -p 3021
