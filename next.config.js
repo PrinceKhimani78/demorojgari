@@ -18,6 +18,8 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+
+  // IMPORTANT: do NOT add standalone / export / assetPrefix
 };
 
 module.exports = nextConfig;

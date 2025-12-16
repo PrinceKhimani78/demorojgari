@@ -6,6 +6,8 @@ export PORT=3021
 
 cd /home/demo.rojgariindia.com/app/release
 
-chmod +x ./node_modules/.bin/next
+# ensure prod deps exist
+npm install --omit=dev
 
+# start Next.js exactly as intended
 exec ./node_modules/.bin/next start -p 3021
