@@ -22,32 +22,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build (Standalone)
+      - name: Build
         run: npm run build
 
       - name: Prepare release
         run: |
           rm -rf release
-          mkdir release
-
-          # 🔥 Standalone output
+          mkdir -p release
           cp -r .next/standalone/* release/
           cp -r .next/static release/.next/
           cp -r public release/
-          cp start.sh release/
+          cp package.json release/
 
       - name: Setup SSH Agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Ensure target directory
-        run: |
-          ssh -o StrictHostKeyChecking=no \
-          ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} \
-          "mkdir -p /home/demo.rojgariindia.com/app/release"
-
-      - name: Rsync release
+      - name: Deploy
         run: |
           rsync -az --delete \
             release/ \
@@ -58,6 +50,6 @@ jobs:
           ssh ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
             cd /home/demo.rojgariindia.com/app/release
             pm2 delete rojgari-demo || true
-            pm2 start ./start.sh --name rojgari-demo
-            pm2 save --force
+            pm2 start server.js --name rojgari-demo
+            pm2 save
           EOF
