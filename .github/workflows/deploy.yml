@@ -10,16 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout Repo
         uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
 
-      - name: Install deps
+      - name: Install dependencies
         run: npm ci
 
       - name: Build Next.js
@@ -31,28 +31,25 @@ jobs:
           mkdir release
           cp -r .next public package.json package-lock.json next.config.js start.sh release/
 
-      - name: Upload via rsync (NO drone-scp)
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          echo "$SSH_PRIVATE_KEY" > key.pem
-          chmod 600 key.pem
-
-          rsync -avz \
-            -e "ssh -i key.pem -o StrictHostKeyChecking=no" \
-            release/ \
-            ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }}:/home/demo.rojgariindia.com/app/release/
+      - name: Upload to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "release"
+          target: "/home/demo.rojgariindia.com/app"
 
       - name: Restart app
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          ssh -i key.pem -o StrictHostKeyChecking=no \
-          ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-            set -e
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          command_timeout: 10m
+          script: |
             cd /home/demo.rojgariindia.com/app/release
-            npm install --omit=dev
+
             pm2 delete rojgari-demo || true
-            pm2 start start.sh --name rojgari-demo
-            pm2 save
-          EOF
+            pm2 start ./start.sh --name rojgari-demo
+            pm2 save --force
