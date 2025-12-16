@@ -13,24 +13,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install Deps
-        run: npm install
-
-      - name: Build App
-        run: npm run build
-
-      - name: Create Release Folder
-        run: |
-          rm -rf release
-          mkdir release
-          cp -r .next public package.json package-lock.json start.sh next.config.js release/
-
-      # Clear server path
+      # Clear server folder
       - name: Clear Server Folder
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -38,28 +21,30 @@ jobs:
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            rm -rf /home/demo.rojgariindia.com/app/*
-            mkdir -p /home/demo.rojgariindia.com/app
+            rm -rf /home/demo.rojgariindia.com/app/release
+            mkdir -p /home/demo.rojgariindia.com/app/release
 
-      # Upload new build
-      - name: Upload Release to Server
+      # Upload FULL source code
+      - name: Upload Full Project to Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "release"
-          target: "/home/demo.rojgariindia.com/app"
+          source: "./"
+          target: "/home/demo.rojgariindia.com/app/release"
 
-      # Install & restart PM2
-      - name: Install & Restart PM2
+      # Build & Run on server
+      - name: Build & Start Next.js
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -e
             cd /home/demo.rojgariindia.com/app/release
+
             npm install --omit=dev
             rm -rf .next
             npm run build
