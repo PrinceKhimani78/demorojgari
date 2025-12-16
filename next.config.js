@@ -4,10 +4,6 @@ const nextConfig = {
 
   output: "standalone",
 
-  experimental: {
-    trustHostHeader: true,
-  },
-
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "randomuser.me" },
