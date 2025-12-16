@@ -6,6 +6,4 @@ export PORT=3021
 
 cd /home/demo.rojgariindia.com/app/release
 
-npm install --omit=dev
-
-exec ./node_modules/.bin/next start -p 3000
+exec ./node_modules/.bin/next start -p 3021
