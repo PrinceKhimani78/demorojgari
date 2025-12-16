@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
 
+  // 🔥 CRITICAL: standalone output
+  output: "standalone",
+
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "randomuser.me" },
@@ -18,8 +21,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-
-//  swcMinify: true,
 };
 
 module.exports = nextConfig;
