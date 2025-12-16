@@ -2,8 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // 🔥 CRITICAL: standalone output
-  output: "standalone",
+  experimental: {
+    trustHostHeader: true,
+  },
 
   images: {
     remotePatterns: [
