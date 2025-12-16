@@ -10,62 +10,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repo
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      # 2️⃣ Clear server release directory
-      - name: Clear Server Folder
-        uses: appleboy/ssh-action@v1.0.0
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          command_timeout: 5m
-          script: |
-            rm -rf /home/demo.rojgariindia.com/app/release
-            mkdir -p /home/demo.rojgariindia.com/app/release
+          node-version: 18
 
-      # 3️⃣ Upload FULL source code (IMPORTANT)
-      - name: Upload Full Project to Server
+      - name: Install Deps
+        run: npm install
+
+      - name: Build App (LOCAL BUILD – IMPORTANT)
+        run: npm run build
+
+      - name: Prepare Release
+        run: |
+          rm -rf release
+          mkdir release
+          cp -r .next public package.json package-lock.json next.config.js start.sh release/
+
+      - name: Upload Release to Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "./"
-          target: "/home/demo.rojgariindia.com/app/release"
+          source: "release"
+          target: "/home/demo.rojgariindia.com/app"
 
-      # 4️⃣ Build project on server (long-running)
-      - name: Build Next.js on Server
+      - name: Restart App
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          command_timeout: 30m   # ⬅️ CRITICAL (prevents timeout)
           script: |
-            set -e
-            export NODE_OPTIONS="--max-old-space-size=4096"
-
             cd /home/demo.rojgariindia.com/app/release
-
-            # remove extra lockfile if exists (Next 15 tracing issue)
-            rm -f /home/demo.rojgariindia.com/package-lock.json
-
-            npm install
-            rm -rf .next
-            npm run build
-
-      # 5️⃣ Start / Restart PM2 (fast step)
-      - name: Start App with PM2
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          command_timeout: 5m
-          script: |
             pm2 delete rojgari-demo || true
             pm2 start npm --name rojgari-demo -- start
             pm2 save
