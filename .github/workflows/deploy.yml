@@ -11,26 +11,27 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - name: Setup Node (LOCKED)
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
+          cache: npm
 
-      - name: Install Deps
-        run: npm install
+      - name: Install Dependencies (LOCKED)
+        run: npm ci
 
-      - name: Build App (LOCAL BUILD – IMPORTANT)
+      - name: Build App
         run: npm run build
 
       - name: Prepare Release
         run: |
           rm -rf release
           mkdir release
-          cp -r .next public package.json package-lock.json next.config.js start.sh release/
+          cp -r .next public node_modules package.json package-lock.json next.config.js start.sh release/
 
-      - name: Upload Release to Server
+      - name: Upload Release
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -46,7 +47,17 @@ jobs:
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/demo.rojgariindia.com/app/release
+            set -e
+            cd /home/demo.rojgariindia.com/app
+
+            echo ">>> Hard cleanup"
+            rm -rf release_old
+            mv release release_old || true
+            mv app/release release
+
+            cd release
+
+            echo ">>> Restart PM2"
             pm2 delete rojgari-demo || true
-            pm2 start npm --name rojgari-demo -- start
+            pm2 start start.sh --name rojgari-demo
             pm2 save
