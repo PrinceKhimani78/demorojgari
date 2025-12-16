@@ -5,66 +5,6 @@ import { useInView } from "react-intersection-observer";
 import { Typewriter } from "react-simple-typewriter";
 import Link from "next/link";
 import { motion } from "framer-motion";
-// import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-// import {
-//   faLaptopCode,
-//   faStethoscope,
-//   faSackDollar,
-//   faChalkboardTeacher,
-//   faCogs,
-//   faBullhorn,
-//   faHeadset,
-//   faPaintBrush,
-//   faHardHat,
-//   faTruck,
-//   faUserTie,
-//   faBalanceScale,
-//   faHotel,
-//   faMicroscope,
-//   faLandmark,
-// } from "@fortawesome/free-solid-svg-icons";
-
-import Footer from "@/components/Footer/Footer";
-
-// type Job = {
-//   id: number;
-//   title: string;
-//   count: number;
-//   icon: IconDefinition;
-// };
-
-// const jobs: Job[] = [
-//   { id: 1, title: "Information Technology", count: 8420, icon: faLaptopCode },
-//   { id: 2, title: "Healthcare & Medical", count: 6740, icon: faStethoscope },
-//   { id: 3, title: "Finance & Accounting", count: 5290, icon: faSackDollar },
-//   {
-//     id: 4,
-//     title: "Education & Training",
-//     count: 4100,
-//     icon: faChalkboardTeacher,
-//   },
-//   { id: 5, title: "Engineering & Manufacturing", count: 3650, icon: faCogs },
-//   { id: 6, title: "Sales & Marketing", count: 4800, icon: faBullhorn },
-//   { id: 7, title: "Customer Service", count: 2950, icon: faHeadset },
-//   { id: 8, title: "Arts, Media & Design", count: 1850, icon: faPaintBrush },
-//   {
-//     id: 9,
-//     title: "Construction & Skilled Trades",
-//     count: 3400,
-//     icon: faHardHat,
-//   },
-//   { id: 10, title: "Logistics & Supply Chain", count: 2700, icon: faTruck },
-//   { id: 11, title: "Human Resources", count: 2120, icon: faUserTie },
-//   { id: 12, title: "Legal", count: 1580, icon: faBalanceScale },
-//   { id: 13, title: "Hospitality & Tourism", count: 1970, icon: faHotel },
-//   { id: 14, title: "Science & Research", count: 1340, icon: faMicroscope },
-//   {
-//     id: 15,
-//     title: "Public Sector & Government",
-//     count: 2480,
-//     icon: faLandmark,
-//   },
-// ];
 
 type FeatureListProps = {
   items: string[];
@@ -210,7 +150,7 @@ const AboutUs = () => {
               no: "01",
               bg: "bg-[#00c9ff]/40",
               num: "text-[#00c9ff]",
-              icon: "/images/icon1webp",
+              icon: "/images/icon1.webp",
               titleTop: "Register",
               titleBottom: "Your Account",
               offset: "sm:translate-y-0",
@@ -221,7 +161,7 @@ const AboutUs = () => {
               no: "02",
               bg: "bg-[#ffcc23]/50",
               num: "text-[#ffcc23]",
-              icon: "/images/icon2webp",
+              icon: "/images/icon2.webp",
               titleTop: "Search",
               titleBottom: "Your Job",
               offset: "sm:-translate-y-6",
@@ -232,7 +172,7 @@ const AboutUs = () => {
               no: "03",
               bg: "bg-[#ae70bb]/60",
               num: "text-[#ae70bb]",
-              icon: "/images/icon3webp",
+              icon: "/images/icon3.webp",
               titleTop: "Apply",
               titleBottom: "For Dream Job",
               offset: "sm:-translate-y-2",
@@ -243,7 +183,7 @@ const AboutUs = () => {
               no: "04",
               bg: "bg-[#72b76a]/60",
               num: "text-[#72b76a]",
-              icon: "/images/icon4webp",
+              icon: "/images/icon4.webp",
               titleTop: "Upload",
               titleBottom: "Your Resume",
               offset: "sm:translate-y-4",
@@ -404,7 +344,7 @@ const AboutUs = () => {
 
             {/* Girl Image */}
             <Image
-              src="/images/profilewebp"
+              src="/images/profile.webp"
               alt="Candidate Illustration"
               width={300}
               height={300}

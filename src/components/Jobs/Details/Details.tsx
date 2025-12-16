@@ -21,7 +21,6 @@ import {
   FaWhatsapp,
   FaPinterest,
 } from "react-icons/fa";
-import Footer from "@/components/Footer/Footer";
 const SKILL = [
   "Html",
   "Paython",
@@ -33,20 +32,6 @@ const SKILL = [
   "Income",
   "Tips",
 ] as const;
-// const OFFICE_PHOTOS = [
-//   "/images/job-gridwebp",
-//   "/images/job-gridwebp",
-//   "/images/job-gridwebp",
-//   "/images/job-gridwebp",
-//   "/images/job-gridwebp",
-//   "/images/job-gridwebp",
-//   "/images/job-gridwebp",
-//   "/images/job-gridwebp",
-//   "/images/job-gridwebp",
-//   "/images/job-gridwebp",
-//   "/images/job-gridwebp",
-//   "/images/job-gridwebp",
-// ];
 
 const REQUIREMENTS: string[] = [
   "Must be able to communicate with others to convey information effectively.",
@@ -202,7 +187,7 @@ const Details = () => {
               <div className="relative overflow-hidden rounded-2xl">
                 <div className="relative h-[220px] xs:h-[260px] md:h-[320px] lg:h-[360px]">
                   <Image
-                    src="/images/jobdetailwebp"
+                    src="/images/jobdetail.webp"
                     alt="Job cover"
                     fill
                     className="absolute inset-0 h-full w-full object-cover"

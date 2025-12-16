@@ -110,7 +110,7 @@ const Postjob = () => {
           {/* Profile */}
           <div className="flex items-center gap-4">
             <Image
-              src="/images/profile1webp"
+              src="/images/profile1.webp"
               alt="Profile"
               width={80}
               height={80}

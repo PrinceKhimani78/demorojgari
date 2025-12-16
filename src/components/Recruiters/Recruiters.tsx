@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import Footer from "../Footer/Footer";
 import { useInView } from "react-intersection-observer";
 import { Typewriter } from "react-simple-typewriter";
 import "swiper/css";
@@ -231,7 +230,7 @@ const Recruiters = () => {
               no: "01",
               bg: "bg-[#00c9ff]/40",
               num: "text-[#00c9ff]",
-              icon: "/images/icon1webp",
+              icon: "/images/icon1.webp",
               titleTop: "Register",
               titleBottom: "Your Account",
               offset: "sm:translate-y-0",
@@ -242,7 +241,7 @@ const Recruiters = () => {
               no: "02",
               bg: "bg-[#ffcc23]/50",
               num: "text-[#ffcc23]",
-              icon: "/images/icon2webp",
+              icon: "/images/icon2.webp",
               titleTop: "Search",
               titleBottom: "Your Job",
               offset: "sm:-translate-y-6",
@@ -253,7 +252,7 @@ const Recruiters = () => {
               no: "03",
               bg: "bg-[#ae70bb]/60",
               num: "text-[#ae70bb]",
-              icon: "/images/icon3webp",
+              icon: "/images/icon3.webp",
               titleTop: "Apply",
               titleBottom: "For Dream Job",
               offset: "sm:-translate-y-2",
@@ -264,7 +263,7 @@ const Recruiters = () => {
               no: "04",
               bg: "bg-[#72b76a]/60",
               num: "text-[#72b76a]",
-              icon: "/images/icon4webp",
+              icon: "/images/icon4.webp",
               titleTop: "Upload",
               titleBottom: "Your Resume",
               offset: "sm:translate-y-4",

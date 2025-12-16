@@ -62,209 +62,7 @@ type BlogItem = {
   text: string;
   link: string;
 };
-// type BadgeTone = "success" | "warning" | "primary" | "info" | "amber";
-// interface Job {
-//   id: number;
-//   logo: string;
-//   daysAgo: string;
-//   badge: { label: string; tone: BadgeTone };
-//   title: string;
-//   address: string;
-//   site: string;
-//   pay: string;
-// }
 
-// const JOBS: Job[] = [
-//   {
-//     id: 1,
-//     logo: "/images/company.jpg",
-//     daysAgo: "1 day ago",
-//     badge: { label: "New", tone: "success" },
-//     title: "Senior Web Designer , Developer",
-//     address: "1363–1385 Sunset Blvd Los Angeles, CA 90026, USA",
-//     site: "https://thewebmax.com",
-//     pay: "$2000 – $2500 / Month",
-//   },
-//   {
-//     id: 2,
-//     logo: "/images/company.jpg",
-//     daysAgo: "15 days ago",
-//     badge: { label: "Internship", tone: "warning" },
-//     title: "Senior Rolling Stock Technician",
-//     address: "1363–1385 Sunset Blvd Los Angeles, CA 90026, USA",
-//     site: "https://thewebmax.com",
-//     pay: "$7 / Hour",
-//   },
-//   {
-//     id: 3,
-//     logo: "/images/companyname.jpg",
-//     daysAgo: "6 Month ago",
-//     badge: { label: "Fulltime", tone: "primary" },
-//     title: "IT Department Manager",
-//     address: "1363–1385 Sunset Blvd Los Angeles, CA 90026, USA",
-//     site: "https://thewebmax.com",
-//     pay: "$2000 – $2500 / Month",
-//   },
-//   {
-//     id: 4,
-//     logo: "/images/arrow1.jpg",
-//     daysAgo: "2 days ago",
-//     badge: { label: "Freelancer", tone: "info" },
-//     title: "Art Production Specialist",
-//     address: "1363–1385 Sunset Blvd Los Angeles, CA 90026, USA",
-//     site: "https://thewebmax.com",
-//     pay: "$1500 – $1800 / Month",
-//   },
-//   {
-//     id: 5,
-//     logo: "/images/vectorlogo.jpg",
-//     daysAgo: "1 day ago",
-//     badge: { label: "Temporary", tone: "amber" },
-//     title: "Recreation & Fitness Worker",
-//     address: "1363–1385 Sunset Blvd Los Angeles, CA 90026, USA",
-//     site: "https://thewebmax.com",
-//     pay: "$500 – $1000 / Month",
-//   },
-//   {
-//     id: 6,
-//     logo: "/images/company.jpg",
-//     daysAgo: "1 day ago",
-//     badge: { label: "New", tone: "success" },
-//     title: "Senior Web Designer , Developer",
-//     address: "1363–1385 Sunset Blvd Los Angeles, CA 90026, USA",
-//     site: "https://thewebmax.com",
-//     pay: "$2000 – $2500 / Month",
-//   },
-//   {
-//     id: 7,
-//     logo: "/images/business.jpg",
-//     daysAgo: "15 days ago",
-//     badge: { label: "Internship", tone: "warning" },
-//     title: "Senior Rolling Stock Technician",
-//     address: "1363–1385 Sunset Blvd Los Angeles, CA 90026, USA",
-//     site: "https://thewebmax.com",
-//     pay: "$7 / Hour",
-//   },
-//   {
-//     id: 8,
-//     logo: "/images/companyname.jpg",
-//     daysAgo: "6 Month ago",
-//     badge: { label: "Fulltime", tone: "primary" },
-//     title: "IT Department Manager",
-//     address: "1363–1385 Sunset Blvd Los Angeles, CA 90026, USA",
-//     site: "https://thewebmax.com",
-//     pay: "$2000 – $2500 / Month",
-//   },
-//   {
-//     id: 9,
-//     logo: "/images/arrow1.jpg",
-//     daysAgo: "2 days ago",
-//     badge: { label: "Freelancer", tone: "info" },
-//     title: "Art Production Specialist",
-//     address: "1363–1385 Sunset Blvd Los Angeles, CA 90026, USA",
-//     site: "https://thewebmax.com",
-//     pay: "$1500 – $1800 / Month",
-//   },
-//   {
-//     id: 10,
-//     logo: "/images/vectorlogo.jpg",
-//     daysAgo: "1 day ago",
-//     badge: { label: "Temporary", tone: "amber" },
-//     title: "Recreation & Fitness Worker",
-//     address: "1363–1385 Sunset Blvd Los Angeles, CA 90026, USA",
-//     site: "https://thewebmax.com",
-//     pay: "$500 – $1000 / Month",
-//   },
-// ];
-
-// const toneClasses: Record<BadgeTone, string> = {
-//   success: "bg-green-600",
-//   warning: "bg-yellow-700",
-//   primary: "bg-indigo-600",
-//   info: "bg-cyan-700",
-//   amber: "bg-amber-700",
-// };
-
-// const jobTypeOptions = [
-//   { label: "Freelance", count: 9 },
-//   { label: "Full Time", count: 7 },
-//   { label: "Internship", count: 15 },
-//   { label: "Part Time", count: 20 },
-//   { label: "Temporary", count: 22 },
-//   { label: "Volunteer", count: 25 },
-// ];
-
-// const datePostOptions = [
-//   "Last hour",
-//   "Last 24 hours",
-//   "Last 7 days",
-//   "Last 14 days",
-//   "Last 30 days",
-//   "All",
-// ] as const;
-// type DatePost = (typeof datePostOptions)[number];
-
-// const employmentOptions = [
-//   "Freelance",
-//   "Full Time",
-//   "Internship",
-//   "Part Time",
-// ] as const;
-// type Employment = (typeof employmentOptions)[number];
-
-// const TAGS = [
-//   "General",
-//   "Jobs",
-//   "Payment",
-//   "Application",
-//   "Work",
-//   "Recruiting",
-//   "Employer",
-//   "Income",
-//   "Tips",
-// ] as const;
-
-/* =============================
-   Job Card
-============================= */
-// function CareerCard({ job }: { job: Job }) {
-//   return (
-//     <article className="relative p-5 pt-8 transition bg-white border shadow-md rounded-xl border-slate-200 hover:-translate-y-1 hover:shadow-lg">
-//       <div className="absolute w-16 h-16 overflow-hidden bg-white border shadow-lg -top-5 left-5 rounded-xl border-slate-200">
-//         <Image src={job.logo} alt={job.title} fill className="object-cover" />
-//       </div>
-//       <div className="flex items-center justify-between mb-3 ml-20 text-sm">
-//         <span className="font-semibold text-green-600">{job.daysAgo}</span>
-//         <span
-//           className={`rounded-lg px-3 py-1 text-xs font-bold text-white ${
-//             toneClasses[job.badge.tone]
-//           }`}
-//         >
-//           {job.badge.label}
-//         </span>
-//       </div>
-//       <h4 className="mb-2 text-lg  text-slate">{job.title}</h4>
-//       <div className="mb-2 text-sm text-slate-500">{job.address}</div>
-//       <a
-//         href={job.site}
-//         target="_blank"
-//         rel="noopener noreferrer"
-//         className="text-sm font-semibold text-green-600 hover:underline"
-//       >
-//         {job.site}
-//       </a>
-//       <div className="flex items-center justify-between mt-4">
-//         <div className="text-base text-slate-900">{job.pay}</div>
-//         <Link
-//           href={`/jobs/details`}
-//           className="text-sm font-bold text-green-600 hover:underline"
-//         >
-//           Job Details
-//         </Link>
-//       </div>
-//     </article>
-//   );
-// }
 const Grid = () => {
   // Breadcrumbs
   type Crumb = { name: string; href?: string };
@@ -428,31 +226,31 @@ const Grid = () => {
                           title:
                             "Equipment you can count on. People you can trust.",
                           date: "April 08, 2023",
-                          img: "/images/job-gridwebp",
+                          img: "/images/job-grid.webp",
                           href: "/blog1",
                         },
                         {
                           title: "Advanced Service Functions by Air Transport",
                           date: "April 12, 2023",
-                          img: "/images/job-gridwebp",
+                          img: "/images/job-grid.webp",
                           href: "/blog2",
                         },
                         {
                           title: "Advanced Service Functions by Air Transport",
                           date: "April 12, 2023",
-                          img: "/images/job-gridwebp",
+                          img: "/images/job-grid.webp",
                           href: "/blog3",
                         },
                         {
                           title: "Advanced Service Functions by Air Transport",
                           date: "April 12, 2023",
-                          img: "/images/job-gridwebp",
+                          img: "/images/job-grid.webp",
                           href: "/blog4",
                         },
                         {
                           title: "Advanced Service Functions by Air Transport",
                           date: "April 12, 2023",
-                          img: "/images/job-gridwebp",
+                          img: "/images/job-grid.webp",
                           href: "/blog5",
                         },
                       ].map((a) => (
