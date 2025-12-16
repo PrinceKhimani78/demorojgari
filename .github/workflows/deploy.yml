@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Setup Node (LOCKED)
+      - name: Setup Node (LOCKED) 
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -32,32 +32,33 @@ jobs:
           cp -r .next public node_modules package.json package-lock.json next.config.js start.sh release/
 
       - name: Upload Release
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v0.1.9
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
           source: "release"
           target: "/home/demo.rojgariindia.com/app"
 
       - name: Restart App
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          command_timeout: 15m
           script: |
             set -e
             cd /home/demo.rojgariindia.com/app
 
-            echo ">>> Hard cleanup"
+            echo ">>> Atomic swap"
             rm -rf release_old
             mv release release_old || true
             mv app/release release
 
             cd release
-
-            echo ">>> Restart PM2"
             pm2 delete rojgari-demo || true
             pm2 start start.sh --name rojgari-demo
             pm2 save
