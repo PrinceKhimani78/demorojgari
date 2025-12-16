@@ -6,4 +6,4 @@ export PORT=3021
 
 cd /home/demo.rojgariindia.com/app/release
 
-exec ./node_modules/.bin/next start -p 3021
+exec node server.js
