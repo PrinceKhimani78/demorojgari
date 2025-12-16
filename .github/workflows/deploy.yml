@@ -1,4 +1,4 @@
-name: Deploy Demo Next.js (FINAL)
+name: Deploy Demo Next.js to Server
 
 on:
   push:
@@ -8,43 +8,66 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: Production
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: npm
+          cache: 'npm'
 
-      - run: npm ci
-      - run: npm run build
+      - name: Install Deps (CI)
+        run: npm ci
 
-      - name: Prepare release
+      - name: Build App
+        run: npm run build
+
+      - name: Create Release Folder
         run: |
           rm -rf release
           mkdir release
-          cp -r .next/standalone/* release/
-          cp -r .next/static release/.next/
-          cp -r public release/public
-          cp package.json start.sh release/
+          # Ensure the updated start.sh is included here
+          cp -r .next public package.json package-lock.json start.sh next.config.js release/
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
+      # Clear server path and prepare directory structure
+      - name: Clear Server Folder
+        uses: appleboy/ssh-action@v1.0.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            rm -rf /home/demo.rojgariindia.com/app/*
+            mkdir -p /home/demo.rojgariindia.com/app
 
-      - name: Deploy via rsync
-        run: |
-          rsync -az --delete \
-            release/ \
-            ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }}:/home/demo.rojgariindia.com/app/release/
+      # Upload new build
+      - name: Upload Release to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "release"
+          target: "/home/demo.rojgariindia.com/app"
 
-      - name: Restart PM2
-        run: |
-          ssh ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+      # Install Production Deps & Restart PM2 on Server
+      - name: Install Prod Deps & Restart PM2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
             cd /home/demo.rojgariindia.com/app/release
+            echo "Installing production dependencies on server..."
+            npm install --omit=dev # This is where the start.sh script's deps are installed
+
+            chmod +x start.sh
+            echo "Restarting PM2 process on port 3021..."
             pm2 delete rojgari-demo || true
             pm2 start start.sh --name rojgari-demo
             pm2 save
-          EOF
