@@ -43,6 +43,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             set -e
+            export NODE_OPTIONS="--max-old-space-size=4096"
+
             cd /home/demo.rojgariindia.com/app/release
 
             npm install          # 👈 NOT --omit=dev
