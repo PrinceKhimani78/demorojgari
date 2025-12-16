@@ -28,9 +28,10 @@ jobs:
 
       - name: Create Release Folder
         run: |
+          # Clean up previous release directory before creating a new one
           rm -rf release
           mkdir release
-          # Ensure the updated start.sh is included here
+          # Copy all necessary files for the Next.js runtime (including the updated start.sh)
           cp -r .next public package.json package-lock.json start.sh next.config.js release/
 
       # Clear server path and prepare directory structure
@@ -41,33 +42,34 @@ jobs:
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # Remove existing app contents and recreate the base directory
             rm -rf /home/demo.rojgariindia.com/app/*
             mkdir -p /home/demo.rojgariindia.com/app
 
-      # Upload new build
-      - name: Upload Release to Server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "release"
-          target: "/home/demo.rojgariindia.com/app"
-
-      # Install Production Deps & Restart PM2 on Server
-      - name: Install Prod Deps & Restart PM2
+      # NEW: Robust Upload, Install & Restart PM2 (Combines SCP and SSH)
+      - name: Robust Upload, Install & Restart PM2
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          
+          # 1. File Transfer (via SSH Action): Transfers the contents of 'release/' to the target directory
+          source: "release/" 
+          target: "/home/demo.rojgariindia.com/app/"
+          
+          # 2. Command Execution: Runs AFTER the files have been transferred
           script: |
+            # Move to the uploaded directory
             cd /home/demo.rojgariindia.com/app/release
+            
             echo "Installing production dependencies on server..."
-            npm install --omit=dev # This is where the start.sh script's deps are installed
-
+            npm install --omit=dev
+            
             chmod +x start.sh
             echo "Restarting PM2 process on port 3021..."
+            
+            # Restart PM2
             pm2 delete rojgari-demo || true
             pm2 start start.sh --name rojgari-demo
             pm2 save
