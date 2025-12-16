@@ -30,18 +30,6 @@ jobs:
           mkdir release
           cp -r .next public package.json package-lock.json start.sh next.config.js release/
 
-      # Clear server path
-      - name: Clear Server Folder
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            rm -rf /home/demo.rojgariindia.com/app/*
-            mkdir -p /home/demo.rojgariindia.com/app
-
-      # Upload new build
       - name: Upload Release to Server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -51,7 +39,6 @@ jobs:
           source: "release"
           target: "/home/demo.rojgariindia.com/app"
 
-      # Install & restart PM2
       - name: Install & Restart PM2
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -62,7 +49,5 @@ jobs:
             cd /home/demo.rojgariindia.com/app/release
             npm install --omit=dev
             chmod +x start.sh
-            pm2 delete rojgari-demo || true
-            pm2 start start.sh --name rojgari-demo
+            pm2 restart rojgari-demo || pm2 start start.sh --name rojgari-demo
             pm2 save
-
