@@ -46,7 +46,7 @@ jobs:
             rm -rf /home/demo.rojgariindia.com/app/*
             mkdir -p /home/demo.rojgariindia.com/app
 
-      # NEW: Robust Upload, Install & Restart PM2 (Combines SCP and SSH)
+      # FIX: Robust Upload, Install & Restart PM2 (Combines SCP/SSH, Corrected Target)
       - name: Robust Upload, Install & Restart PM2
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -54,22 +54,22 @@ jobs:
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           
-          # 1. File Transfer (via SSH Action): Transfers the contents of 'release/' to the target directory
-          source: "release/" 
-          target: "/home/demo.rojgariindia.com/app/"
+          # 1. File Transfer: Copies 'release' folder to /home/demo.rojgariindia.com/app/release
+          source: "release" 
+          target: "/home/demo.rojgariindia.com/app"
           
           # 2. Command Execution: Runs AFTER the files have been transferred
           script: |
-            # Move to the uploaded directory
+            # This CD command should now work correctly
             cd /home/demo.rojgariindia.com/app/release
             
             echo "Installing production dependencies on server..."
+            # This NPM install should now find package.json
             npm install --omit=dev
             
             chmod +x start.sh
             echo "Restarting PM2 process on port 3021..."
             
-            # Restart PM2
             pm2 delete rojgari-demo || true
             pm2 start start.sh --name rojgari-demo
             pm2 save
