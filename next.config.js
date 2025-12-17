@@ -3,7 +3,6 @@ const nextConfig = {
   reactStrictMode: true,
 
   images: {
-    unoptimized: true, // ⬅️ REQUIRED for CyberPanel stability
     remotePatterns: [
       { protocol: "https", hostname: "randomuser.me" },
       { protocol: "https", hostname: "1000logos.net" },

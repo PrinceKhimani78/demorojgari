@@ -8,7 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: Production
 
     steps:
       - name: Checkout Repo
@@ -18,23 +17,19 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
 
-      - name: Install Deps (CI)
-        run: npm ci
+      - name: Install Deps
+        run: npm install
 
       - name: Build App
         run: npm run build
 
-      - name: Create Release Folder
+      - name: Prepare Release
         run: |
-          # Clean up previous release directory before creating a new one
           rm -rf release
-          mkdir release
-          # Copy all necessary files for the Next.js runtime (including the updated start.sh)
-          cp -r .next public package.json package-lock.json start.sh next.config.js release/
+          mkdir -p release
+          cp -r .next public package.json package-lock.json next.config.js start.sh release/
 
-      # Clear server path and prepare directory structure
       - name: Clear Server Folder
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -42,34 +37,28 @@ jobs:
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Remove existing app contents and recreate the base directory
-            rm -rf /home/demo.rojgariindia.com/app/*
+            rm -rf /home/demo.rojgariindia.com/app
             mkdir -p /home/demo.rojgariindia.com/app
 
-      # FIX: Robust Upload, Install & Restart PM2 (Combines SCP/SSH, Corrected Target)
-      - name: Robust Upload, Install & Restart PM2
+      - name: Upload Release
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "release"
+          target: "/home/demo.rojgariindia.com/app"
+
+      - name: Install & Restart PM2
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          
-          # 1. File Transfer: Copies 'release' folder to /home/demo.rojgariindia.com/app/release
-          source: "release" 
-          target: "/home/demo.rojgariindia.com/app"
-          
-          # 2. Command Execution: Runs AFTER the files have been transferred
           script: |
-            # This CD command should now work correctly
             cd /home/demo.rojgariindia.com/app/release
-            
-            echo "Installing production dependencies on server..."
-            # This NPM install should now find package.json
             npm install --omit=dev
-            
             chmod +x start.sh
-            echo "Restarting PM2 process on port 3021..."
-            
             pm2 delete rojgari-demo || true
             pm2 start start.sh --name rojgari-demo
             pm2 save
