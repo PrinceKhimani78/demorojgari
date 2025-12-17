@@ -285,7 +285,7 @@ const Home = () => {
       btnText: "New",
       btnColor: "#72B76A",
       title: "Lorem1 ipsum dolor sit amet consectetur1",
-      desc: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus, explicabo ea. Odio!1",
+      desc: " Temporibus, explicabo ea. Odio!1",
       link: "https://lorem ipsum dolor sit amet.1",
       price: "$23908 /Month",
       footerLink: "Lorem ipsum1",
@@ -517,7 +517,7 @@ const Home = () => {
                   )}
                   <br />
                   <span className="font-normal text-black normal-case">
-                    To Boost Career
+                    To Boost Career!!
                   </span>
                 </div>
 
