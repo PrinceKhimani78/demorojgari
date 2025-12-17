@@ -12,7 +12,7 @@ const jobs = [
   {
     id: 1,
     title: "Art Production Specialist",
-    companyLogo: "/images/company.jpg",
+    companyLogo: "/images/company.webp",
     location: "1363-1385 Sunset Blvd Los Angeles, CA 90026, USA",
     category: "Product Designer",
     type: "Freelancer",
@@ -24,7 +24,7 @@ const jobs = [
   {
     id: 2,
     title: "IT Department Manager",
-    companyLogo: "/images/company.jpg",
+    companyLogo: "/images/company.webp",
     location: "1363-1385 Sunset Blvd Los Angeles, CA 90026, USA",
     category: "PHP Developer",
     type: "Fulltime",
@@ -36,7 +36,7 @@ const jobs = [
   {
     id: 3,
     title: "Recreation & Fitness Worker",
-    companyLogo: "/images/company.jpg",
+    companyLogo: "/images/company.webp",
     location: "1363-1385 Sunset Blvd Los Angeles, CA 90026, USA",
     category: "Gym Trainer",
     type: "Temporary",
@@ -48,7 +48,7 @@ const jobs = [
   {
     id: 4,
     title: "Art Production Specialist",
-    companyLogo: "/images/company.jpg",
+    companyLogo: "/images/company.webp",
     location: "1363-1385 Sunset Blvd Los Angeles, CA 90026, USA",
     category: "Product Designer",
     type: "Freelancer",
@@ -60,7 +60,7 @@ const jobs = [
   {
     id: 5,
     title: "IT Department Manager",
-    companyLogo: "/images/company.jpg",
+    companyLogo: "/images/company.webp",
     location: "1363-1385 Sunset Blvd Los Angeles, CA 90026, USA",
     category: "PHP Developer",
     type: "Fulltime",
@@ -72,7 +72,7 @@ const jobs = [
   {
     id: 6,
     title: "Recreation & Fitness Worker",
-    companyLogo: "/images/company.jpg",
+    companyLogo: "/images/company.webp",
     location: "1363-1385 Sunset Blvd Los Angeles, CA 90026, USA",
     category: "Gym Trainer",
     type: "Temporary",

@@ -517,7 +517,7 @@ const Home = () => {
                   )}
                   <br />
                   <span className="font-normal text-black normal-case">
-                    To Boost Career!!
+                    To Boost Career
                   </span>
                 </div>
 

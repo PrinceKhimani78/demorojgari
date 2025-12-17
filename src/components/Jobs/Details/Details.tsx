@@ -204,7 +204,7 @@ const Details = () => {
                 <Link href="/" className="block">
                   <div className="h-20 w-20 absolute -top-13 left-5 overflow-hidden rounded-lg bg-white p-2 shadow-[0_10px_30px_rgba(0,0,0,0.12)]">
                     <Image
-                      src="/images/company.jpg"
+                      src="/images/company.webp"
                       alt="Company"
                       width={66}
                       height={66}
