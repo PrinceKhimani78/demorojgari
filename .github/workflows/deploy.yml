@@ -1,4 +1,4 @@
-name: Deploy Demo Next.js to Server
+name: Deploy Demo Next.js (FINAL FIX)
 
 on:
   push:
@@ -10,55 +10,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: npm
 
-      - name: Install Deps
-        run: npm install
+      - name: Install deps
+        run: npm ci
 
-      - name: Build App
+      - name: Build
         run: npm run build
 
-      - name: Prepare Release
+      - name: Prepare release
         run: |
           rm -rf release
-          mkdir -p release
+          mkdir release
           cp -r .next public package.json package-lock.json next.config.js start.sh release/
 
-      - name: Clear Server Folder
-        uses: appleboy/ssh-action@v1.0.0
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            rm -rf /home/demo.rojgariindia.com/app
-            mkdir -p /home/demo.rojgariindia.com/app
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Upload Release
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "release"
-          target: "/home/demo.rojgariindia.com/app"
+      - name: Upload via rsync (NO SCP)
+        run: |
+          rsync -az --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            release/ \
+            ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }}:/home/demo.rojgariindia.com/app/release/
 
-      - name: Install & Restart PM2
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
+      - name: Install & Restart
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+          ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
             cd /home/demo.rojgariindia.com/app/release
             npm install --omit=dev
-            chmod +x start.sh
             pm2 delete rojgari-demo || true
-            pm2 start start.sh --name rojgari-demo
+            pm2 start ./start.sh --name rojgari-demo
             pm2 save
+          EOF
