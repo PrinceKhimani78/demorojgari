@@ -1,7 +1,7 @@
 import Home from "../components/Home/Home";
 
 export const metadata = {
-  title: "Home | Rojgari-India",
+  title: "Home |Rojgari-India",
   description: "Welcome to the homepage!",
 };
 
