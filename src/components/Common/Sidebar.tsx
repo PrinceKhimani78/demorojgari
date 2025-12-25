@@ -151,7 +151,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 key={i}
                 href={item.href}
                 onClick={() => setMobileOpen?.(false)} // auto close on click
-                className="flex items-center gap-3 px-3 text-[#00C9FF] hover:text-sky-500"
+                className="flex items-center gap-3 px-3 text-[#72B76A] hover:text-green-500"
               >
                 <div className="w-6 flex justify-center text-lg">
                   {item.icon}
@@ -175,12 +175,12 @@ const Sidebar: React.FC<SidebarProps> = ({
           <div className={`flex flex-start py-5 ${collapsed ? "" : "ml-2"}`}>
             <button
               onClick={() => setCollapsed(!collapsed)}
-              className="w-8 h-8 flex items-center justify-center rounded-full border border-[#00C9FF] bg-white hover:bg-[#00C9FF]/10 transition"
+              className="w-8 h-8 flex items-center justify-center rounded-full border border-[#72B76A] bg-white hover:bg-[#72B76A]/10 transition"
             >
               {collapsed ? (
-                <FiChevronRight size={20} className="text-[#00C9FF]" />
+                <FiChevronRight size={20} className="text-[#72B76A]" />
               ) : (
-                <FiChevronLeft size={20} className="text-[#00C9FF]" />
+                <FiChevronLeft size={20} className="text-[#72B76A]" />
               )}
             </button>
           </div>
@@ -196,7 +196,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   key={i}
                   title={item.label}
                   placement="right"
-                  color="#00C9FF"
+                  color="#72B76A"
                   open={collapsed ? undefined : false}
                 >
                   <Link
@@ -204,8 +204,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                     className={`relative flex items-center w-full gap-2 rounded-md transition-colors
             ${
               isActive
-                ? "bg-[#00C9FF] text-white"
-                : "text-[#00C9FF] hover:bg-[#00C9FF] hover:text-white"
+                ? "bg-[#72B76A] text-white"
+                : "text-[#72B76A] hover:bg-[#72B76A] hover:text-white"
             }`}
                   >
                     <div className="flex items-center  justify-center w-10 h-10 rounded-md text-lg">
