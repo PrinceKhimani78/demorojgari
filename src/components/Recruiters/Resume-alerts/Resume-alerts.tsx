@@ -155,10 +155,10 @@ const Resumealerts = () => {
                     <td className="px-6 py-4">{alert.description}</td>
                     <td className="px-6 py-4">{alert.times}</td>
                     <td className="px-6 py-4 flex gap-3">
-                      <button className="p-2 rounded-full bg-blue-50 text-[#00C9FF] hover:bg-blue-100">
+                      <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
                         <FaEye />
                       </button>
-                      <button className="p-2 rounded-full bg-blue-50 text-[#00C9FF] hover:bg-red-100">
+                      <button className="p-2 text-red-500 hover:bg-red-100">
                         <FaTrash />
                       </button>
                     </td>

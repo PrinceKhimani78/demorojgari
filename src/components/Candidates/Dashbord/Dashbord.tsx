@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Footer from "@/components/Footer/Footer";
+
 import {
   FaBriefcase,
   FaFileAlt,
@@ -148,13 +148,13 @@ const Dashbord = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
-                title: "Posted Jobs",
+                title: "Total Applications",
                 value: 25,
                 icon: <FaBriefcase />,
                 color: "bg-[#FFCC23]",
               },
               {
-                title: "Total Applications",
+                title: "Saved Jobs",
                 value: 435,
                 icon: <FaFileAlt />,
                 color: "bg-[#72B76A]",
@@ -166,7 +166,7 @@ const Dashbord = () => {
                 color: "bg-[#AE70BB]",
               },
               {
-                title: "Notifications",
+                title: "Job Alerts",
                 value: 18,
                 icon: <FaBell />,
                 color: "bg-[#00C9FF]",
@@ -247,14 +247,14 @@ const Dashbord = () => {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex sm:flex-row flex-row sm:justify-end justify-center gap-3 text-[#42A5F5]">
-                    <button className="p-2 hover:bg-blue-50 rounded-full">
+                  <div className="flex sm:flex-row flex-row sm:justify-end justify-center gap-3 ">
+                    <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
                       <FaEye />
                     </button>
-                    <button className="p-2 hover:bg-blue-50 rounded-full">
+                    <button className="p-2 hover:bg-blue-50 rounded-full text-[#42A5F5]">
                       <FaEnvelope />
                     </button>
-                    <button className="p-2 hover:bg-blue-50 rounded-full">
+                    <button className="text-red-600 rounded-full p-2 hover:bg-[rgba(255,0,0,0.1)] transition-colors">
                       <FaTrash />
                     </button>
                   </div>

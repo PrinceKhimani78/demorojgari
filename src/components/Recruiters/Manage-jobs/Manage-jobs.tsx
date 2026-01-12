@@ -3,11 +3,11 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Sidebar from "@/components/Common/Sidebar";
-import { FaEye, FaTrash } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 // import Footer from "@/components/Footer/Footer";
 import { IoChevronForward } from "react-icons/io5";
-import { FiChevronRight } from "react-icons/fi";
-
+import { useRouter } from "next/navigation";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 const jobs = [
   {
     id: 1,
@@ -66,8 +66,8 @@ const jobs = [
     type: "Fulltime",
     typeColor: "bg-[#AE70BB]",
     applications: "06 Applied",
-    created: "08/06/2023",
-    expired: "28/06/2023",
+    created: "27/01/2026",
+    expired: "28/06/2026",
   },
   {
     id: 6,
@@ -83,6 +83,7 @@ const jobs = [
   },
 ];
 const Managejobs = () => {
+  const [editJob, setEditJob] = useState<any>(null);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [showModal, setShowModal] = useState(false);
   const [entries, setEntries] = useState(10);
@@ -105,6 +106,10 @@ const Managejobs = () => {
   const handleEntriesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setEntries(Number(e.target.value));
     setCurrentPage(1); // reset to first page on change
+  };
+  const isExpired = (date: string) => {
+    const [day, month, year] = date.split("/").map(Number);
+    return new Date(year, month - 1, day) < new Date();
   };
   return (
     <>
@@ -252,10 +257,22 @@ const Managejobs = () => {
                   </div>
                   {/* Actions */}
                   <div className="flex gap-3 text-[#00C9FF]">
-                    <button className="p-2 hover:bg-blue-50 rounded-full">
+                    <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
                       <FaEye />
                     </button>
-                    <button className="p-2 hover:bg-blue-50 rounded-full">
+                    <button
+                      title={isExpired(job.expired) ? "Job expired" : "Edit"}
+                      disabled={isExpired(job.expired)}
+                      onClick={() => setEditJob(job)}
+                      className={`p-2 rounded-full transition-colors ${
+                        isExpired(job.expired)
+                          ? "text-gray-400 cursor-not-allowed"
+                          : "text-[#0d6efd] hover:bg-[rgba(13,110,253,0.1)]"
+                      }`}
+                    >
+                      <FaEdit />
+                    </button>
+                    <button className="text-red-600 rounded-full p-2 hover:bg-[rgba(255,0,0,0.1)] transition-colors">
                       <FaTrash />
                     </button>
                   </div>
@@ -274,13 +291,13 @@ const Managejobs = () => {
               <button
                 onClick={handlePrev}
                 disabled={currentPage === 1}
-                className={`px-3 py-1 border rounded cursor-pointer ${
+                className={`px-3 py-1 border rounded flex items-center justify-center ${
                   currentPage === 1
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-gray-100"
+                    : "bg-gray-100 hover:bg-gray-200"
                 }`}
               >
-                Previous
+                <FiChevronLeft size={16} />
               </button>
 
               {[...Array(totalPages)].map((_, index) => (
@@ -300,13 +317,13 @@ const Managejobs = () => {
               <button
                 onClick={handleNext}
                 disabled={currentPage === totalPages}
-                className={`px-3 py-1 border rounded cursor-pointer ${
+                className={`px-3 py-1 border rounded flex items-center justify-center ${
                   currentPage === totalPages
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-gray-100"
+                    : "bg-gray-100 hover:bg-gray-200"
                 }`}
               >
-                Next
+                <FiChevronRight size={16} />
               </button>
             </div>
           </div>
@@ -357,8 +374,39 @@ const Managejobs = () => {
             </div>
           </div>
         )}
+        {editJob && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+            <div className="bg-white rounded-lg w-[90%] max-w-lg p-6 relative">
+              <button
+                onClick={() => setEditJob(null)}
+                className="absolute top-3 right-4 text-xl text-gray-400 hover:text-black"
+              >
+                ×
+              </button>
+
+              <h2 className="text-lg font-semibold mb-4">Edit Job</h2>
+
+              {/* Example field */}
+              <input
+                defaultValue={editJob.title}
+                className="w-full border rounded px-3 py-2 mb-3"
+              />
+
+              <div className="flex justify-end gap-3 mt-4">
+                <button
+                  onClick={() => setEditJob(null)}
+                  className="px-4 py-2 border rounded"
+                >
+                  Cancel
+                </button>
+                <button className="px-4 py-2 bg-blue-600 text-white rounded">
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-      {/* <Footer /> */}
     </>
   );
 };

@@ -1,16 +1,35 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import { Typewriter } from "react-simple-typewriter";
+import "swiper/css";
 import Link from "next/link";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
-
+import { RxCross2 } from "react-icons/rx";
+import { useRouter } from "next/navigation";
 type FeatureListProps = {
   items: string[];
   className?: string;
 };
+type AuthSetter = React.Dispatch<React.SetStateAction<boolean>>;
 
+interface HeaderProps {
+  isAuthenticated?: boolean;
+  setIsAuthenticated?: AuthSetter;
+}
+type Mode = "login" | "signup";
+
+interface FormState {
+  username: string;
+  password: string;
+  fullName: string;
+  mobile: string;
+  email: string;
+  confirmPassword: string;
+  otp: string;
+}
 const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg
     className={className}
@@ -26,13 +45,12 @@ const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
     />
   </svg>
 );
-
 const FeatureList: React.FC<FeatureListProps> = ({ items, className = "" }) => {
   return (
     <ul className={`space-y-2 ${className}`}>
       {items.map((text, i) => (
         <li key={i} className="flex items-center gap-3">
-          <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#ae70bb]">
+          <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#AE70BB]">
             <CheckIcon className="h-4 w-4 text-white" />
           </span>
           <span className="font-semibold text-[12px] text-gray-700 ">
@@ -45,23 +63,66 @@ const FeatureList: React.FC<FeatureListProps> = ({ items, className = "" }) => {
 };
 
 const AboutUs = () => {
-  // Breadcrumbs
+  const router = useRouter();
+  const [img2, img2InView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [userType, setUserType] = useState<"candidates" | "recruiter">(
+    "candidates"
+  );
+  const [formData, setFormData] = useState<FormState>({
+    username: "",
+    password: "",
+    fullName: "",
+    mobile: "",
+    email: "",
+    confirmPassword: "",
+    otp: "",
+  });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Form Submitted:", formData);
+
+    localStorage.setItem("isAuthenticated", "true");
+
+    if (userType === "candidates") {
+      router.push("/candidates/dashboard");
+    } else {
+      router.push("/recruiters/dashboard");
+    }
+
+    setShowPopup(false);
+  };
   type Crumb = { name: string; href?: string };
-  const crumbs: Crumb[] = [{ name: "Home", href: "/" }, { name: "About Us" }];
+  const crumbs: Crumb[] = [{ name: "Home", href: "/" }, { name: "Aboutus" }];
   const [jobTyperRef, jobTyperSeen] = useInView({
     triggerOnce: true,
+    threshold: 0.2,
+  });
+  // Toggle
+  const [plan, setPlan] = useState<"monthly" | "annual">("monthly");
+
+  // In-view to trigger counters only when visible
+  const { ref: gridRef, inView } = useInView({
+    triggerOnce: false,
     threshold: 0.2,
   });
 
   return (
     <>
-      {/*  banner*/}
+      {/*  banner  */}
       <section className="relative overflow-hidden">
         <div className="h-[220px] lg:h-[350px] bg-[url('/images/RI_banner_bg.webp')] bg-cover bg-center bg-no-repeat bg-fixed" />
         <div className="absolute inset-0 flex h-[220px] lg:h-[350px] place-items-end  justify-center px-5 lg:px-[5%] 2xl:px-[10%]">
           <div className="max-w-screen-xl w-full text-center">
             <h1 className="inline-block mb-4 px-4 py-2 text-slate-900  sm:text-xl fontAL font-semibold capitalize text-2xl md:text-3xl lg:text-4xl mt-5">
-              About Us
+              AboutUs
             </h1>
             {/* Breadcrumbs */}
             <nav
@@ -103,11 +164,11 @@ const AboutUs = () => {
           </div>
         </div>
       </section>
-
-      {/*  How It Works  */}
+      {/* main content  */}
+      {/* How It Works  */}
       <section className="section-container md:pt-12 2xl:pt-[5%] grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
         {/* left side */}
-        <div className=" flex flex-col gap-4 pr-6 md:pr-10 lg:pr-16 pt-6 md:pt-10 lg:pt-16 pb-6 md:pb-10 lg:pb-16">
+        <div className="flex flex-col gap-4 pr-6 md:pr-10 lg:pr-16 pt-6 md:pt-10 lg:pt-16 pb-6 md:pb-10 lg:pb-16">
           <p className="fontPOP text-[#AE70BB] text-xs sm:text-sm">
             How It Works
           </p>
@@ -143,7 +204,7 @@ const AboutUs = () => {
           </div>
         </div>
 
-        {/*  right side  */}
+        {/* ✅ right side */}
         <div className="grid flex-1 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 lg:gap-16">
           {[
             {
@@ -198,33 +259,31 @@ const AboutUs = () => {
                 className={`group relative rounded-2xl ${c.bg} p-6 ${c.glow} ${
                   c.offset
                 }
-                                          transition-all duration-300 ease-out will-change-transform
-                                          hover:-translate-y-1 hover:shadow-xl
-                                          ${
-                                            isLeftCol
-                                              ? "md:hover:-translate-x-2"
-                                              : ""
-                                          }`}
+                                  transition-all duration-300 ease-out will-change-transform
+                                  hover:-translate-y-1 hover:shadow-xl
+                                  ${
+                                    isLeftCol ? "md:hover:-translate-x-2" : ""
+                                  }`}
               >
                 {/* floating white badge */}
                 <div
                   className={`absolute
-         -left-2 -top-3           /* base (mobile <640px) */
-          sm:-left-4 sm:-top-4     /* ≥640px */
-          md:-left-6 md:-top-5     /* ≥768px */
-          lg:-left-7 lg:-top-7     /* ≥1024px */
-          xl:-left-8 xl:-top-8     /* ≥1280px */
-          2xl:-left-10 2xl:-top-10 /* ≥1536px */
-            flex 
-            h-16 w-16         /* base (mobile <640px) */
-            sm:h-14 sm:w-14   /* ≥640px */
-            md:h-16 md:w-16   /* ≥768px */
-            lg:h-16 lg:w-16   /* ≥1024px */
-            xl:h-18 xl:w-18   /* ≥1280px */
-            2xl:h-20 2xl:w-20 /* ≥1536px */
-            items-center justify-center
-            rounded-2xl bg-white ${c.badgeGlow}
-            transition-transform duration-300 group-hover:scale-105`}
+ -left-2 -top-3           /* base (mobile <640px) */
+  sm:-left-4 sm:-top-4     /* ≥640px */
+  md:-left-6 md:-top-5     /* ≥768px */
+  lg:-left-7 lg:-top-7     /* ≥1024px */
+  xl:-left-8 xl:-top-8     /* ≥1280px */
+  2xl:-left-10 2xl:-top-10 /* ≥1536px */
+    flex 
+    h-16 w-16         /* base (mobile <640px) */
+    sm:h-14 sm:w-14   /* ≥640px */
+    md:h-16 md:w-16   /* ≥768px */
+    lg:h-16 lg:w-16   /* ≥1024px */
+    xl:h-18 xl:w-18   /* ≥1280px */
+    2xl:h-20 2xl:w-20 /* ≥1536px */
+    items-center justify-center
+    rounded-2xl bg-white ${c.badgeGlow}
+    transition-transform duration-300 group-hover:scale-105`}
                 >
                   <Image
                     src={c.icon}
@@ -236,38 +295,38 @@ const AboutUs = () => {
                 </div>
                 <span
                   className={`absolute right-3 top-2 select-none
-            text-5xl           /* base (mobile <640px) */
-            sm:text-xl        /* ≥640px */
-            md:text-3xl        /* ≥768px */
-            lg:text-4xl        /* ≥1024px */
-            xl:text-5xl        /* ≥1280px */
-            2xl:text-6xl       /* ≥1536px big screens */
-            font-extrabold ${c.num}
-            transition-opacity duration-300 group-hover:opacity-90`}
+    text-5xl           /* base (mobile <640px) */
+    sm:text-xl        /* ≥640px */
+    md:text-3xl        /* ≥768px */
+    lg:text-4xl        /* ≥1024px */
+    xl:text-5xl        /* ≥1280px */
+    2xl:text-6xl       /* ≥1536px big screens */
+    font-extrabold ${c.num}
+    transition-opacity duration-300 group-hover:opacity-90`}
                 >
                   {c.no}
                 </span>
                 <h4
                   className="mt-8 mb-2  sm:mt-6 
-          text-xl        /* mobile default */
-          sm:text-sm   /* ≥640px */
-          md:text-sm     /* ≥768px */
-          lg:text-lg     /* ≥1024px */
-          xl:text-xl     /* ≥1280px */
-          font-semibold text-[#17171d]"
+  text-xl        /* mobile default */
+  sm:text-sm   /* ≥640px */
+  md:text-sm     /* ≥768px */
+  lg:text-lg     /* ≥1024px */
+  xl:text-xl     /* ≥1280px */
+  font-semibold text-[#17171d]"
                 >
                   {c.titleTop} <br className="hidden sm:block" />{" "}
                   {c.titleBottom}
                 </h4>
                 <p
                   className="
-            text-[13px] leading-6        /* base (mobile <640px) */
-            sm:text-xs sm:leading-6      /* small screens ≥640px */
-            md:text-[11px] md:leading-4  /* tablets ≥768px */
-            lg:text-sm lg:leading-5      /* laptops ≥1024px */
-            xl:text-sm xl:leading-6    /* desktops ≥1280px */
-            text-black/70
-          "
+    text-[13px] leading-6        /* base (mobile <640px) */
+    sm:text-xs sm:leading-6      /* small screens ≥640px */
+    md:text-[11px] md:leading-4  /* tablets ≥768px */
+    lg:text-sm lg:leading-5      /* laptops ≥1024px */
+    xl:text-sm xl:leading-6    /* desktops ≥1280px */
+    text-black/70
+  "
                 >
                   You need to create an account to find the best and preferred
                   job.
@@ -278,83 +337,361 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Jobs by Categories */}
-      <section className="px-4 sm:px-6 lg:px-[5%] 2xl:px-[15%] my-10">
-        {/* Animate the full yellow card */}
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-          className="max-w-screen-xl mx-auto bg-gradient-to-r from-[#FFCC23]/80 to-[#FFCC23]/40 
-     rounded-xl text-gray-900 shadow-lg grid grid-cols-1 lg:grid-cols-2 gap-6 items-center"
-        >
-          {/* Left Side - Wider white content box */}
-          <div
-            className="relative px-8 ml-10 md:p-12 z-10 text-center lg:text-left 
-       bg-white rounded-l-xl overflow-hidden lg:w-[120%]"
-            style={{
-              clipPath:
-                "path('M0 0 H calc(90% - 50px) Q 90% 40% calc(90% - 50px) 0% H0 Z')",
-            }}
-          >
-            {/* Content sits above arc */}
-            <div className="relative z-10 max-w-lg">
-              <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-gray-900 leading-snug">
-                Ready To Start Your Career Journey?
-              </h2>
-              <p className="text-sm md:text-base text-gray-800 mt-5 leading-relaxed max-w-md">
-                Create your candidate profile, upload your resume, and apply to
-                top companies in just a few clicks. Take the first step towards
-                your dream job today! Create your candidate profile, upload your
-                resume, and apply to top companies in just a few clicks. Take
-                the first step towards your dream job today! Resume, and apply
-                to top companies in just a few clicks. Take the first step
-                towards your dream job today!
-              </p>
+      {/* call to action  */}
+      <div className="px-5 lg:px-[5%] 2xl:px-[15%] my-20 sm:my-10">
+        <div className="grid grid-cols-1 lg:grid-cols-[40%_55%] gap-10 items-center justify-between">
+          <div className="">
+            <div className="relative flex items-center justify-center">
+              <div className="animate_outer_rotate absolute bg-[#EFE2F1] rounded-[50px] h-80 w-80 animate-rotate-slow z-0"></div>
 
-              <Link href="/candidates/login">
-                <button
-                  className="relative mt-4 px-5 h-10 overflow-hidden group border border-[#FFD633] 
-             bg-[#FFD633] rounded-lg hover:bg-transparent text-gray-900 hover:text-white 
-             active:scale-90 transition-all ease-out duration-700 cursor-pointer"
-                >
-                  <span
-                    className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform 
-               translate-x-12 bg-black opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"
-                  ></span>
-                  <span className="relative flex gap-2 items-center text-sm font-semibold">
-                    Candidates Login
-                  </span>
-                </button>
+              <div className="animate_inner_rotate absolute bg-white rounded-[50px] h-72 w-72 animate-rotate-reverse z-10"></div>
+              <Link href="/" className="inline-block">
+                <Image
+                  src="/images/girl.webp"
+                  alt="Girl-img"
+                  height={400}
+                  width={400}
+                  className="relative z-20 "
+                />
               </Link>
             </div>
           </div>
 
-          {/* Right Side - Illustration with White Circle + Arc */}
-          <div className="relative flex justify-center items-center p-8">
-            {/* Yellow Arc */}
-            <div
-              className="hidden lg:block absolute left-[125px] top-[20px] w-[460px] h-[460px] 
-                rounded-full border-[40px] border-[#fdeba5] z-0"
-            ></div>
+          <motion.div
+            ref={img2}
+            initial={{ opacity: 0, x: 100 }}
+            animate={img2InView ? { opacity: 1, x: 0 } : { opacity: 0, x: 100 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="mt-14"
+          >
+            <div className="relative inline-block lg:max-w-[600px] mr-5 lg:mr-0">
+              <div className="absolute top-8 left-5 w-full h-full rounded-xl bg-[#DFC6E4]"></div>
 
-            {/* White Circle */}
-            <div className="hidden lg:block absolute -right-15 w-[420px] h-[420px] rounded-full bg-white z-0"></div>
+              <div className="relative bg-white p-10 rounded-xl border border-[#DFC6E4]">
+                <p
+                  className="fontPOP text-xs sm:text-sm"
+                  style={{
+                    letterSpacing: "1px",
+                    lineHeight: 1.3,
+                  }}
+                >
+                  Lorem ipsum dolor.
+                </p>
 
-            {/* Girl Image */}
-            <Image
-              src="/images/profile.webp"
-              alt="Candidate Illustration"
-              width={300}
-              height={300}
-              className="relative z-10 left-0 sm:left-20 object-contain translate-x-6 -translate-y-2"
-            />
+                <p
+                  className="fontAL font-semibold capitalize text-2xl md:text-3xl lg:text-4xl mt-5"
+                  style={{
+                    letterSpacing: "1px",
+                    wordSpacing: "2px",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  Ready To Start Your Career Journey?
+                </p>
+
+                <p className="text-sm mt-5">
+                  Create your candidate profile, upload your resume, and apply
+                  to top companies in just a few clicks. Take the first step
+                  towards your dream job today! Create your candidate profile,
+                  upload your resume, and apply to top companies in just a few
+                  clicks. Take the first step towards your dream job today!
+                  Resume, and apply to top companies in just a few clicks. Take
+                  the first step towards your dream job today!
+                </p>
+
+                <button
+                  onClick={() => {
+                    setShowPopup(true);
+                    setMode("login");
+                    setUserType("candidates");
+                  }}
+                  className="relative mt-8 px-4 h-9 overflow-hidden group border border-[#AE70BB] bg-[#AE70BB] rounded-lg hover:bg-transparent text-white hover:text-[#AE70BB] active:scale-90 transition-all ease-out duration-700 cursor-pointer"
+                >
+                  <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
+                  <span className="relative flex gap-2 items-center text-sm font-semibold">
+                    Candidates Login
+                  </span>
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+      {showPopup && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black/60 z-[10000]"
+          onClick={() => setShowPopup(false)}
+        >
+          <div
+            className="popupContent bg-white shadow-xl max-w-[1000px] h-auto  sm:-[50vh] mx-5  rounded-lg relative z-10 "
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Desktop Close Button */}
+            <button
+              onClick={() => setShowPopup(false)}
+              aria-label="Close sign in"
+              className="absolute top-4 right-4 z-20 text-3xl font-bold text-gray-400 hover:text-black hidden md:block"
+            >
+              <RxCross2 size={20} />
+            </button>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 items-center justify-center bg-[#FFFFF0] rounded-lg max-h-[80vh] ">
+              {/* Left Panel */}
+              <div className="relative w-full h-full rounded-b-lg sm:rounded-b-none sm:rounded-l-lg order-2 sm:order-1 border-r border-gray-300">
+                <div className="flex flex-col items-center justify-center text-gray-900 p-5 h-full">
+                  {/* Logo visible only on md+ */}
+                  <Image
+                    src="/images/logo.svg"
+                    alt="Rojgari Logo"
+                    width={220}
+                    height={180}
+                    className="mb-6 hidden md:block"
+                  />
+                  <div className="overflow-y-auto max-h-20 md:overflow-visible md:max-h-none ">
+                    <p className="font-bold uppercase mb-4 text-center">
+                      ➤ Please Note
+                    </p>
+                    <ul className="text-xs space-y-2">
+                      <li>
+                        - Lorem ipsum dolor sit amet consectetur adipisicing
+                        elit.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                      <li>
+                        - Lorem ipsum dolor sit amet consectetur adipisicing
+                        elit.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Panel */}
+              <form
+                className="col-span-2 sm:col-span-1
+                        flex flex-col justify-center
+                        px-4 sm:px-6 lg:px-8
+                        py-6 sm:py-10
+                        order-1 sm:order-2"
+                onSubmit={handleSubmit}
+              >
+                {/* Mobile Top Row (Logo + Close Button) */}
+                <div className="  flex items-start sm:items-center justify-between top-2 mb-6 md:hidden ">
+                  <Image
+                    src="/images/logo.svg"
+                    alt="Rojgari Logo"
+                    width={170}
+                    height={150}
+                    className="h-16 "
+                  />
+                  <button
+                    onClick={() => setShowPopup(false)}
+                    aria-label="Close sign in"
+                    className="text-3xl mt-2 font-bold text-gray-400 hover:text-black"
+                  >
+                    <RxCross2 size={20} />
+                  </button>
+                </div>
+
+                {/* Title */}
+                <h2 className="fontAL font-semibold capitalize text-xl md:text-2xl lg:text-3xl my-5 text-center md:text-left">
+                  {mode === "login" ? "Login" : "Sign Up"}
+                </h2>
+
+                {/* Candidate / Recruiter buttons */}
+                <div className="flex gap-3 mb-6 justify-center md:justify-start">
+                  {/* Candidates Button */}
+                  <button
+                    type="button"
+                    onClick={() => setUserType("candidates")}
+                    className={`relative w-32 h-9 overflow-hidden group rounded-lg active:scale-90 transition-all ease-out duration-700 flex items-center justify-center border
+                           ${
+                             userType === "candidates"
+                               ? "bg-[#72B76A] text-white border-[#72B76A]"
+                               : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
+                           }`}
+                  >
+                    <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
+                    <span className="relative text-sm font-semibold">
+                      Candidates
+                    </span>
+                  </button>
+
+                  {/* Recruiters Button */}
+                  <button
+                    type="button"
+                    onClick={() => setUserType("recruiter")}
+                    className={`relative w-32 h-9 overflow-hidden group rounded-lg active:scale-90 transition-all ease-out duration-700 flex items-center justify-center border
+                           ${
+                             userType === "recruiter"
+                               ? "bg-[#72B76A] text-white border-[#72B76A]"
+                               : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
+                           }`}
+                  >
+                    <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
+                    <span className="relative text-sm font-semibold">
+                      Recruiters
+                    </span>
+                  </button>
+                </div>
+
+                {/* Inputs */}
+                {mode === "signup" ? (
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      name="fullName"
+                      placeholder="Full Name"
+                      className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                      value={formData.fullName}
+                      onChange={handleChange}
+                    />
+                    <input
+                      type="text"
+                      name="mobile"
+                      placeholder="Mobile Number"
+                      className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                      value={formData.mobile}
+                      onChange={handleChange}
+                    />
+                    {/* Password */}
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        placeholder="Password"
+                        className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                        value={formData.password}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+
+                    {/* Confirm Password */}
+                    <div className="relative">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        name="confirmPassword"
+                        placeholder="Confirm Password"
+                        className="w-full p-2 rounded bg-white text-sm placeholder-slate-400  focus:bg-white focus:outline-none ring-1 ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      >
+                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+
+                    <input
+                      type="text"
+                      name="otp"
+                      placeholder="Enter OTP"
+                      className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none  ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                      value={formData.otp}
+                      onChange={handleChange}
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      name="username"
+                      placeholder="Username"
+                      className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 ring-gray-300 focus:bg-white focus:outline-none transition focus:ring-2 focus:ring-[#72B76A]"
+                      value={formData.username}
+                      onChange={handleChange}
+                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        placeholder="Password"
+                        className="w-full p-2 rounded bg-white text-sm focus:bg-white focus:outline-none placeholder-slate-400 ring-1 ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                        value={formData.password}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Action Button */}
+                <div className="flex justify-center">
+                  <button
+                    type="submit"
+                    className="relative mt-6 w-32 h-10 overflow-hidden group border border-[#72B76A] bg-[#72B76A] rounded-lg hover:bg-transparent text-white hover:text-[#72B76A] active:scale-90 transition-all ease-out duration-700 cursor-pointer flex items-center justify-center"
+                  >
+                    <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
+                    <span className="relative flex gap-2 items-center text-sm font-semibold">
+                      {mode === "login" ? "Login" : "Sign Up"}
+                    </span>
+                  </button>
+                </div>
+
+                {/* Toggle SignUp / Login */}
+                <p className="mt-5 text-center text-sm text-gray-600">
+                  {mode === "login" ? (
+                    <>
+                      Don’t have an account?{" "}
+                      <button
+                        type="button"
+                        className="text-[#72B76A] font-bold underline"
+                        onClick={() => setMode("signup")}
+                      >
+                        Sign up
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      Already have an account?{" "}
+                      <button
+                        type="button"
+                        className="text-[#72B76A] font-bold underline"
+                        onClick={() => setMode("login")}
+                      >
+                        Log in
+                      </button>
+                    </>
+                  )}
+                </p>
+              </form>
+            </div>
           </div>
-        </motion.div>
-      </section>
-
-      {/* <Footer /> */}
+        </div>
+      )}
     </>
   );
 };

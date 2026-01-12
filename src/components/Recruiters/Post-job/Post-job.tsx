@@ -35,13 +35,13 @@ const InputField = ({ id, label, placeholder, icon }: InputFieldProps) => (
     >
       {label}
     </label>
-    <span className="absolute left-3 top-8 text-[#00C9FF]">{icon}</span>
+    <span className="absolute left-3 top-8 text-[#72B76A]">{icon}</span>
     <input
       type="text"
       id={id}
       placeholder={placeholder}
-      className="w-full pl-10 p-2 rounded bg-blue-50 text-sm placeholder-slate-400 ring-1 ring-blue-100 
-      transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00c9ff]"
+      className="w-full pl-10 p-2 rounded bg-blue-50 text-sm placeholder-slate-400 ring-1 ring-green-100 
+      transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#72B76A]"
     />
   </div>
 );
@@ -244,8 +244,8 @@ const Postjob = () => {
                 id="description"
                 rows={4}
                 placeholder="Job description..."
-                className="w-full p-2 rounded  text-sm placeholder-slate-400 ring-1 ring-blue-100 
-                transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00c9ff]"
+                className="w-full p-2 rounded  text-sm placeholder-slate-400 ring-1 ring-green-100 
+                transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#72B76A]"
               />
             </div>
 
@@ -270,8 +270,8 @@ const Postjob = () => {
               {/* Publish Job */}
               <button
                 type="submit"
-                className="w-full sm:w-auto relative px-4 h-9 overflow-hidden group border border-[#00c9ff] bg-[#00c9ff] rounded-md 
-    hover:bg-transparent text-white hover:text-[#00c9ff] active:scale-90 transition-all ease-out duration-700 cursor-pointer text-sm"
+                className="w-full sm:w-auto relative px-4 h-9 overflow-hidden group border border-[#72B76A] bg-[#72B76A] rounded-md 
+    hover:bg-transparent text-white hover:text-[#72B76A] active:scale-90 transition-all ease-out duration-700 cursor-pointer text-sm"
               >
                 <span
                   className="absolute right-0 w-8 h-full top-0 transition-all duration-1000 transform 
@@ -285,8 +285,8 @@ const Postjob = () => {
               {/* Save Draft */}
               <button
                 type="button"
-                className="w-full sm:w-auto relative px-4 h-9 overflow-hidden group border border-[#00c9ff] bg-white text-[#00c9ff] rounded-md 
-    hover:bg-[#00c9ff] hover:text-white active:scale-90 transition-all ease-out duration-700 cursor-pointer text-sm"
+                className="w-full sm:w-auto relative px-4 h-9 overflow-hidden group border border-[#72B76A] bg-white text-[#72B76A] rounded-md 
+    hover:bg-[#72B76A] hover:text-white active:scale-90 transition-all ease-out duration-700 cursor-pointer text-sm"
               >
                 <span
                   className="absolute right-0 w-8 h-full top-0 transition-all duration-1000 transform 

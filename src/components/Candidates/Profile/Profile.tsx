@@ -27,7 +27,6 @@ import {
 } from "react-icons/fa";
 import { FiChevronRight } from "react-icons/fi";
 import { IoChevronForward } from "react-icons/io5";
-import Footer from "@/components/Footer/Footer";
 import Sidebar from "@/components/Common/Sidebar";
 // input fields for basic information
 const InputField = ({
@@ -48,14 +47,14 @@ const InputField = ({
     >
       {label}
     </label>
-    <span className="absolute left-3 top-10 text-[#00C9FF]">{icon}</span>
+    <span className="absolute left-3 top-10 text-[#72B76A]">{icon}</span>
     <input
       id={id}
       name={id}
       type="text"
       placeholder={placeholder}
-      className="w-full pl-10 p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 ring-blue-100 
-      transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00c9ff]"
+      className="w-full pl-10 p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 ring-green-100 
+      transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#72B76A]"
     />
   </div>
 );
@@ -78,14 +77,14 @@ const SocialInput = ({
     >
       {label}
     </label>
-    <span className="absolute left-3 top-10 text-[#00C9FF]">{icon}</span>
+    <span className="absolute left-3 top-10 text-[#72B76A]">{icon}</span>
     <input
       id={id}
       name={id}
       type="url"
       placeholder={placeholder}
-      className="w-full pl-10 p-2 rounded text-sm placeholder-slate-400 ring-1 ring-blue-100 
-      transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00c9ff]"
+      className="w-full pl-10 p-2 rounded text-sm placeholder-slate-400 ring-1 ring-green-100 
+      transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#72B76A]"
     />
   </div>
 );
@@ -168,233 +167,217 @@ const Profile = () => {
               <p className="text-gray-500">IT Contractor</p>
             </div>
           </div>
+          <form className="space-y-10">
+            {/* Basic Information Form */}
+            <div className="bg-white  p-6">
+              <h3 className="text-lg font-semibold mb-6 border-b pb-3">
+                Basic Information
+              </h3>
 
-          {/* Basic Information Form */}
-          <div className="bg-white  p-6">
-            <h3 className="text-lg font-semibold mb-6 border-b pb-3">
-              Basic Information
-            </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {/* Name */}
+                <InputField
+                  id="name"
+                  label="Your Name"
+                  placeholder="Devid Smith"
+                  icon={<FaUser />}
+                />
+                {/* Phone */}
+                <InputField
+                  id="phone"
+                  label="Phone"
+                  placeholder="(251) 1234-456-7890"
+                  icon={<FaPhone />}
+                />
+                {/* Email */}
+                <InputField
+                  id="email"
+                  label="Email Address"
+                  placeholder="Devid@example.com"
+                  icon={<FaEnvelope />}
+                />
+                {/* Website */}
+                <InputField
+                  id="website"
+                  label="Website"
+                  placeholder="https://devsmith.net"
+                  icon={<FaGlobe />}
+                />
+                {/* Qualification */}
+                <InputField
+                  id="qualification"
+                  label="Qualification"
+                  placeholder="BTech"
+                  icon={<FaGraduationCap />}
+                />
+                {/* Language */}
+                <InputField
+                  id="language"
+                  label="Language"
+                  placeholder="English, Spanish"
+                  icon={<FaLanguage />}
+                />
+                {/* Job Category */}
+                <InputField
+                  id="jobCategory"
+                  label="Job Category"
+                  placeholder="IT & Software"
+                  icon={<FaBriefcase />}
+                />
+                {/* Experience */}
+                <InputField
+                  id="experience"
+                  label="Experience"
+                  placeholder="05 Years"
+                  icon={<FaCalendarAlt />}
+                />
+                {/* Current Salary */}
+                <InputField
+                  id="currentSalary"
+                  label="Current Salary"
+                  placeholder="$65K"
+                  icon={<FaDollarSign />}
+                />
+                {/* Expected Salary */}
+                <InputField
+                  id="expectedSalary"
+                  label="Expected Salary"
+                  placeholder="$75K"
+                  icon={<FaDollarSign />}
+                />
+                {/* Age */}
+                <InputField
+                  id="age"
+                  label="Age"
+                  placeholder="35 Years"
+                  icon={<FaUser />}
+                />
+                {/* Country */}
+                <InputField
+                  id="country"
+                  label="Country"
+                  placeholder="USA"
+                  icon={<FaGlobe />}
+                />
+                {/* City */}
+                <InputField
+                  id="city"
+                  label="City"
+                  placeholder="Texas"
+                  icon={<FaCity />}
+                />
+                {/* Postcode */}
+                <InputField
+                  id="postcode"
+                  label="Postcode"
+                  placeholder="75462"
+                  icon={<FaMapPin />}
+                />
+                {/* Full Address */}
+                <InputField
+                  id="address"
+                  label="Full Address"
+                  placeholder="1363-1385 Sunset Blvd Angeles, CA 90026, USA"
+                  icon={<FaRegAddressCard />}
+                />
+                {/* Description */}
+                <div className="relative sm:col-span-2">
+                  <label
+                    htmlFor="description"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Description
+                  </label>
+                  <span className="absolute left-3 top-10 text-[#72B76A]">
+                    <FaInfoCircle />
+                  </span>
+                  <textarea
+                    id="description"
+                    name="description"
+                    placeholder="Write a short bio..."
+                    rows={4}
+                    className="w-full pl-10 p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 ring-green-100 
+                  transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#72B76A]"
+                  />
+                </div>
+              </div>
+            </div>
+            {/* social network  */}
+            <div className="bg-white  p-6 mt-8">
+              <h3 className="text-lg font-semibold mb-6 border-b pb-3">
+                Social Network
+              </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* Name */}
-              <InputField
-                id="name"
-                label="Your Name"
-                placeholder="Devid Smith"
-                icon={<FaUser />}
-              />
-              {/* Phone */}
-              <InputField
-                id="phone"
-                label="Phone"
-                placeholder="(251) 1234-456-7890"
-                icon={<FaPhone />}
-              />
-              {/* Email */}
-              <InputField
-                id="email"
-                label="Email Address"
-                placeholder="Devid@example.com"
-                icon={<FaEnvelope />}
-              />
-              {/* Website */}
-              <InputField
-                id="website"
-                label="Website"
-                placeholder="https://devsmith.net"
-                icon={<FaGlobe />}
-              />
-              {/* Qualification */}
-              <InputField
-                id="qualification"
-                label="Qualification"
-                placeholder="BTech"
-                icon={<FaGraduationCap />}
-              />
-              {/* Language */}
-              <InputField
-                id="language"
-                label="Language"
-                placeholder="English, Spanish"
-                icon={<FaLanguage />}
-              />
-              {/* Job Category */}
-              <InputField
-                id="jobCategory"
-                label="Job Category"
-                placeholder="IT & Software"
-                icon={<FaBriefcase />}
-              />
-              {/* Experience */}
-              <InputField
-                id="experience"
-                label="Experience"
-                placeholder="05 Years"
-                icon={<FaCalendarAlt />}
-              />
-              {/* Current Salary */}
-              <InputField
-                id="currentSalary"
-                label="Current Salary"
-                placeholder="$65K"
-                icon={<FaDollarSign />}
-              />
-              {/* Expected Salary */}
-              <InputField
-                id="expectedSalary"
-                label="Expected Salary"
-                placeholder="$75K"
-                icon={<FaDollarSign />}
-              />
-              {/* Age */}
-              <InputField
-                id="age"
-                label="Age"
-                placeholder="35 Years"
-                icon={<FaUser />}
-              />
-              {/* Country */}
-              <InputField
-                id="country"
-                label="Country"
-                placeholder="USA"
-                icon={<FaGlobe />}
-              />
-              {/* City */}
-              <InputField
-                id="city"
-                label="City"
-                placeholder="Texas"
-                icon={<FaCity />}
-              />
-              {/* Postcode */}
-              <InputField
-                id="postcode"
-                label="Postcode"
-                placeholder="75462"
-                icon={<FaMapPin />}
-              />
-              {/* Full Address */}
-              <InputField
-                id="address"
-                label="Full Address"
-                placeholder="1363-1385 Sunset Blvd Angeles, CA 90026, USA"
-                icon={<FaRegAddressCard />}
-              />
-              {/* Description */}
-              <div className="relative sm:col-span-2">
-                <label
-                  htmlFor="description"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Description
-                </label>
-                <span className="absolute left-3 top-10 text-[#00C9FF]">
-                  <FaInfoCircle />
-                </span>
-                <textarea
-                  id="description"
-                  name="description"
-                  placeholder="Write a short bio..."
-                  rows={4}
-                  className="w-full pl-10 p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 ring-blue-100 
-                  transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00c9ff]"
+              {/* Grid of Inputs */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <SocialInput
+                  id="facebook"
+                  label="Facebook"
+                  placeholder="https://www.facebook.com/"
+                  icon={<FaFacebookF />}
+                />
+                <SocialInput
+                  id="twitter"
+                  label="Twitter"
+                  placeholder="https://twitter.com/"
+                  icon={<FaTwitter />}
+                />
+                <SocialInput
+                  id="linkedin"
+                  label="LinkedIn"
+                  placeholder="https://in.linkedin.com/"
+                  icon={<FaLinkedinIn />}
+                />
+                <SocialInput
+                  id="whatsapp"
+                  label="WhatsApp"
+                  placeholder="https://www.whatsapp.com/"
+                  icon={<FaWhatsapp />}
+                />
+                <SocialInput
+                  id="instagram"
+                  label="Instagram"
+                  placeholder="https://www.instagram.com/"
+                  icon={<FaInstagram />}
+                />
+                <SocialInput
+                  id="pinterest"
+                  label="Pinterest"
+                  placeholder="https://in.pinterest.com/"
+                  icon={<FaPinterest />}
+                />
+                <SocialInput
+                  id="tumblr"
+                  label="Tumblr"
+                  placeholder="https://www.tumblr.com/"
+                  icon={<FaTumblr />}
+                />
+                <SocialInput
+                  id="youtube"
+                  label="YouTube"
+                  placeholder="https://www.youtube.com/"
+                  icon={<FaYoutube />}
                 />
               </div>
             </div>
-
             {/* Save Button */}
-            <div className="mt-6 flex justify-start">
+            <div className="flex justify-center pt-10">
               <button
                 type="submit"
-                className="relative px-6 h-10 overflow-hidden group border border-[#00c9ff] bg-[#00c9ff] rounded-lg 
-      hover:bg-transparent text-white hover:text-[#00c9ff] active:scale-90 transition-all ease-out duration-700 cursor-pointer"
+                className="relative px-10 h-12 overflow-hidden group border border-[#72B76A] bg-[#72B76A] rounded-xl 
+    hover:bg-transparent text-white hover:text-[#72B76A] active:scale-95 
+    transition-all ease-out duration-700 cursor-pointer"
               >
                 <span
-                  className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform 
-      translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"
+                  className="absolute right-0 w-12 h-full top-0 transition-all duration-1000 transform 
+      translate-x-14 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-28 ease"
                 ></span>
-                <span className="relative flex gap-2 items-center text-sm font-semibold">
+                <span className="relative flex gap-2 items-center text-base font-semibold">
                   Save Changes
                 </span>
               </button>
             </div>
-          </div>
-          {/* social network  */}
-          <div className="bg-white  p-6 mt-8">
-            <h3 className="text-lg font-semibold mb-6 border-b pb-3">
-              Social Network
-            </h3>
-
-            {/* Grid of Inputs */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <SocialInput
-                id="facebook"
-                label="Facebook"
-                placeholder="https://www.facebook.com/"
-                icon={<FaFacebookF />}
-              />
-              <SocialInput
-                id="twitter"
-                label="Twitter"
-                placeholder="https://twitter.com/"
-                icon={<FaTwitter />}
-              />
-              <SocialInput
-                id="linkedin"
-                label="LinkedIn"
-                placeholder="https://in.linkedin.com/"
-                icon={<FaLinkedinIn />}
-              />
-              <SocialInput
-                id="whatsapp"
-                label="WhatsApp"
-                placeholder="https://www.whatsapp.com/"
-                icon={<FaWhatsapp />}
-              />
-              <SocialInput
-                id="instagram"
-                label="Instagram"
-                placeholder="https://www.instagram.com/"
-                icon={<FaInstagram />}
-              />
-              <SocialInput
-                id="pinterest"
-                label="Pinterest"
-                placeholder="https://in.pinterest.com/"
-                icon={<FaPinterest />}
-              />
-              <SocialInput
-                id="tumblr"
-                label="Tumblr"
-                placeholder="https://www.tumblr.com/"
-                icon={<FaTumblr />}
-              />
-              <SocialInput
-                id="youtube"
-                label="YouTube"
-                placeholder="https://www.youtube.com/"
-                icon={<FaYoutube />}
-              />
-            </div>
-
-            {/* Save Button */}
-            <div className="mt-6">
-              <button
-                type="submit"
-                className="relative px-6 h-10 overflow-hidden group border border-[#00c9ff] bg-[#00c9ff] rounded-lg 
-      hover:bg-transparent text-white hover:text-[#00c9ff] active:scale-90 transition-all ease-out duration-700 cursor-pointer"
-              >
-                <span
-                  className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform 
-      translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"
-                ></span>
-                <span className="relative flex gap-2 items-center text-sm font-semibold">
-                  Save Changes
-                </span>
-              </button>
-            </div>
-          </div>
+          </form>
         </main>
       </div>
       {/* <Footer /> */}

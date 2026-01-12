@@ -56,10 +56,7 @@ const Header: React.FC<HeaderProps> = ({
   const isPages = pathname === "/pages" || pathname.startsWith("/pages/");
   const isBlogs = pathname === "/blogs" || pathname.startsWith("/blogs/");
   type MenuItem = { label: string; href: string };
-  // const pagesMenu: MenuItem[] = [
-  //   { label: "About Us", href: "/pages/aboutus" },
-  //   { label: "Pricing", href: "/pages/pricing" },
-  // ];
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
@@ -493,7 +490,7 @@ const Header: React.FC<HeaderProps> = ({
           onClick={() => setShowPopup(false)}
         >
           <div
-            className="popupContent bg-white shadow-xl max-w-[1000px] h-auto md:h-[50vh] sm:-[50vh] mx-5  rounded-lg relative z-10 "
+            className="popupContent bg-white shadow-xl max-w-[1000px] h-auto  sm:-[50vh] mx-5  rounded-lg relative z-10 "
             onClick={(e) => e.stopPropagation()}
           >
             {/* Desktop Close Button */}
@@ -555,7 +552,11 @@ const Header: React.FC<HeaderProps> = ({
 
               {/* Right Panel */}
               <form
-                className="col-span-2 sm:col-span-1 px-2 sm:px-6 lg:px-8 pt-0 pb-2  sm:py-8 order-1 sm:order-2"
+                className="col-span-2 sm:col-span-1
+             flex flex-col justify-center
+             px-4 sm:px-6 lg:px-8
+             py-6 sm:py-10
+             order-1 sm:order-2"
                 onSubmit={handleSubmit}
               >
                 {/* Mobile Top Row (Logo + Close Button) */}

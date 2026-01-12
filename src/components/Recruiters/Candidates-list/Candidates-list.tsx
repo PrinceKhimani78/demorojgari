@@ -3,13 +3,12 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Sidebar from "@/components/Common/Sidebar";
-import { FaEye, FaEnvelope, FaTrash, FaMapMarkerAlt } from "react-icons/fa";
+import { FaEye, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 // import Footer from "@/components/Footer/Footer";
 import { IoChevronForward } from "react-icons/io5";
-import { FiChevronRight } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
 import { FaSearch } from "react-icons/fa";
-
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 const candidates = [
   {
     id: 1,
@@ -215,7 +214,7 @@ const Candidateslist = () => {
             </div>
           </div>
           {/* Table Container */}
-          <div className="bg-white shadow rounded-lg p-5">
+          <div className="bg-white ">
             {/* Top Controls */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
               <div className="flex items-center gap-2">
@@ -293,14 +292,11 @@ const Candidateslist = () => {
                     </span>
                   </div>
                   <div className="flex gap-3 px-3 py-3 justify-center col-span-2">
-                    <button className="text-[#00C9FF] hover:text-blue-700">
+                    <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
                       <FaEye />
                     </button>
-                    <button className="text-[#00C9FF] hover:text-blue-700">
+                    <button className="p-2 hover:bg-blue-50 rounded-full text-[#42A5F5]">
                       <FaEnvelope />
-                    </button>
-                    <button className="text-[#00C9FF] hover:text-blue-700">
-                      <FaTrash />
                     </button>
                   </div>
                 </div>
@@ -338,14 +334,11 @@ const Candidateslist = () => {
                     </span>
                   </p>
                   <div className="flex gap-4 justify-start mt-2">
-                    <button className="text-[#00C9FF] hover:text-blue-700">
+                    <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
                       <FaEye />
                     </button>
-                    <button className="text-[#00C9FF] hover:text-blue-700">
+                    <button className="p-2 hover:bg-blue-50 rounded-full text-[#42A5F5]">
                       <FaEnvelope />
-                    </button>
-                    <button className="text-[#00C9FF] hover:text-blue-700">
-                      <FaTrash />
                     </button>
                   </div>
                 </div>
@@ -363,13 +356,13 @@ const Candidateslist = () => {
                 <button
                   onClick={handlePrev}
                   disabled={currentPage === 1}
-                  className={`px-3 py-1 border rounded cursor-pointer ${
+                  className={`px-3 py-1 border rounded flex items-center justify-center ${
                     currentPage === 1
                       ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                      : "bg-gray-100"
+                      : "bg-gray-100 hover:bg-gray-200"
                   }`}
                 >
-                  Previous
+                  <FiChevronLeft size={16} />
                 </button>
 
                 {[...Array(totalPages)].map((_, index) => (
@@ -389,13 +382,13 @@ const Candidateslist = () => {
                 <button
                   onClick={handleNext}
                   disabled={currentPage === totalPages}
-                  className={`px-3 py-1 border rounded cursor-pointer ${
+                  className={`px-3 py-1 border rounded flex items-center justify-center ${
                     currentPage === totalPages
                       ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                      : "bg-gray-100"
+                      : "bg-gray-100 hover:bg-gray-200"
                   }`}
                 >
-                  Next
+                  <FiChevronRight size={16} />
                 </button>
               </div>
             </div>

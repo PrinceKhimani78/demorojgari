@@ -12,8 +12,8 @@ import {
   FaUserCheck,
   FaBoxOpen,
   FaStar,
-  FaMapMarkerAlt,
   FaTrash,
+  FaMapMarkerAlt,
   FaEye,
 } from "react-icons/fa";
 import Sidebar from "@/components/Common/Sidebar";
@@ -27,7 +27,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import Footer from "@/components/Footer/Footer";
 import { FiChevronRight } from "react-icons/fi";
 import { IoChevronForward } from "react-icons/io5";
 const profileViewsData = [
@@ -296,7 +295,7 @@ const Dashboard = () => {
                 color: "bg-[#FFCC23]",
               },
               {
-                title: "Total Applications",
+                title: "Total Candidates",
                 value: 435,
                 icon: <FaFileAlt />,
                 color: "bg-[#72B76A]",
@@ -308,7 +307,7 @@ const Dashboard = () => {
                 color: "bg-[#AE70BB]",
               },
               {
-                title: "Notifications",
+                title: "New Applications",
                 value: 18,
                 icon: <FaBell />,
                 color: "bg-[#00C9FF]",
@@ -412,7 +411,7 @@ const Dashboard = () => {
               {applicants.map((applicant, i) => (
                 <div
                   key={i}
-                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 px-2 hover:bg-gray-50 rounded-lg transition gap-4"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4  hover:bg-gray-50 rounded-lg transition gap-4"
                 >
                   <div className=" flex items-center gap-4  ">
                     <Image
@@ -440,14 +439,14 @@ const Dashboard = () => {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex sm:flex-row flex-row sm:justify-end justify-center gap-3 text-[#42A5F5]">
-                    <button className="p-2 hover:bg-blue-50 rounded-full">
+                  <div className="flex sm:flex-row flex-row sm:justify-end justify-center gap-3 ">
+                    <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
                       <FaEye />
                     </button>
-                    <button className="p-2 hover:bg-blue-50 rounded-full">
+                    <button className="p-2 hover:bg-blue-50 rounded-full text-[#42A5F5]">
                       <FaEnvelope />
                     </button>
-                    <button className="p-2 hover:bg-blue-50 rounded-full">
+                    <button className="text-red-600 rounded-full p-2 hover:bg-[rgba(255,0,0,0.1)] transition-colors">
                       <FaTrash />
                     </button>
                   </div>

@@ -109,7 +109,12 @@ const Sidebar: React.FC<SidebarProps> = ({
             label: "Resume Alerts!",
             href: "/recruiters/resume-alerts",
           },
-          { icon: <FaTrash />, label: "Delete Profile", href: "#delete" },
+          {
+            icon: <FaTrash />,
+            label: "Delete Profile",
+            href: "#delete",
+            isDelete: true,
+          },
         ]
       : [
           { icon: <FaUsers />, label: "Manage Users", href: "/admin/users" },
@@ -191,6 +196,30 @@ const Sidebar: React.FC<SidebarProps> = ({
             {menuItems.map((item, i) => {
               const isActive = pathname === item.href;
 
+              const content = (
+                <div
+                  className={`relative flex items-center w-full gap-2 rounded-md cursor-pointer transition-colors
+        ${
+          isActive
+            ? "bg-[#72B76A] text-white"
+            : "text-[#72B76A] hover:bg-[#72B76A] hover:text-white"
+        }`}
+                  onClick={() => {
+                    if ((item as any).isDelete) {
+                      onDeleteClick?.();
+                    }
+                  }}
+                >
+                  <div className="flex items-center justify-center w-10 h-10 rounded-md text-lg">
+                    {item.icon}
+                  </div>
+
+                  {!collapsed && (
+                    <span className="text-sm font-medium">{item.label}</span>
+                  )}
+                </div>
+              );
+
               return (
                 <Tooltip
                   key={i}
@@ -199,23 +228,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                   color="#72B76A"
                   open={collapsed ? undefined : false}
                 >
-                  <Link
-                    href={item.href}
-                    className={`relative flex items-center w-full gap-2 rounded-md transition-colors
-            ${
-              isActive
-                ? "bg-[#72B76A] text-white"
-                : "text-[#72B76A] hover:bg-[#72B76A] hover:text-white"
-            }`}
-                  >
-                    <div className="flex items-center  justify-center w-10 h-10 rounded-md text-lg">
-                      {item.icon}
-                    </div>
-
-                    {!collapsed && (
-                      <span className="text-sm font-medium">{item.label}</span>
-                    )}
-                  </Link>
+                  {(item as any).isDelete ? (
+                    content
+                  ) : (
+                    <Link href={item.href}>{content}</Link>
+                  )}
                 </Tooltip>
               );
             })}

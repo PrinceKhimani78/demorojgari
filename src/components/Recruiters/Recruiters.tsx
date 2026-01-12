@@ -4,13 +4,34 @@ import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import { Typewriter } from "react-simple-typewriter";
 import "swiper/css";
+import Link from "next/link";
 import Testimonials from "../Testimonials/Testimonials";
 import CountUp from "react-countup";
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { RxCross2 } from "react-icons/rx";
+import { useRouter } from "next/navigation";
 type FeatureListProps = {
   items: string[];
   className?: string;
 };
+type AuthSetter = React.Dispatch<React.SetStateAction<boolean>>;
+
+interface HeaderProps {
+  isAuthenticated?: boolean;
+  setIsAuthenticated?: AuthSetter;
+}
+type Mode = "login" | "signup";
+
+interface FormState {
+  username: string;
+  password: string;
+  fullName: string;
+  mobile: string;
+  email: string;
+  confirmPassword: string;
+  otp: string;
+}
 const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg
     className={className}
@@ -42,7 +63,44 @@ const FeatureList: React.FC<FeatureListProps> = ({ items, className = "" }) => {
     </ul>
   );
 };
+
 const Recruiters = () => {
+  const router = useRouter();
+  const [img2, img2InView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [userType, setUserType] = useState<"candidates" | "recruiter">(
+    "candidates"
+  );
+  const [formData, setFormData] = useState<FormState>({
+    username: "",
+    password: "",
+    fullName: "",
+    mobile: "",
+    email: "",
+    confirmPassword: "",
+    otp: "",
+  });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Form Submitted:", formData);
+
+    localStorage.setItem("isAuthenticated", "true");
+
+    if (userType === "candidates") {
+      router.push("/candidates/dashboard");
+    } else {
+      router.push("/recruiters/dashboard");
+    }
+
+    setShowPopup(false);
+  };
   type Crumb = { name: string; href?: string };
   const crumbs: Crumb[] = [{ name: "Home", href: "/" }, { name: "Recruiters" }];
   const [jobTyperRef, jobTyperSeen] = useInView({
@@ -680,7 +738,361 @@ const Recruiters = () => {
           </span>
         </a>
       </div>
+      {/* call to action  */}
+      <div className="px-5 lg:px-[5%] 2xl:px-[15%] my-20 sm:my-10">
+        <div className="grid grid-cols-1 lg:grid-cols-[40%_55%] gap-10 items-center justify-between">
+          <div className="">
+            <div className="relative flex items-center justify-center">
+              <div className="animate_outer_rotate absolute bg-[#EFE2F1] rounded-[50px] h-80 w-80 animate-rotate-slow z-0"></div>
 
+              <div className="animate_inner_rotate absolute bg-white rounded-[50px] h-72 w-72 animate-rotate-reverse z-10"></div>
+              <Link href="/" className="inline-block">
+                <Image
+                  src="/images/girl.webp"
+                  alt="Girl-img"
+                  height={400}
+                  width={400}
+                  className="relative z-20 "
+                />
+              </Link>
+            </div>
+          </div>
+
+          <motion.div
+            ref={img2}
+            initial={{ opacity: 0, x: 100 }}
+            animate={img2InView ? { opacity: 1, x: 0 } : { opacity: 0, x: 100 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="mt-14"
+          >
+            <div className="relative inline-block lg:max-w-[600px] mr-5 lg:mr-0">
+              <div className="absolute top-8 left-5 w-full h-full rounded-xl bg-[#DFC6E4]"></div>
+
+              <div className="relative bg-white p-10 rounded-xl border border-[#DFC6E4]">
+                <p
+                  className="fontPOP text-xs sm:text-sm"
+                  style={{
+                    letterSpacing: "1px",
+                    lineHeight: 1.3,
+                  }}
+                >
+                  Lorem ipsum dolor.
+                </p>
+
+                <p
+                  className="fontAL font-semibold capitalize text-2xl md:text-3xl lg:text-4xl mt-5"
+                  style={{
+                    letterSpacing: "1px",
+                    wordSpacing: "2px",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  Ready To Start Your Career Journey?
+                </p>
+
+                <p className="text-sm mt-5">
+                  Create your candidate profile, upload your resume, and apply
+                  to top companies in just a few clicks. Take the first step
+                  towards your dream job today! Create your candidate profile,
+                  upload your resume, and apply to top companies in just a few
+                  clicks. Take the first step towards your dream job today!
+                  Resume, and apply to top companies in just a few clicks. Take
+                  the first step towards your dream job today!
+                </p>
+
+                <button
+                  onClick={() => {
+                    setShowPopup(true);
+                    setMode("login");
+                    setUserType("candidates");
+                  }}
+                  className="relative mt-8 px-4 h-9 overflow-hidden group border border-[#AE70BB] bg-[#AE70BB] rounded-lg hover:bg-transparent text-white hover:text-[#AE70BB] active:scale-90 transition-all ease-out duration-700 cursor-pointer"
+                >
+                  <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
+                  <span className="relative flex gap-2 items-center text-sm font-semibold">
+                    Candidates Login
+                  </span>
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+      {showPopup && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black/60 z-[10000]"
+          onClick={() => setShowPopup(false)}
+        >
+          <div
+            className="popupContent bg-white shadow-xl max-w-[1000px] h-auto  sm:-[50vh] mx-5  rounded-lg relative z-10 "
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Desktop Close Button */}
+            <button
+              onClick={() => setShowPopup(false)}
+              aria-label="Close sign in"
+              className="absolute top-4 right-4 z-20 text-3xl font-bold text-gray-400 hover:text-black hidden md:block"
+            >
+              <RxCross2 size={20} />
+            </button>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 items-center justify-center bg-[#FFFFF0] rounded-lg max-h-[80vh] ">
+              {/* Left Panel */}
+              <div className="relative w-full h-full rounded-b-lg sm:rounded-b-none sm:rounded-l-lg order-2 sm:order-1 border-r border-gray-300">
+                <div className="flex flex-col items-center justify-center text-gray-900 p-5 h-full">
+                  {/* Logo visible only on md+ */}
+                  <Image
+                    src="/images/logo.svg"
+                    alt="Rojgari Logo"
+                    width={220}
+                    height={180}
+                    className="mb-6 hidden md:block"
+                  />
+                  <div className="overflow-y-auto max-h-20 md:overflow-visible md:max-h-none ">
+                    <p className="font-bold uppercase mb-4 text-center">
+                      ➤ Please Note
+                    </p>
+                    <ul className="text-xs space-y-2">
+                      <li>
+                        - Lorem ipsum dolor sit amet consectetur adipisicing
+                        elit.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                      <li>
+                        - Lorem ipsum dolor sit amet consectetur adipisicing
+                        elit.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                      <li>
+                        - Distinctio, recusandae. Lorem ipsum dolor sit amet.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Panel */}
+              <form
+                className="col-span-2 sm:col-span-1
+                        flex flex-col justify-center
+                        px-4 sm:px-6 lg:px-8
+                        py-6 sm:py-10
+                        order-1 sm:order-2"
+                onSubmit={handleSubmit}
+              >
+                {/* Mobile Top Row (Logo + Close Button) */}
+                <div className="  flex items-start sm:items-center justify-between top-2 mb-6 md:hidden ">
+                  <Image
+                    src="/images/logo.svg"
+                    alt="Rojgari Logo"
+                    width={170}
+                    height={150}
+                    className="h-16 "
+                  />
+                  <button
+                    onClick={() => setShowPopup(false)}
+                    aria-label="Close sign in"
+                    className="text-3xl mt-2 font-bold text-gray-400 hover:text-black"
+                  >
+                    <RxCross2 size={20} />
+                  </button>
+                </div>
+
+                {/* Title */}
+                <h2 className="fontAL font-semibold capitalize text-xl md:text-2xl lg:text-3xl my-5 text-center md:text-left">
+                  {mode === "login" ? "Login" : "Sign Up"}
+                </h2>
+
+                {/* Candidate / Recruiter buttons */}
+                <div className="flex gap-3 mb-6 justify-center md:justify-start">
+                  {/* Candidates Button */}
+                  <button
+                    type="button"
+                    onClick={() => setUserType("candidates")}
+                    className={`relative w-32 h-9 overflow-hidden group rounded-lg active:scale-90 transition-all ease-out duration-700 flex items-center justify-center border
+                           ${
+                             userType === "candidates"
+                               ? "bg-[#72B76A] text-white border-[#72B76A]"
+                               : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
+                           }`}
+                  >
+                    <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
+                    <span className="relative text-sm font-semibold">
+                      Candidates
+                    </span>
+                  </button>
+
+                  {/* Recruiters Button */}
+                  <button
+                    type="button"
+                    onClick={() => setUserType("recruiter")}
+                    className={`relative w-32 h-9 overflow-hidden group rounded-lg active:scale-90 transition-all ease-out duration-700 flex items-center justify-center border
+                           ${
+                             userType === "recruiter"
+                               ? "bg-[#72B76A] text-white border-[#72B76A]"
+                               : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
+                           }`}
+                  >
+                    <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
+                    <span className="relative text-sm font-semibold">
+                      Recruiters
+                    </span>
+                  </button>
+                </div>
+
+                {/* Inputs */}
+                {mode === "signup" ? (
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      name="fullName"
+                      placeholder="Full Name"
+                      className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                      value={formData.fullName}
+                      onChange={handleChange}
+                    />
+                    <input
+                      type="text"
+                      name="mobile"
+                      placeholder="Mobile Number"
+                      className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                      value={formData.mobile}
+                      onChange={handleChange}
+                    />
+                    {/* Password */}
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        placeholder="Password"
+                        className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                        value={formData.password}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+
+                    {/* Confirm Password */}
+                    <div className="relative">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        name="confirmPassword"
+                        placeholder="Confirm Password"
+                        className="w-full p-2 rounded bg-white text-sm placeholder-slate-400  focus:bg-white focus:outline-none ring-1 ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      >
+                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+
+                    <input
+                      type="text"
+                      name="otp"
+                      placeholder="Enter OTP"
+                      className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none  ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                      value={formData.otp}
+                      onChange={handleChange}
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      name="username"
+                      placeholder="Username"
+                      className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 ring-gray-300 focus:bg-white focus:outline-none transition focus:ring-2 focus:ring-[#72B76A]"
+                      value={formData.username}
+                      onChange={handleChange}
+                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        placeholder="Password"
+                        className="w-full p-2 rounded bg-white text-sm focus:bg-white focus:outline-none placeholder-slate-400 ring-1 ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                        value={formData.password}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Action Button */}
+                <div className="flex justify-center">
+                  <button
+                    type="submit"
+                    className="relative mt-6 w-32 h-10 overflow-hidden group border border-[#72B76A] bg-[#72B76A] rounded-lg hover:bg-transparent text-white hover:text-[#72B76A] active:scale-90 transition-all ease-out duration-700 cursor-pointer flex items-center justify-center"
+                  >
+                    <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
+                    <span className="relative flex gap-2 items-center text-sm font-semibold">
+                      {mode === "login" ? "Login" : "Sign Up"}
+                    </span>
+                  </button>
+                </div>
+
+                {/* Toggle SignUp / Login */}
+                <p className="mt-5 text-center text-sm text-gray-600">
+                  {mode === "login" ? (
+                    <>
+                      Don’t have an account?{" "}
+                      <button
+                        type="button"
+                        className="text-[#72B76A] font-bold underline"
+                        onClick={() => setMode("signup")}
+                      >
+                        Sign up
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      Already have an account?{" "}
+                      <button
+                        type="button"
+                        className="text-[#72B76A] font-bold underline"
+                        onClick={() => setMode("login")}
+                      >
+                        Log in
+                      </button>
+                    </>
+                  )}
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Testimonials */}
       <div className="recruiter-testimonials">
         <Testimonials />

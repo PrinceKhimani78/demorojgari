@@ -216,10 +216,10 @@ const JobAlerts = () => {
 
                 {/* Actions */}
                 <div className="flex gap-4 mt-3 sm:mt-0 sm:ml-6 justify-center">
-                  <button className="text-[#00C9FF] cursor-pointer hover:text-[#0099cc] transition">
+                  <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
                     <FaEye />
                   </button>
-                  <button className="text-[#00C9FF] cursor-pointer hover:text-[#0099cc] transition">
+                  <button className="p-2  text-red-500 hover:bg-red-100">
                     <FaTrash />
                   </button>
                 </div>

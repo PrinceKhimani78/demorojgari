@@ -5,8 +5,8 @@ import { FaEye, FaTrash } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import { IoChevronForward } from "react-icons/io5";
-import { FiChevronRight } from "react-icons/fi";
 
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 const jobs = [
   {
     id: 1,
@@ -341,10 +341,10 @@ const Savedjobs = () => {
                   <span className="sm:hidden font-semibold text-gray-700">
                     Action:
                   </span>
-                  <button className="text-[#00C9FF] cursor-pointer hover:text-[#0099cc] transition">
+                  <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
                     <FaEye />
                   </button>
-                  <button className="text-[#00C9FF] cursor-pointer hover:text-[#0099cc] transition">
+                  <button className="text-red-600 rounded-full p-2 hover:bg-[rgba(255,0,0,0.1)] transition-colors">
                     <FaTrash />
                   </button>
                 </div>
@@ -363,13 +363,13 @@ const Savedjobs = () => {
               <button
                 onClick={handlePrev}
                 disabled={currentPage === 1}
-                className={`px-3 py-1 border rounded cursor-pointer ${
+                className={`px-3 py-1 border rounded flex items-center justify-center ${
                   currentPage === 1
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-gray-100"
+                    : "bg-gray-100 hover:bg-gray-200"
                 }`}
               >
-                Previous
+                <FiChevronLeft size={16} />
               </button>
 
               {[...Array(totalPages)].map((_, index) => (
@@ -389,13 +389,13 @@ const Savedjobs = () => {
               <button
                 onClick={handleNext}
                 disabled={currentPage === totalPages}
-                className={`px-3 py-1 border rounded cursor-pointer ${
+                className={`px-3 py-1 border rounded flex items-center justify-center ${
                   currentPage === totalPages
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-gray-100"
+                    : "bg-gray-100 hover:bg-gray-200"
                 }`}
               >
-                Next
+                <FiChevronRight size={16} />
               </button>
             </div>
           </div>

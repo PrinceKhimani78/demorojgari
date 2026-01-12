@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaLock } from "react-icons/fa";
-import Footer from "@/components/Footer/Footer";
+
 import { IoChevronForward } from "react-icons/io5";
 import { FiChevronRight } from "react-icons/fi";
 
@@ -33,7 +33,7 @@ const InputField = ({
         type={type}
         id={id}
         placeholder={placeholder}
-        className="w-full  pl-10 pr-3 py-2 rounded bg-white  text-sm placeholder-slate-400 ring-1 ring-blue-100 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00c9ff]"
+        className="w-full  pl-10 pr-3 py-2 rounded bg-white  text-sm placeholder-slate-400 ring-1 ring-green-100 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#72B76A]"
       />
     </div>
   </div>
@@ -130,14 +130,14 @@ const Changepassword = () => {
                   label="Old Password"
                   placeholder="Enter old password"
                   type="password"
-                  icon={<FaLock className="text-[#00C9FF]" />}
+                  icon={<FaLock className="text-[#72B76A]" />}
                 />
                 <InputField
                   id="new-password"
                   label="New Password"
                   placeholder="Enter new password"
                   type="password"
-                  icon={<FaLock className="text-[#00C9FF]" />}
+                  icon={<FaLock className="text-[#72B76A]" />}
                 />
               </div>
               <InputField
@@ -145,12 +145,12 @@ const Changepassword = () => {
                 label="Confirm New Password"
                 placeholder="Re-enter new password"
                 type="password"
-                icon={<FaLock className="text-[#00C9FF]" />}
+                icon={<FaLock className="text-[#72B76A]" />}
               />
 
               <button
                 type="submit"
-                className="relative px-4 h-9 overflow-hidden group border border-[#00c9ff] bg-[#00c9ff] rounded-lg from-gray-700/50 to-black hover:bg-transparent text-white hover:text-[#00c9ff] active:scale-90 transition-all ease-out duration-700 cursor-pointer"
+                className="relative px-4 h-9 overflow-hidden group border border-[#72B76A] bg-[#72B76A] rounded-lg from-gray-700/50 to-black hover:bg-transparent text-white hover:text-[#72B76A] active:scale-90 transition-all ease-out duration-700 cursor-pointer"
               >
                 <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
                 <span className="relative flex gap-2 items-center text-sm font-semibold">
