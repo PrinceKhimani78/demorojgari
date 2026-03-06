@@ -2,7 +2,14 @@
 import React from "react";
 import { FiMail } from "react-icons/fi";
 
-const EmailStep = ({ email, setEmail, loading, onNext }) => {
+interface EmailStepProps {
+  email: string;
+  setEmail: (val: string) => void;
+  loading: boolean;
+  onNext: () => void;
+}
+
+const EmailStep: React.FC<EmailStepProps> = ({ email, setEmail, loading, onNext }) => {
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">

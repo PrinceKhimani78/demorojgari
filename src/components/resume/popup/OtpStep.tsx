@@ -1,7 +1,14 @@
 "use client";
 import React from "react";
 
-const OtpStep = ({ otp, setOtp, onVerify, isVerified }) => {
+interface OtpStepProps {
+  otp: string;
+  setOtp: (val: string) => void;
+  onVerify: () => void;
+  isVerified: boolean;
+}
+
+const OtpStep: React.FC<OtpStepProps> = ({ otp, setOtp, onVerify, isVerified }) => {
   return (
     <div>
       <span className="text-gray-700 text-sm font-medium mb-2 block">
