@@ -126,7 +126,7 @@ const AboutUs = () => {
         alert(res.message || "Registration failed");
       }
     } else {
-      const res = await login(formData.username, formData.password);
+      const res = await login(formData.username, formData.password, userType === "candidates" ? "candidate" : "recruiter");
       if (res.success) {
         setShowPopup(false);
         if (userType === "candidates") {
