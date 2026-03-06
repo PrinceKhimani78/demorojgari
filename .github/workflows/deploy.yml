@@ -35,14 +35,15 @@ jobs:
         run: |
           rm -rf release
           mkdir -p release
-          # Copy standalone output
-          cp -r .next/standalone/* release/
-          # Copy static files (Next.js standalone doesn't include these by default)
+          # Copy standalone output (including hidden files like .next)
+          cp -a .next/standalone/. release/
+          # Copy static files
           mkdir -p release/public
           cp -r public/* release/public/ || true
           mkdir -p release/.next/static
           cp -r .next/static/* release/.next/static/
           cp start.sh release/
+          chmod +x release/start.sh
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
