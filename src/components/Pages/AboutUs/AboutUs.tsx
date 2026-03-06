@@ -9,6 +9,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { RxCross2 } from "react-icons/rx";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { sendOtp } from "@/services/otpService";
 type FeatureListProps = {
   items: string[];
   className?: string;
@@ -25,7 +27,6 @@ interface FormState {
   username: string;
   password: string;
   fullName: string;
-  mobile: string;
   email: string;
   confirmPassword: string;
   otp: string;
@@ -76,28 +77,67 @@ const AboutUs = () => {
     username: "",
     password: "",
     fullName: "",
-    mobile: "",
     email: "",
     confirmPassword: "",
     otp: "",
   });
+  const [otpLoading, setOtpLoading] = useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Form Submitted:", formData);
-
-    localStorage.setItem("isAuthenticated", "true");
-
-    if (userType === "candidates") {
-      router.push("/candidates/dashboard");
-    } else {
-      router.push("/recruiters/dashboard");
+  const handleSendOtp = async () => {
+    if (!formData.email) {
+      alert("Please enter your email address first.");
+      return;
     }
+    setOtpLoading(true);
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+    const res = await sendOtp(backendUrl, formData.email);
+    setOtpLoading(false);
 
-    setShowPopup(false);
+    if (res.success) {
+      alert("OTP sent to " + formData.email);
+    } else {
+      alert(res.message || "Failed to send OTP. Please try again.");
+    }
+  };
+
+  const { login, register } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (mode === "signup") {
+      if (formData.password !== formData.confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+      const res = await register({
+        email: formData.email,
+        password: formData.password,
+        fullName: formData.fullName,
+        otp: formData.otp,
+      });
+      if (res.success) {
+        alert("Registration successful! You can now log in.");
+        setMode("login");
+      } else {
+        alert(res.message || "Registration failed");
+      }
+    } else {
+      const res = await login(formData.username, formData.password);
+      if (res.success) {
+        setShowPopup(false);
+        if (userType === "candidates") {
+          router.push("/candidates/dashboard");
+        } else {
+          router.push("/recruiters/dashboard");
+        }
+      } else {
+        alert(res.message || "Login failed");
+      }
+    }
   };
   type Crumb = { name: string; href?: string };
   const crumbs: Crumb[] = [{ name: "Home", href: "/" }, { name: "Aboutus" }];
@@ -256,14 +296,12 @@ const AboutUs = () => {
             return (
               <div
                 key={c.no}
-                className={`group relative rounded-2xl ${c.bg} p-6 ${c.glow} ${
-                  c.offset
-                }
+                className={`group relative rounded-2xl ${c.bg} p-6 ${c.glow} ${c.offset
+                  }
                                   transition-all duration-300 ease-out will-change-transform
                                   hover:-translate-y-1 hover:shadow-xl
-                                  ${
-                                    isLeftCol ? "md:hover:-translate-x-2" : ""
-                                  }`}
+                                  ${isLeftCol ? "md:hover:-translate-x-2" : ""
+                  }`}
               >
                 {/* floating white badge */}
                 <div
@@ -522,11 +560,10 @@ const AboutUs = () => {
                     type="button"
                     onClick={() => setUserType("candidates")}
                     className={`relative w-32 h-9 overflow-hidden group rounded-lg active:scale-90 transition-all ease-out duration-700 flex items-center justify-center border
-                           ${
-                             userType === "candidates"
-                               ? "bg-[#72B76A] text-white border-[#72B76A]"
-                               : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
-                           }`}
+                           ${userType === "candidates"
+                        ? "bg-[#72B76A] text-white border-[#72B76A]"
+                        : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
+                      }`}
                   >
                     <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
                     <span className="relative text-sm font-semibold">
@@ -539,11 +576,10 @@ const AboutUs = () => {
                     type="button"
                     onClick={() => setUserType("recruiter")}
                     className={`relative w-32 h-9 overflow-hidden group rounded-lg active:scale-90 transition-all ease-out duration-700 flex items-center justify-center border
-                           ${
-                             userType === "recruiter"
-                               ? "bg-[#72B76A] text-white border-[#72B76A]"
-                               : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
-                           }`}
+                           ${userType === "recruiter"
+                        ? "bg-[#72B76A] text-white border-[#72B76A]"
+                        : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
+                      }`}
                   >
                     <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
                     <span className="relative text-sm font-semibold">
@@ -563,14 +599,25 @@ const AboutUs = () => {
                       value={formData.fullName}
                       onChange={handleChange}
                     />
-                    <input
-                      type="text"
-                      name="mobile"
-                      placeholder="Mobile Number"
-                      className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
-                      value={formData.mobile}
-                      onChange={handleChange}
-                    />
+                    <div className="relative">
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Email Address"
+                        className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A] pr-20"
+                        value={formData.email}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSendOtp}
+                        disabled={otpLoading}
+                        className={`absolute right-1 top-1/2 -translate-y-1/2 px-2 py-1 text-[10px] font-bold text-white rounded transition ${otpLoading ? "bg-gray-400" : "bg-[#72B76A] hover:bg-[#5da356]"
+                          }`}
+                      >
+                        {otpLoading ? "Sending..." : "Send OTP"}
+                      </button>
+                    </div>
                     {/* Password */}
                     <div className="relative">
                       <input

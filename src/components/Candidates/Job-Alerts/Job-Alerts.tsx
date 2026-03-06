@@ -4,6 +4,7 @@ import { FaEye, FaTrash } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import Sidebar from "@/components/Common/Sidebar";
+import CandidateProfileHeader from "@/components/Candidates/Common/CandidateProfileHeader";
 import Footer from "@/components/Footer/Footer";
 import { IoChevronForward } from "react-icons/io5";
 import { FiChevronRight } from "react-icons/fi";
@@ -126,21 +127,8 @@ const JobAlerts = () => {
           </div>
 
           {/* Profile */}
-          <div className="flex items-center gap-4">
-            <Image
-              src="/images/profile1.webp"
-              alt="Profile"
-              width={80}
-              height={80}
-              className="rounded-full border"
-            />
-            <div>
-              <h2 className="text-base sm:text-lg font-bold">
-                Randall Henderson
-              </h2>
-              <p className="text-gray-500">IT Contractor</p>
-            </div>
-          </div>
+          <CandidateProfileHeader />
+
 
           {/* Sorting */}
           <div className="flex flex-col sm:flex-row justify-between gap-3">
@@ -184,9 +172,8 @@ const JobAlerts = () => {
                             setSortBy(opt);
                             setSortOpen(false);
                           }}
-                          className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-50 ${
-                            sortBy === opt ? "bg-slate-50 font-semibold" : ""
-                          }`}
+                          className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-50 ${sortBy === opt ? "bg-slate-50 font-semibold" : ""
+                            }`}
                         >
                           {opt}
                         </button>
@@ -203,9 +190,8 @@ const JobAlerts = () => {
             {jobs.map((job, i) => (
               <div
                 key={job.id}
-                className={`flex flex-col sm:flex-row sm:items-center justify-between border border-gray-400 rounded-lg p-4 shadow-sm ${
-                  i % 2 === 0 ? "bg-white" : "bg-gray-50"
-                }`}
+                className={`flex flex-col sm:flex-row sm:items-center justify-between border border-gray-400 rounded-lg p-4 shadow-sm ${i % 2 === 0 ? "bg-white" : "bg-gray-50"
+                  }`}
               >
                 {/* Job Info */}
                 <div className="flex-1 text-center sm:text-left">

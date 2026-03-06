@@ -29,6 +29,7 @@ import {
 } from "recharts";
 import { FiChevronRight } from "react-icons/fi";
 import { IoChevronForward } from "react-icons/io5";
+import RecruiterProfileHeader from "@/components/Recruiters/Common/RecruiterProfileHeader";
 const profileViewsData = [
   { month: "January", viewers: 200 },
   { month: "February", viewers: 250 },
@@ -104,7 +105,7 @@ const applicants = [
     image: "/images/profile1.webp",
   },
   {
-    name: "Randall Henderson",
+    name: "Alexander Black",
     role: "IT Contractor",
     location: "New York",
     rate: "$90 / Week",
@@ -269,21 +270,8 @@ const Dashboard = () => {
           </div>
 
           {/* Profile */}
-          <div className="flex items-center gap-4">
-            <Image
-              src="/images/profile1.webp"
-              alt="Profile"
-              width={80}
-              height={80}
-              className="rounded-full border"
-            />
-            <div>
-              <h2 className="text-base sm:text-lg font-bold">
-                Randall Henderson
-              </h2>
-              <p className="text-gray-500">IT Contractor</p>
-            </div>
-          </div>
+          <RecruiterProfileHeader />
+
 
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -9,6 +9,7 @@ import { IoChevronForward } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { FaSearch } from "react-icons/fa";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import RecruiterProfileHeader from "@/components/Recruiters/Common/RecruiterProfileHeader";
 const candidates = [
   {
     id: 1,
@@ -39,7 +40,7 @@ const candidates = [
   },
   {
     id: 4,
-    name: "Randall Henderson",
+    name: "Alexander Black",
     location: "New York",
     role: "IT Contractor",
     date: "18/06/2023 at 10:35 am",
@@ -198,21 +199,8 @@ const Candidateslist = () => {
           </div>
 
           {/* Profile */}
-          <div className="flex items-center gap-4">
-            <Image
-              src="/images/profile1.webp"
-              alt="Profile"
-              width={80}
-              height={80}
-              className="rounded-full border"
-            />
-            <div>
-              <h2 className="text-base sm:text-lg font-bold">
-                Randall Henderson
-              </h2>
-              <p className="text-gray-500">IT Contractor</p>
-            </div>
-          </div>
+          <RecruiterProfileHeader />
+
           {/* Table Container */}
           <div className="bg-white ">
             {/* Top Controls */}
@@ -259,9 +247,8 @@ const Candidateslist = () => {
             {currentCandidates.map((c, i) => (
               <div
                 key={c.id}
-                className={`border-b ${
-                  i % 2 === 0 ? "bg-white" : "bg-gray-50"
-                }`}
+                className={`border-b ${i % 2 === 0 ? "bg-white" : "bg-gray-50"
+                  }`}
               >
                 {/* Desktop Grid */}
                 <div className="hidden sm:grid grid-cols-7 items-center text-sm">
@@ -356,11 +343,10 @@ const Candidateslist = () => {
                 <button
                   onClick={handlePrev}
                   disabled={currentPage === 1}
-                  className={`px-3 py-1 border rounded flex items-center justify-center ${
-                    currentPage === 1
+                  className={`px-3 py-1 border rounded flex items-center justify-center ${currentPage === 1
                       ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                       : "bg-gray-100 hover:bg-gray-200"
-                  }`}
+                    }`}
                 >
                   <FiChevronLeft size={16} />
                 </button>
@@ -369,11 +355,10 @@ const Candidateslist = () => {
                   <button
                     key={index}
                     onClick={() => setCurrentPage(index + 1)}
-                    className={`px-3 py-1 border rounded cursor-pointer ${
-                      currentPage === index + 1
+                    className={`px-3 py-1 border rounded cursor-pointer ${currentPage === index + 1
                         ? "bg-[#023052] text-white"
                         : "bg-gray-100 text-gray-700"
-                    }`}
+                      }`}
                   >
                     {index + 1}
                   </button>
@@ -382,11 +367,10 @@ const Candidateslist = () => {
                 <button
                   onClick={handleNext}
                   disabled={currentPage === totalPages}
-                  className={`px-3 py-1 border rounded flex items-center justify-center ${
-                    currentPage === totalPages
+                  className={`px-3 py-1 border rounded flex items-center justify-center ${currentPage === totalPages
                       ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                       : "bg-gray-100 hover:bg-gray-200"
-                  }`}
+                    }`}
                 >
                   <FiChevronRight size={16} />
                 </button>

@@ -15,21 +15,16 @@ import "../Home/Home.css";
 import "./Header.css";
 import Image from "next/image";
 import { RxCross2 } from "react-icons/rx";
-
-type AuthSetter = React.Dispatch<React.SetStateAction<boolean>>;
-
-interface HeaderProps {
-  isAuthenticated?: boolean;
-  setIsAuthenticated?: AuthSetter;
-}
+import { useAuth } from "@/context/AuthContext";
+import { sendOtp } from "@/services/otpService";
 
 type Mode = "login" | "signup";
+
 
 interface FormState {
   username: string;
   password: string;
   fullName: string;
-  mobile: string;
   email: string;
   confirmPassword: string;
   otp: string;
@@ -37,10 +32,7 @@ interface FormState {
 
 // type JobsMenuItem = { label: string; href: string };
 
-const Header: React.FC<HeaderProps> = ({
-  isAuthenticated,
-  setIsAuthenticated,
-}) => {
+const Header: React.FC = () => {
   const pathnameRaw = usePathname() || "/";
   const pathname = pathnameRaw.toLowerCase();
   const router = useRouter();
@@ -65,11 +57,11 @@ const Header: React.FC<HeaderProps> = ({
     username: "",
     password: "",
     fullName: "",
-    mobile: "",
     email: "",
     confirmPassword: "",
     otp: "",
   });
+  const [otpLoading, setOtpLoading] = useState(false);
   useEffect(() => {
     if (!showPopup) return;
     const { body } = document;
@@ -94,25 +86,70 @@ const Header: React.FC<HeaderProps> = ({
   const [userType, setUserType] = useState<"candidates" | "recruiter">(
     "candidates"
   );
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Form Submitted:", formData);
-
-    localStorage.setItem("isAuthenticated", "true");
-
-    if (userType === "candidates") {
-      router.push("/candidates/dashboard");
-    } else {
-      router.push("/recruiters/dashboard");
+  const handleSendOtp = async () => {
+    if (!formData.email) {
+      alert("Please enter your email address first.");
+      return;
     }
+    setOtpLoading(true);
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+    console.log("DEBUG: backendUrl from env:", backendUrl);
+    const res = await sendOtp(backendUrl, formData.email);
+    setOtpLoading(false);
 
-    setShowPopup(false);
-    setIsChanged(false);
-    setMenuOpen(false);
+    if (res.success) {
+      alert("OTP sent to " + formData.email);
+    } else {
+      alert(res.message || "Failed to send OTP. Please try again.");
+    }
   };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (mode === "signup") {
+      if (formData.password !== formData.confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+      const res = await register({
+        email: formData.email,
+        password: formData.password,
+        fullName: formData.fullName,
+        otp: formData.otp,
+      });
+      if (res.success) {
+        setShowPopup(false);
+        setMenuOpen(false);
+        if (userType === "candidates") {
+          router.push("/candidates/dashboard");
+        } else {
+          router.push("/recruiters/dashboard");
+        }
+      } else {
+        alert(res.message || "Registration failed");
+      }
+    } else {
+      const res = await login(formData.username, formData.password);
+      if (res.success) {
+        setShowPopup(false);
+        setMenuOpen(false);
+        if (userType === "candidates") {
+          router.push("/candidates/dashboard");
+        } else {
+          router.push("/recruiters/dashboard");
+        }
+      } else {
+        alert(res.message || "Login failed");
+      }
+    }
+  };
+  const { isAuthenticated, user, logout, login, register } = useAuth();
+
   const handleLogout = () => {
-    // setIsAuthenticated(false);
-    localStorage.removeItem("isAuthenticated");
+    logout();
+    router.push("/");
+    setMenuOpen(false);
   };
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -171,9 +208,8 @@ const Header: React.FC<HeaderProps> = ({
 
           {/* Toggle Menu (hamburger / X) */}
           <div
-            className={`flex justify-end cursor-pointer ${
-              menuOpen ? "change" : ""
-            }`}
+            className={`flex justify-end cursor-pointer ${menuOpen ? "change" : ""
+              }`}
             onClick={handleToggleChange}
           >
             <div className="mx-3">
@@ -201,15 +237,13 @@ const Header: React.FC<HeaderProps> = ({
             <Link
               href="/"
               onClick={() => setMenuOpen(false)}
-              className={`relative inline-block group font-semibold ${
-                isHome ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
-              }`}
+              className={`relative inline-block group font-semibold ${isHome ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
+                }`}
             >
               Home
               <span
-                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                  isHome ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${isHome ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
           </div>
@@ -218,15 +252,13 @@ const Header: React.FC<HeaderProps> = ({
             <Link
               href="/jobs"
               onClick={() => setMenuOpen(false)}
-              className={`relative inline-block group font-semibold ${
-                isJobs ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
-              }`}
+              className={`relative inline-block group font-semibold ${isJobs ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
+                }`}
             >
               Jobs
               <span
-                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                  isJobs ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${isJobs ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
           </div>
@@ -235,19 +267,17 @@ const Header: React.FC<HeaderProps> = ({
             <Link
               href="/candidates"
               onClick={() => setMenuOpen(false)}
-              className={`relative inline-block group font-semibold ${
-                isCandidates
-                  ? "text-[#72B76A]"
-                  : "text-black hover:text-[#72B76A]"
-              }`}
+              className={`relative inline-block group font-semibold ${isCandidates
+                ? "text-[#72B76A]"
+                : "text-black hover:text-[#72B76A]"
+                }`}
             >
               Candidates
               <span
-                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                  isCandidates
-                    ? "w-full text-[#72B76A]"
-                    : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${isCandidates
+                  ? "w-full text-[#72B76A]"
+                  : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
           </div>
@@ -256,19 +286,17 @@ const Header: React.FC<HeaderProps> = ({
             <Link
               href="/recruiters"
               onClick={() => setMenuOpen(false)}
-              className={`relative inline-block group font-semibold ${
-                isRecruiters
-                  ? "text-[#72B76A]"
-                  : "text-black hover:text-[#72B76A]"
-              }`}
+              className={`relative inline-block group font-semibold ${isRecruiters
+                ? "text-[#72B76A]"
+                : "text-black hover:text-[#72B76A]"
+                }`}
             >
               Recruiters
               <span
-                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                  isRecruiters
-                    ? "w-full text-[#72B76A]"
-                    : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${isRecruiters
+                  ? "w-full text-[#72B76A]"
+                  : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
           </div>
@@ -278,19 +306,17 @@ const Header: React.FC<HeaderProps> = ({
             <Link
               href="/pages/aboutus"
               onClick={() => setMenuOpen(false)}
-              className={`relative inline-block group font-semibold ${
-                pathname === "/pages/aboutus"
-                  ? "text-[#72B76A]"
-                  : "text-black hover:text-[#72B76A]"
-              }`}
+              className={`relative inline-block group font-semibold ${pathname === "/pages/aboutus"
+                ? "text-[#72B76A]"
+                : "text-black hover:text-[#72B76A]"
+                }`}
             >
               About&nbsp;Us
               <span
-                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                  pathname === "/pages/aboutus"
-                    ? "w-full text-[#72B76A]"
-                    : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${pathname === "/pages/aboutus"
+                  ? "w-full text-[#72B76A]"
+                  : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
           </div>
@@ -299,15 +325,13 @@ const Header: React.FC<HeaderProps> = ({
             <Link
               href="/blogs"
               onClick={() => setMenuOpen(false)}
-              className={`relative inline-block group font-semibold ${
-                isBlogs ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
-              }`}
+              className={`relative inline-block group font-semibold ${isBlogs ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
+                }`}
             >
               Blogs
               <span
-                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                  isBlogs ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${isBlogs ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
           </div>
@@ -323,20 +347,40 @@ const Header: React.FC<HeaderProps> = ({
             </Link>
           </div>
 
+          {/* Auth button (mobile) */}
           <div>
-            <button
-              onClick={() => {
-                setShowPopup(true);
-                setMenuOpen(false);
-              }}
-              className="relative w-32 h-9 overflow-hidden group border border-[#72B76A] bg-[#72B76A] rounded-lg hover:bg-transparent text-white hover:text-[#72B76A] active:scale-90 transition-all ease-out duration-700"
-            >
-              <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease" />
-              <span className="relative flex gap-2 justify-center items-center text-sm font-semibold">
-                <FaArrowRightToBracket />
-                Sign In
-              </span>
-            </button>
+            {isAuthenticated ? (
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-[#72B76A] flex items-center justify-center text-white font-bold text-sm">
+                    {user?.full_name?.[0]?.toUpperCase() ?? "U"}
+                  </div>
+                  <span className="text-sm font-medium text-slate-700 truncate max-w-[120px]">
+                    {user?.full_name}
+                  </span>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="relative w-32 h-9 overflow-hidden group border border-red-400 bg-transparent rounded-lg hover:bg-red-400 text-red-400 hover:text-white active:scale-90 transition-all ease-out duration-700 flex items-center justify-center text-sm font-semibold"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  setShowPopup(true);
+                  setMenuOpen(false);
+                }}
+                className="relative w-32 h-9 overflow-hidden group border border-[#72B76A] bg-[#72B76A] rounded-lg hover:bg-transparent text-white hover:text-[#72B76A] active:scale-90 transition-all ease-out duration-700"
+              >
+                <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease" />
+                <span className="relative flex gap-2 justify-center items-center text-sm font-semibold">
+                  <FaArrowRightToBracket />
+                  Sign In
+                </span>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -361,100 +405,88 @@ const Header: React.FC<HeaderProps> = ({
           <div className="fontPOP flex justify-center gap-5 text-sm">
             <Link
               href="/"
-              className={`relative inline-block group font-semibold ${
-                isHome ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
-              }`}
+              className={`relative inline-block group font-semibold ${isHome ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
+                }`}
             >
               Home
               <span
-                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                  isHome ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${isHome ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
 
             <div className="relative group text-center">
               <Link
                 href="/jobs"
-                className={`relative inline-block font-semibold ${
-                  isJobs ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
-                }`}
+                className={`relative inline-block font-semibold ${isJobs ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
+                  }`}
               >
                 Jobs
                 <span
-                  className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                    isJobs ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
-                  }`}
+                  className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${isJobs ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
+                    }`}
                 />
               </Link>
             </div>
 
             <Link
               href="/candidates"
-              className={`relative inline-block group font-semibold ${
-                isCandidates
-                  ? "text-[#72B76A]"
-                  : "text-black hover:text-[#72B76A]"
-              }`}
+              className={`relative inline-block group font-semibold ${isCandidates
+                ? "text-[#72B76A]"
+                : "text-black hover:text-[#72B76A]"
+                }`}
             >
               Candidates
               <span
-                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                  isCandidates
-                    ? "w-full text-[#72B76A]"
-                    : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${isCandidates
+                  ? "w-full text-[#72B76A]"
+                  : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
 
             <Link
               href="/recruiters"
-              className={`relative inline-block group font-semibold ${
-                isRecruiters
-                  ? "text-[#72B76A]"
-                  : "text-black hover:text-[#72B76A]"
-              }`}
+              className={`relative inline-block group font-semibold ${isRecruiters
+                ? "text-[#72B76A]"
+                : "text-black hover:text-[#72B76A]"
+                }`}
             >
               Recruiters
               <span
-                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                  isRecruiters
-                    ? "w-full text-[#72B76A]"
-                    : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${isRecruiters
+                  ? "w-full text-[#72B76A]"
+                  : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
 
             {/* Pages /aboutus*/}
             <Link
               href="/pages/aboutus"
-              className={`relative inline-block group font-semibold ${
-                pathname === "/pages/aboutus"
-                  ? "text-[#72B76A]"
-                  : "text-black hover:text-[#72B76A]"
-              }`}
+              className={`relative inline-block group font-semibold ${pathname === "/pages/aboutus"
+                ? "text-[#72B76A]"
+                : "text-black hover:text-[#72B76A]"
+                }`}
             >
               About&nbsp;Us
               <span
-                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                  pathname === "/pages/aboutus"
-                    ? "w-full text-[#72B76A]"
-                    : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${pathname === "/pages/aboutus"
+                  ? "w-full text-[#72B76A]"
+                  : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
 
             <Link
               href="/blogs"
-              className={`relative inline-block group font-semibold ${
-                isBlogs ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
-              }`}
+              className={`relative inline-block group font-semibold ${isBlogs ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"
+                }`}
             >
               Blogs
               <span
-                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${
-                  isBlogs ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${isBlogs ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
           </div>
@@ -469,16 +501,40 @@ const Header: React.FC<HeaderProps> = ({
               <span className="relative text-sm font-semibold">Contact Us</span>
             </Link>
 
-            <button
-              onClick={() => setShowPopup(true)}
-              className="relative px-4 h-9 overflow-hidden group border border-[#72B76A] bg-[#72B76A] rounded-lg hover:bg-transparent text-white hover:text-[#72B76A] active:scale-90 transition-all ease-out duration-700"
-            >
-              <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease" />
-              <span className="relative flex gap-2 items-center text-sm font-semibold">
-                <FaArrowRightToBracket />
-                Sign In
-              </span>
-            </button>
+            {isAuthenticated ? (
+              <div className="flex items-center gap-3">
+                {/* User avatar + name */}
+                <Link
+                  href={user?.role === "recruiter" ? "/recruiters/dashboard" : "/candidates/dashboard"}
+                  className="flex items-center gap-2 group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-[#72B76A] flex items-center justify-center text-white font-bold text-sm">
+                    {user?.full_name?.[0]?.toUpperCase() ?? "U"}
+                  </div>
+                  <span className="text-sm font-medium text-slate-700 group-hover:text-[#72B76A] transition truncate max-w-[120px]">
+                    {user?.full_name}
+                  </span>
+                </Link>
+                {/* Logout */}
+                <button
+                  onClick={handleLogout}
+                  className="relative px-4 h-9 overflow-hidden group border border-red-400 bg-transparent rounded-lg hover:bg-red-400 text-red-400 hover:text-white active:scale-90 transition-all ease-out duration-700"
+                >
+                  <span className="relative text-sm font-semibold">Logout</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowPopup(true)}
+                className="relative px-4 h-9 overflow-hidden group border border-[#72B76A] bg-[#72B76A] rounded-lg hover:bg-transparent text-white hover:text-[#72B76A] active:scale-90 transition-all ease-out duration-700"
+              >
+                <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease" />
+                <span className="relative flex gap-2 items-center text-sm font-semibold">
+                  <FaArrowRightToBracket />
+                  Sign In
+                </span>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -589,11 +645,10 @@ const Header: React.FC<HeaderProps> = ({
                     type="button"
                     onClick={() => setUserType("candidates")}
                     className={`relative w-32 h-9 overflow-hidden group rounded-lg active:scale-90 transition-all ease-out duration-700 flex items-center justify-center border
-                ${
-                  userType === "candidates"
-                    ? "bg-[#72B76A] text-white border-[#72B76A]"
-                    : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
-                }`}
+                ${userType === "candidates"
+                        ? "bg-[#72B76A] text-white border-[#72B76A]"
+                        : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
+                      }`}
                   >
                     <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
                     <span className="relative text-sm font-semibold">
@@ -606,11 +661,10 @@ const Header: React.FC<HeaderProps> = ({
                     type="button"
                     onClick={() => setUserType("recruiter")}
                     className={`relative w-32 h-9 overflow-hidden group rounded-lg active:scale-90 transition-all ease-out duration-700 flex items-center justify-center border
-                ${
-                  userType === "recruiter"
-                    ? "bg-[#72B76A] text-white border-[#72B76A]"
-                    : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
-                }`}
+                ${userType === "recruiter"
+                        ? "bg-[#72B76A] text-white border-[#72B76A]"
+                        : "bg-transparent text-[#72B76A] border-[#72B76A] hover:bg-[#72B76A] hover:text-white"
+                      }`}
                   >
                     <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
                     <span className="relative text-sm font-semibold">
@@ -630,14 +684,25 @@ const Header: React.FC<HeaderProps> = ({
                       value={formData.fullName}
                       onChange={handleChange}
                     />
-                    <input
-                      type="text"
-                      name="mobile"
-                      placeholder="Mobile Number"
-                      className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
-                      value={formData.mobile}
-                      onChange={handleChange}
-                    />
+                    <div className="relative">
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Email Address"
+                        className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A] pr-20"
+                        value={formData.email}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSendOtp}
+                        disabled={otpLoading}
+                        className={`absolute right-1 top-1/2 -translate-y-1/2 px-2 py-1 text-[10px] font-bold text-white rounded transition ${otpLoading ? "bg-gray-400" : "bg-[#72B76A] hover:bg-[#5da356]"
+                          }`}
+                      >
+                        {otpLoading ? "Sending..." : "Send OTP"}
+                      </button>
+                    </div>
                     {/* Password */}
                     <div className="relative">
                       <input

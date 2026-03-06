@@ -1,6 +1,7 @@
 "use client";
-import Sidebar from "@/components/Common/Sidebar";
 import React from "react";
+import Sidebar from "@/components/Common/Sidebar";
+import CandidateProfileHeader from "@/components/Candidates/Common/CandidateProfileHeader";
 import Image from "next/image";
 import Link from "next/link";
 import { FaLock } from "react-icons/fa";
@@ -102,21 +103,8 @@ const Changepassword = () => {
             </div>
           </div>
           {/* Profile */}
-          <div className="flex items-center gap-4">
-            <Image
-              src="/images/profile1.webp"
-              alt="Profile"
-              width={80}
-              height={80}
-              className="rounded-full border"
-            />
-            <div>
-              <h2 className="text-base sm:text-lg font-bold">
-                Randall Henderson
-              </h2>
-              <p className="text-gray-500">IT Contractor</p>
-            </div>
-          </div>
+          <CandidateProfileHeader />
+
           {/* change password  */}
           <div className="space-y-6">
             <h2 className="text-lg font-semibold border-b pb-2">
