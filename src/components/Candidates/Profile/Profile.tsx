@@ -129,7 +129,7 @@ const Profile = () => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
 
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com";
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com/api";
 
   // Timers for debounced validation
   const validateTimers = React.useRef<Record<string, ReturnType<typeof setTimeout> | null>>({});

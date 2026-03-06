@@ -1,4 +1,4 @@
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com/api";
 
 type ApiResult<T = any> = {
   success: boolean;
