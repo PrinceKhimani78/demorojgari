@@ -21,7 +21,7 @@ interface AuthContextValue {
     user: AuthUser | null;
     token: string | null;
     isLoading: boolean;
-    login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+    login: (email: string, password: string, role: UserRole) => Promise<{ success: boolean; message?: string }>;
     register: (data: any) => Promise<{ success: boolean; message?: string }>;
     logout: () => void;
     updateUserInfo: (updates: Partial<AuthUser>) => void;
@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // ── Login ──────────────────────────────────────────────────────────────────
     const login = useCallback(
-        async (email: string, password: string) => {
+        async (email: string, password: string, role: UserRole) => {
             try {
                 const res = await fetch(`${BACKEND}/auth/login`, {
                     method: "POST",
@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     id: data.data.user.id,
                     email: data.data.user.email,
                     full_name: data.data.user.fullName,
-                    role: "candidate", // Defaulting for now
+                    role: role,
                     profile_photo: data.data.user.profile_photo ?? undefined,
                 };
 
