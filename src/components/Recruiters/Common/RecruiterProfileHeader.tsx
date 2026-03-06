@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 
 const RecruiterProfileHeader = () => {
     const { user } = useAuth();
-    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com";
 
     const photoSrc = user?.profile_photo
         ? (user.profile_photo.startsWith('http')

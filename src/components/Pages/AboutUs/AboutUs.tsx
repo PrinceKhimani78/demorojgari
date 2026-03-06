@@ -92,7 +92,7 @@ const AboutUs = () => {
       return;
     }
     setOtpLoading(true);
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com";
     const res = await sendOtp(backendUrl, formData.email);
     setOtpLoading(false);
 

@@ -1,4 +1,4 @@
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com";
 
 type ApiResult<T = any> = {
   success: boolean;
@@ -37,11 +37,11 @@ async function fetchClient<T = any>(
     }
 
     if (!response.ok) {
-        return {
-            success: false,
-            message: data?.message || response.statusText || "Request failed",
-            data,
-        }
+      return {
+        success: false,
+        message: data?.message || response.statusText || "Request failed",
+        data,
+      }
     }
 
     return { success: true, data: data?.data || data }; // consistently unwrap 'data' if present, or return whole obj
