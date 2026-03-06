@@ -5,16 +5,13 @@ import Link from "next/link";
 import "../Header/Header.css";
 import Image from "next/image";
 import "../Home/Home.css";
-// import Widget from "./Widget";
 import { IoIosCall } from "react-icons/io";
 import { HiOutlineMail } from "react-icons/hi";
 import { SlLocationPin } from "react-icons/sl";
 
 const Footer: React.FC = () => {
   return (
-    <div>
-      {/* <Widget /> */}
-
+    <div suppressHydrationWarning>
       <div className="relative overflow-hidden bg-[#00C9FF] text-xs py-3 z-0">
         <div className="animate-marquee whitespace-nowrap flex w-max">
           <span className="pr-10">
@@ -38,7 +35,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-[#00233e] text-white py-10 px-5 lg:px-[5%] 2xl:px-[10%]">
+      <div className="bg-[#00233e] text-white py-10 px-5 lg:px-[5%] 2xl:px-[10%]" suppressHydrationWarning>
         <div className="flex flex-col justify-center w-full">
           <div className="grid grid-cols-1 lg:grid-cols-[35%_60%] justify-between items-center gap-5 my-10">
             <p className="fontAL text-lg">
@@ -52,9 +49,10 @@ const Footer: React.FC = () => {
                 type="text"
                 className="px-5 w-[90%] lg:w-[70%] text-black bg-white border rounded-l-lg border-white focus:border-[#00C9FF] focus-within:border-2 focus:outline-none focus:ring-0 focus-visible:outline-none placeholder:text-gray-400"
                 placeholder="Your email"
+                suppressHydrationWarning
               />
-              <button className="newsletter_btn">
-                <span className="text-sm">Subscribe</span>
+              <button className="newsletter_btn" suppressHydrationWarning>
+                <span className="text-sm" suppressHydrationWarning>Subscribe</span>
               </button>
             </div>
           </div>

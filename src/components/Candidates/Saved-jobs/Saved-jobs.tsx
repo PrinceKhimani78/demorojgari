@@ -1,5 +1,6 @@
 "use client";
 import Sidebar from "@/components/Common/Sidebar";
+import CandidateProfileHeader from "@/components/Candidates/Common/CandidateProfileHeader";
 import React, { useState } from "react";
 import { FaEye, FaTrash } from "react-icons/fa";
 import Image from "next/image";
@@ -234,21 +235,8 @@ const Savedjobs = () => {
         </div>
 
         {/* Profile */}
-        <div className="flex items-center gap-4">
-          <Image
-            src="/images/profile1.webp"
-            alt="Profile"
-            width={80}
-            height={80}
-            className="rounded-full border"
-          />
-          <div>
-            <h2 className="text-base sm:text-lg font-bold">
-              Randall Henderson
-            </h2>
-            <p className="text-gray-500">IT Contractor</p>
-          </div>
-        </div>
+        <CandidateProfileHeader />
+
 
         {/* saved jobs controls */}
         <div className="flex flex-col sm:flex-row justify-between  gap-3">
@@ -296,9 +284,8 @@ const Savedjobs = () => {
             {currentJobs.map((job, i) => (
               <div
                 key={job.id}
-                className={`grid grid-cols-1 sm:grid-cols-4 ${
-                  i % 2 === 0 ? "bg-white" : "bg-gray-50"
-                } border-b border-gray-400`}
+                className={`grid grid-cols-1 sm:grid-cols-4 ${i % 2 === 0 ? "bg-white" : "bg-gray-50"
+                  } border-b border-gray-400`}
               >
                 {/* Job Title */}
                 <div className="px-3 py-2 border-r last:border-r-0 border-gray-400 grid grid-cols-[40px_1fr] gap-3 items-center font-medium text-[#00C9FF]">
@@ -363,11 +350,10 @@ const Savedjobs = () => {
               <button
                 onClick={handlePrev}
                 disabled={currentPage === 1}
-                className={`px-3 py-1 border rounded flex items-center justify-center ${
-                  currentPage === 1
+                className={`px-3 py-1 border rounded flex items-center justify-center ${currentPage === 1
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                     : "bg-gray-100 hover:bg-gray-200"
-                }`}
+                  }`}
               >
                 <FiChevronLeft size={16} />
               </button>
@@ -376,11 +362,10 @@ const Savedjobs = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentPage(index + 1)}
-                  className={`px-3 py-1 border rounded cursor-pointer ${
-                    currentPage === index + 1
+                  className={`px-3 py-1 border rounded cursor-pointer ${currentPage === index + 1
                       ? "bg-[#023052] text-white"
                       : "bg-gray-100 text-gray-700"
-                  }`}
+                    }`}
                 >
                   {index + 1}
                 </button>
@@ -389,11 +374,10 @@ const Savedjobs = () => {
               <button
                 onClick={handleNext}
                 disabled={currentPage === totalPages}
-                className={`px-3 py-1 border rounded flex items-center justify-center ${
-                  currentPage === totalPages
+                className={`px-3 py-1 border rounded flex items-center justify-center ${currentPage === totalPages
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                     : "bg-gray-100 hover:bg-gray-200"
-                }`}
+                  }`}
               >
                 <FiChevronRight size={16} />
               </button>

@@ -6,6 +6,7 @@ import Link from "next/link";
 // import Footer from "@/components/Footer/Footer";
 import { IoChevronForward } from "react-icons/io5";
 import { FiChevronRight } from "react-icons/fi";
+import RecruiterProfileHeader from "@/components/Recruiters/Common/RecruiterProfileHeader";
 
 const packages = [
   {
@@ -140,21 +141,8 @@ const Packages = () => {
           </div>
 
           {/* Profile */}
-          <div className="flex items-center gap-4">
-            <Image
-              src="/images/profile1.webp"
-              alt="Profile"
-              width={80}
-              height={80}
-              className="rounded-full border"
-            />
-            <div>
-              <h2 className="text-base sm:text-lg font-bold">
-                Randall Henderson
-              </h2>
-              <p className="text-gray-500">IT Contractor</p>
-            </div>
-          </div>
+          <RecruiterProfileHeader />
+
           {/* package  */}
           <div className="border-b pb-4">
             <h1 className="text-xl font-semibold flex items-center gap-2">
@@ -180,9 +168,8 @@ const Packages = () => {
               {packages.map((pkg, i) => (
                 <div
                   key={pkg.id}
-                  className={`grid grid-cols-1 sm:grid-cols-7 text-sm ${
-                    i % 2 === 0 ? "bg-white" : "bg-gray-50"
-                  } border-b border-gray-400`}
+                  className={`grid grid-cols-1 sm:grid-cols-7 text-sm ${i % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    } border-b border-gray-400`}
                 >
                   {/* Package + Expired together */}
                   <div className="px-4 py-3">
@@ -195,11 +182,10 @@ const Packages = () => {
                   <div className="px-4 py-3">{pkg.used}</div>
                   <div className="px-4 py-3">{pkg.remain}</div>
                   <div
-                    className={`px-4 py-3 font-semibold ${
-                      pkg.status === "Active"
+                    className={`px-4 py-3 font-semibold ${pkg.status === "Active"
                         ? "text-green-600"
                         : "text-red-500"
-                    }`}
+                      }`}
                   >
                     {pkg.status}
                   </div>

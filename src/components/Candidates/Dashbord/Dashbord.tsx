@@ -13,6 +13,8 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { FiChevronRight } from "react-icons/fi";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import {
   LineChart,
   Line,
@@ -24,6 +26,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import Sidebar from "@/components/Common/Sidebar";
+import CandidateProfileHeader from "@/components/Candidates/Common/CandidateProfileHeader";
 import { IoChevronForward } from "react-icons/io5";
 const profileViewsData = [
   { month: "January", viewers: 200 },
@@ -43,7 +46,7 @@ const applicants = [
     image: "/images/profile1.webp",
   },
   {
-    name: "Peter Hawkins",
+    name: "Alexander Black",
     role: "Medical Professed",
     location: "New York",
     rate: "$7 / Hour",
@@ -57,7 +60,7 @@ const applicants = [
     image: "/images/profile1.webp",
   },
   {
-    name: "Randall Henderson",
+    name: "Alexander Black",
     role: "IT Contractor",
     location: "New York",
     rate: "$90 / Week",
@@ -66,7 +69,19 @@ const applicants = [
 ];
 
 const Dashbord = () => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/");
+    }
+  }, [isLoading, isAuthenticated, router]);
+
+  if (isLoading || !isAuthenticated) {
+    return <div className="h-screen flex items-center justify-center">Loading Dashboard...</div>;
+  }
   return (
     <>
       <div className="pl-2 pr-4 sm:px-2 py-2 flex gap-3 sm:gap-4 my-30 relative ">
@@ -128,21 +143,8 @@ const Dashbord = () => {
           </div>
 
           {/* Profile */}
-          <div className="flex items-center gap-4">
-            <Image
-              src="/images/profile1.webp"
-              alt="Profile"
-              width={80}
-              height={80}
-              className="rounded-full border"
-            />
-            <div>
-              <h2 className="text-base sm:text-lg font-bold">
-                Randall Henderson
-              </h2>
-              <p className="text-gray-500">IT Contractor</p>
-            </div>
-          </div>
+          <CandidateProfileHeader />
+
 
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

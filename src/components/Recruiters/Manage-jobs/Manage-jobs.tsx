@@ -8,6 +8,7 @@ import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { IoChevronForward } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import RecruiterProfileHeader from "@/components/Recruiters/Common/RecruiterProfileHeader";
 const jobs = [
   {
     id: 1,
@@ -174,21 +175,8 @@ const Managejobs = () => {
             </div>
           </div>
           {/* Profile */}
-          <div className="flex items-center gap-4">
-            <Image
-              src="/images/profile1.webp"
-              alt="Profile"
-              width={80}
-              height={80}
-              className="rounded-full border"
-            />
-            <div>
-              <h2 className="text-base sm:text-lg font-bold">
-                Randall Henderson
-              </h2>
-              <p className="text-gray-500">IT Contractor</p>
-            </div>
-          </div>
+          <RecruiterProfileHeader />
+
           {/* Sorting */}
           <div className="flex flex-col sm:flex-row justify-between  gap-3">
             <div className="flex items-center gap-2">
@@ -264,11 +252,10 @@ const Managejobs = () => {
                       title={isExpired(job.expired) ? "Job expired" : "Edit"}
                       disabled={isExpired(job.expired)}
                       onClick={() => setEditJob(job)}
-                      className={`p-2 rounded-full transition-colors ${
-                        isExpired(job.expired)
+                      className={`p-2 rounded-full transition-colors ${isExpired(job.expired)
                           ? "text-gray-400 cursor-not-allowed"
                           : "text-[#0d6efd] hover:bg-[rgba(13,110,253,0.1)]"
-                      }`}
+                        }`}
                     >
                       <FaEdit />
                     </button>
@@ -291,11 +278,10 @@ const Managejobs = () => {
               <button
                 onClick={handlePrev}
                 disabled={currentPage === 1}
-                className={`px-3 py-1 border rounded flex items-center justify-center ${
-                  currentPage === 1
+                className={`px-3 py-1 border rounded flex items-center justify-center ${currentPage === 1
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                     : "bg-gray-100 hover:bg-gray-200"
-                }`}
+                  }`}
               >
                 <FiChevronLeft size={16} />
               </button>
@@ -304,11 +290,10 @@ const Managejobs = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentPage(index + 1)}
-                  className={`px-3 py-1 border rounded cursor-pointer ${
-                    currentPage === index + 1
+                  className={`px-3 py-1 border rounded cursor-pointer ${currentPage === index + 1
                       ? "bg-[#023052] text-white"
                       : "bg-gray-100 text-gray-700"
-                  }`}
+                    }`}
                 >
                   {index + 1}
                 </button>
@@ -317,11 +302,10 @@ const Managejobs = () => {
               <button
                 onClick={handleNext}
                 disabled={currentPage === totalPages}
-                className={`px-3 py-1 border rounded flex items-center justify-center ${
-                  currentPage === totalPages
+                className={`px-3 py-1 border rounded flex items-center justify-center ${currentPage === totalPages
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                     : "bg-gray-100 hover:bg-gray-200"
-                }`}
+                  }`}
               >
                 <FiChevronRight size={16} />
               </button>

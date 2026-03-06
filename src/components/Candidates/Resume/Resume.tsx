@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Sidebar from "@/components/Common/Sidebar";
+import CandidateProfileHeader from "@/components/Candidates/Common/CandidateProfileHeader";
 import Link from "next/link";
 import { FaEdit } from "react-icons/fa";
 import Footer from "@/components/Footer/Footer";
@@ -65,21 +66,8 @@ const Resume = () => {
             </div>
           </div>
           {/* Profile */}
-          <div className="flex items-center gap-4">
-            <Image
-              src="/images/profile1.webp"
-              alt="Profile"
-              width={80}
-              height={80}
-              className="rounded-full border"
-            />
-            <div>
-              <h2 className="text-base sm:text-lg font-bold">
-                Randall Henderson
-              </h2>
-              <p className="text-gray-500">IT Contractor</p>
-            </div>
-          </div>
+          <CandidateProfileHeader />
+
           {/* Resume Headline */}
           <div className="bg-gray-50 rounded-lg shadow-sm p-5">
             <div className="flex justify-between items-center border-b pb-3 mb-3">
@@ -209,9 +197,8 @@ const Resume = () => {
               {skills.map((item, i) => (
                 <div
                   key={i}
-                  className={`flex flex-col sm:flex-row sm:items-center justify-between border border-gray-400 rounded-lg p-4 shadow-sm transition ${
-                    i % 2 === 0 ? "bg-white" : "bg-gray-100"
-                  } hover:bg-gray-200`}
+                  className={`flex flex-col sm:flex-row sm:items-center justify-between border border-gray-400 rounded-lg p-4 shadow-sm transition ${i % 2 === 0 ? "bg-white" : "bg-gray-100"
+                    } hover:bg-gray-200`}
                 >
                   {/* Left side: Skill Info */}
                   <div className="flex flex-col sm:flex-row sm:gap-6 flex-1">
