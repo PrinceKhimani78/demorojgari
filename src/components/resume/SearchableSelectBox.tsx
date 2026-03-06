@@ -59,7 +59,7 @@ const SearchableSelectBox: React.FC<SearchableSelectBoxProps> = ({
 
     const lower = searchTerm.toLowerCase();
 
-    const filtered = (options || []).filter((opt: any) => {
+    const filtered = (options || []).filter((opt: SelectOption) => {
       const label = typeof opt === "string" ? opt : opt?.label || "";
 
       return label.toLowerCase().includes(lower);

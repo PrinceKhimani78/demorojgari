@@ -2,9 +2,9 @@ type InputBoxProps = {
   label: string;
   name: string;
   value: string;
-  onChange: any;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
-  error?: any; // 👈 optional
+  error?: string;
   required?: boolean;
   disabled?: boolean;
 };

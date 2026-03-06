@@ -2,7 +2,16 @@
 
 import { useRef } from "react";
 
-const DatePicker = ({
+interface DatePickerProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: string;
+  required?: boolean;
+}
+
+const DatePicker: React.FC<DatePickerProps> = ({
   label,
   name,
   value,
@@ -14,9 +23,9 @@ const DatePicker = ({
 
   return (
     <div className="relative w-full">
-      <label 
-      
-      className="absolute left-4 top-1 -translate-y-1/2 px-1 bg-white text-sm text-gray-600 peer-focus:text-[#72B76A] pointer-events-none z-10"
+      <label
+
+        className="absolute left-4 top-1 -translate-y-1/2 px-1 bg-white text-sm text-gray-600 peer-focus:text-[#72B76A] pointer-events-none z-10"
       >
         {label}
         {required && <span className="text-red-500 ml-1 peer-focus:text-[#72B76A]">*</span>}
