@@ -114,15 +114,15 @@ const Candidateslist = () => {
     if (!user || !token) return;
     setLoading(true);
     try {
-      const res = await fetch(`${BACKEND}/candidate-profile?page=${currentPage}&limit=${entries}&recruiterId=${user.id}`, {
+      const res = await fetch(`${BACKEND}/candidate-profile?page=${currentPage}&limit=${entries}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
       });
       const data = await res.json();
-      if (res.ok) {
-        setCandidates(data.data.rows);
-        setTotal(data.data.count);
+      if (res.ok && data.success) {
+        setCandidates(data.data.profiles);
+        setTotal(data.data.pagination.total);
       }
     } catch (err) {
       console.error("Failed to fetch candidates", err);

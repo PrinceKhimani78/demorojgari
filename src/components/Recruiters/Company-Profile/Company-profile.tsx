@@ -1,6 +1,6 @@
-"use client";
 import Sidebar from "@/components/Common/Sidebar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -31,11 +31,15 @@ const InputField = ({
   label,
   placeholder,
   icon,
+  value,
+  onChange,
 }: {
   id: string;
   label: string;
   placeholder: string;
   icon: React.ReactNode;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => (
   <div className="relative">
     <label
@@ -50,6 +54,8 @@ const InputField = ({
       name={id}
       type="text"
       placeholder={placeholder}
+      value={value || ""}
+      onChange={onChange}
       className="w-full pl-10 p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 ring-green-100 
       transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#72B76A]"
     />
@@ -86,8 +92,83 @@ const SocialInput = ({
   </div>
 );
 const Companyprofile = () => {
+  const { token, refreshUser } = useAuth();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    companyName: "",
+    phone: "",
+    email: "",
+    website: "",
+    since: "",
+    team: "",
+    description: "",
+  });
+
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com/api";
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!token) return;
+      try {
+        const res = await fetch(`${BACKEND_URL}/recruiter/profile`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        const data = await res.json();
+        if (data.success) {
+          const r = data.data;
+          setFormData({
+            companyName: r.company_name || "",
+            phone: r.mobile_number || "",
+            email: r.email || "",
+            website: r.website || "",
+            since: r.est_since || "",
+            team: r.team_size || "",
+            description: r.description || "",
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch recruiter profile", err);
+      }
+    };
+    fetchProfile();
+  }, [token, BACKEND_URL]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`${BACKEND_URL}/recruiter/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Profile updated successfully!");
+        refreshUser();
+      } else {
+        alert(data.message || "Failed to update profile");
+      }
+    } catch (err) {
+      console.error("Error updating profile", err);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="pl-2 pr-4 sm:px-2 py-2 flex gap-3 sm:gap-4 my-30 relative">
@@ -221,8 +302,10 @@ const Companyprofile = () => {
                 <InputField
                   id="companyName"
                   label="Company Name"
-                  placeholder="David Smith"
+                  placeholder="Company Name"
                   icon={<FaUser />}
+                  value={formData.companyName}
+                  onChange={handleChange}
                 />
 
                 {/* Phone */}
@@ -231,6 +314,8 @@ const Companyprofile = () => {
                   label="Phone"
                   placeholder="(251) 1234-456-7890"
                   icon={<FaPhone />}
+                  value={formData.phone}
+                  onChange={handleChange}
                 />
 
                 {/* Email */}
@@ -239,6 +324,8 @@ const Companyprofile = () => {
                   label="Email Address"
                   placeholder="David@example.com"
                   icon={<FaEnvelope />}
+                  value={formData.email}
+                  onChange={handleChange}
                 />
 
                 {/* Website */}
@@ -247,6 +334,8 @@ const Companyprofile = () => {
                   label="Website"
                   placeholder="https://example.com"
                   icon={<FaGlobe />}
+                  value={formData.website}
+                  onChange={handleChange}
                 />
 
                 {/* Est Since */}
@@ -255,6 +344,8 @@ const Companyprofile = () => {
                   label="Est. Since"
                   placeholder="Since..."
                   icon={<FaCalendarAlt />}
+                  value={formData.since}
+                  onChange={handleChange}
                 />
 
                 {/* Team Size */}
@@ -263,6 +354,8 @@ const Companyprofile = () => {
                   label="Team Size"
                   placeholder="team-size"
                   icon={<FaUser />}
+                  value={formData.team}
+                  onChange={handleChange}
                 />
               </div>
 
@@ -282,6 +375,8 @@ const Companyprofile = () => {
                   name="description"
                   placeholder="Greetings! We are Galaxy Software Development Company."
                   rows={4}
+                  value={formData.description}
+                  onChange={handleChange}
                   className="w-full pl-10 p-2 rounded bg-blue-50 text-sm placeholder-slate-400 ring-1 ring-green-100 
                 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#72B76A]"
                 />
@@ -415,15 +510,17 @@ const Companyprofile = () => {
             <div className="flex justify-center pt-10">
               <button
                 type="submit"
-                className="relative px-10 h-12 group border border-[#72B76A] bg-[#72B76A] rounded-xl 
-                hover:bg-transparent text-white hover:text-[#72B76A] active:scale-95 transition-all duration-500"
+                disabled={loading}
+                className={`relative px-10 h-12 group border border-[#72B76A] bg-[#72B76A] rounded-xl 
+                hover:bg-transparent text-white hover:text-[#72B76A] active:scale-95 transition-all duration-500 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                onClick={handleSubmit}
               >
                 <span
                   className="absolute right-0 w-12 h-full top-0 transform translate-x-14 bg-white opacity-10 -skew-x-12 
                   group-hover:-translate-x-28 transition-all duration-700"
                 />
                 <span className="relative font-semibold text-base">
-                  Save Changes
+                  {loading ? "Saving..." : "Save Changes"}
                 </span>
               </button>
             </div>

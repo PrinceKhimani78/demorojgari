@@ -660,7 +660,14 @@ const Candidates = () => {
                   {/* Recruiters Button */}
                   <button
                     type="button"
-                    onClick={() => setUserType("recruiter")}
+                    onClick={() => {
+                      if (mode === "signup") {
+                        setShowPopup(false);
+                        router.push("/recruiters/register");
+                      } else {
+                        setUserType("recruiter");
+                      }
+                    }}
                     className={`relative w-32 h-9 overflow-hidden group rounded-lg active:scale-90 transition-all ease-out duration-700 flex items-center justify-center border
                      ${userType === "recruiter"
                         ? "bg-[#72B76A] text-white border-[#72B76A]"
@@ -802,7 +809,14 @@ const Candidates = () => {
                       <button
                         type="button"
                         className="text-[#72B76A] font-bold underline"
-                        onClick={() => setMode("signup")}
+                        onClick={() => {
+                          if (userType === "recruiter") {
+                            setShowPopup(false);
+                            router.push("/recruiters/register");
+                          } else {
+                            setMode("signup");
+                          }
+                        }}
                       >
                         Sign up
                       </button>

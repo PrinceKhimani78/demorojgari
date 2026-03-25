@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -207,8 +208,56 @@ const activities = [
 ];
 
 const Dashboard = () => {
+  const { token } = useAuth();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [stats, setStats] = useState({
+    postedJobs: 0,
+    totalCandidates: 0,
+    messages: 0,
+    newApplications: 0
+  });
+  const [recentApplicants, setRecentApplicants] = useState<any[]>([]);
+
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com/api";
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!token) return;
+      try {
+        const res = await fetch(`${BACKEND_URL}/recruiter/stats`, {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        const data = await res.json();
+        if (data.success) {
+          setStats(data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch dashboard stats", err);
+      }
+    };
+
+    const fetchRecentApplicants = async () => {
+      if (!token) return;
+      try {
+        const res = await fetch(`${BACKEND_URL}/recruiter/recent-applicants`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          setRecentApplicants(data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch recent applicants", err);
+      }
+    };
+
+    fetchStats();
+    fetchRecentApplicants();
+  }, [token, BACKEND_URL]);
+
   return (
     <>
       <div className="pl-2 pr-4 sm:px-2 py-2 flex gap-3 sm:gap-4 my-30 relative">
@@ -287,39 +336,44 @@ const Dashboard = () => {
             {[
               {
                 title: "Posted Jobs",
-                value: 25,
+                value: stats.postedJobs,
                 icon: <FaBriefcase />,
                 color: "bg-[#FFCC23]",
+                link: "/recruiters/manage-jobs"
               },
               {
                 title: "Total Candidates",
-                value: 435,
+                value: stats.totalCandidates,
                 icon: <FaFileAlt />,
                 color: "bg-[#72B76A]",
+                link: "/recruiters/candidates-list"
               },
               {
                 title: "Messages",
-                value: 28,
+                value: stats.messages,
                 icon: <FaEnvelope />,
                 color: "bg-[#AE70BB]",
+                link: "/recruiters/resume-alerts"
               },
               {
                 title: "New Applications",
-                value: 18,
+                value: stats.newApplications,
                 icon: <FaBell />,
                 color: "bg-[#00C9FF]",
+                link: "/recruiters/manage-jobs"
               },
             ].map((card, i) => (
-              <div
+              <Link
                 key={i}
-                className={`${card.color} text-white p-6 rounded-lg shadow flex justify-between items-center`}
+                href={card.link}
+                className={`${card.color} text-white p-6 rounded-lg shadow flex justify-between items-center hover:opacity-90 transition-all active:scale-95`}
               >
                 <div className="flex flex-col gap-2">
                   <div className="text-3xl text-white">{card.icon}</div>
                   <p className="text-sm">{card.title}</p>
                 </div>
                 <p className="text-3xl font-bold">{card.value}</p>
-              </div>
+              </Link>
             ))}
           </div>
           {/* Profile Views & Inbox side by side */}
@@ -405,50 +459,60 @@ const Dashboard = () => {
           <div className="bg-white shadow rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-4">Recent Applicants</h3>
             <div className="divide-y divide-gray-400">
-              {applicants.map((applicant, i) => (
-                <div
-                  key={i}
-                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4  hover:bg-gray-50 rounded-lg transition gap-4"
-                >
-                  <div className=" flex items-center gap-4  ">
-                    <Image
-                      src={applicant.image}
-                      alt={applicant.name}
-                      width={50}
-                      height={50}
-                      className="rounded-full border"
-                    />
-                    <div>
-                      <h4 className="font-semibold text-sm sm:text-base">
-                        {applicant.name}
-                      </h4>
-                      <p className="text-[10px] sm:text-[15px] text-gray-500">
-                        {applicant.role}
-                      </p>
-                      <div className="flex items-center gap-2 text-[10px] sm:text-sm text-gray-600 mt-1">
-                        <FaMapMarkerAlt className="text-[#42A5F5]" />
-                        <span>{applicant.location}</span>
-                        <span className="text-green-600 font-medium">
-                          {applicant.rate}
-                        </span>
+              {recentApplicants.length === 0 ? (
+                <div className="py-8 text-center text-gray-400">No recent applications found.</div>
+              ) : (
+                recentApplicants.map((app, i) => {
+                  const candidate = app.CandidateProfile;
+                  const photoSrc = candidate?.profile_photo
+                      ? (candidate.profile_photo.startsWith('http')
+                          ? candidate.profile_photo
+                          : `${(BACKEND_URL || '').replace('/api', '')}/uploads/${candidate.profile_photo}`)
+                      : "/images/profile1.webp";
+
+                  return (
+                    <div
+                      key={i}
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4  hover:bg-gray-50 rounded-lg transition gap-4"
+                    >
+                      <div className=" flex items-center gap-4  ">
+                        <Image
+                          src={photoSrc}
+                          alt={candidate?.full_name || "Applicant"}
+                          width={50}
+                          height={50}
+                          className="rounded-full border object-cover h-12 w-12"
+                        />
+                        <div>
+                          <h4 className="font-semibold text-sm sm:text-base">
+                            {candidate?.full_name}
+                          </h4>
+                          <p className="text-[10px] sm:text-[15px] text-gray-500">
+                            Applied for: {app.Job?.title}
+                          </p>
+                          <div className="flex items-center gap-2 text-[10px] sm:text-sm text-gray-600 mt-1">
+                            <FaMapMarkerAlt className="text-[#42A5F5]" />
+                            <span>{candidate?.location || "N/A"}</span>
+                            <span className="text-green-600 font-medium">
+                              {app.status}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex sm:flex-row flex-row sm:justify-end justify-center gap-3 ">
+                        <Link href={`/recruiters/candidates-list`} className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
+                          <FaEye />
+                        </Link>
+                        <button className="p-2 hover:bg-blue-50 rounded-full text-[#42A5F5]">
+                          <FaEnvelope />
+                        </button>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex sm:flex-row flex-row sm:justify-end justify-center gap-3 ">
-                    <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
-                      <FaEye />
-                    </button>
-                    <button className="p-2 hover:bg-blue-50 rounded-full text-[#42A5F5]">
-                      <FaEnvelope />
-                    </button>
-                    <button className="text-red-600 rounded-full p-2 hover:bg-[rgba(255,0,0,0.1)] transition-colors">
-                      <FaTrash />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                  );
+                })
+              )}
             </div>
           </div>
         </main>

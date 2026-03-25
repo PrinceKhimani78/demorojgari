@@ -26,6 +26,7 @@ interface AuthContextValue {
     register: (data: any, role?: UserRole) => Promise<{ success: boolean; message?: string }>;
     logout: () => void;
     updateUserInfo: (updates: Partial<AuthUser>) => void;
+    refreshUser: () => Promise<void>;
     isAuthenticated: boolean;
 }
 
@@ -163,6 +164,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
     }, []);
 
+    const refreshUser = useCallback(async () => {
+        if (!token || !user) return;
+        try {
+            const endpoint = user.role === "recruiter" ? "/recruiter/profile" : "/candidate-profile/me";
+            const res = await fetch(`${BACKEND}${endpoint}`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success) {
+                const refreshedUser: AuthUser = {
+                    ...user,
+                    full_name: data.data.full_name || data.data.fullName || user.full_name,
+                    profile_photo: data.data.profile_photo || user.profile_photo,
+                    status: data.data.status || user.status,
+                };
+                setUser(refreshedUser);
+                localStorage.setItem(USER_KEY, JSON.stringify(refreshedUser));
+            }
+        } catch (err) {
+            console.error("Failed to refresh user data", err);
+        }
+    }, [token, user, BACKEND]);
+
     return (
         <AuthContext.Provider
             value={{
@@ -173,6 +197,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 register,
                 logout,
                 updateUserInfo,
+                refreshUser,
                 isAuthenticated: !!token && !!user,
             }}
         >
