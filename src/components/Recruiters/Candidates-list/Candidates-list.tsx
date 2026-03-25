@@ -3,13 +3,12 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Sidebar from "@/components/Common/Sidebar";
-import { FaEye, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-// import Footer from "@/components/Footer/Footer";
+import { FaEye, FaEnvelope, FaMapMarkerAlt, FaSearch } from "react-icons/fa";
 import { IoChevronForward } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
-import { FaSearch } from "react-icons/fa";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import RecruiterProfileHeader from "@/components/Recruiters/Common/RecruiterProfileHeader";
+import { useAuth } from "@/context/AuthContext";
 const candidates = [
   {
     id: 1,
@@ -72,7 +71,14 @@ const getStatusClasses = (status: string) => {
 };
 
 const Candidateslist = () => {
+  const { user, token } = useAuth();
+  const BACKEND = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com/api";
+
   const [showPopup, setShowPopup] = useState(false);
+  const [candidates, setCandidates] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
+
   // Lock body scroll when popup is open
   useEffect(() => {
     if (!showPopup) return;
@@ -97,15 +103,43 @@ const Candidateslist = () => {
     }, 4000);
     return () => clearTimeout(timer);
   }, []);
+
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [entries, setEntries] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
-  const totalPages = Math.ceil(candidates.length / entries);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const fetchCandidates = async () => {
+    if (!user || !token) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`${BACKEND}/candidate-profile?page=${currentPage}&limit=${entries}&recruiterId=${user.id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setCandidates(data.data.rows);
+        setTotal(data.data.count);
+      }
+    } catch (err) {
+      console.error("Failed to fetch candidates", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCandidates();
+  }, [currentPage, entries, user, token]);
+
+  const totalPages = Math.ceil(total / entries);
 
   const startIndex = (currentPage - 1) * entries;
   const endIndex = startIndex + entries;
-  const currentCandidates = candidates.slice(startIndex, endIndex);
+  const currentCandidates = candidates; // Now using real data from API
 
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -225,11 +259,20 @@ const Candidateslist = () => {
                 <input
                   type="text"
                   placeholder="Search..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 ring-gray-400 
       transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00c9ff]"
                 />
               </div>
             </div>
+
+            {loading ? (
+                <div className="flex justify-center py-20">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#72B76A]"></div>
+                </div>
+            ) : (
+                <>
 
             {/* Table Header (desktop only) */}
             <div className="hidden sm:grid grid-cols-7 font-semibold text-sm text-gray-600 border-b py-2">
@@ -256,32 +299,38 @@ const Candidateslist = () => {
                     <input type="checkbox" />
                   </div>
                   <div className="flex items-center gap-3 px-3 py-3">
-                    <Image
-                      src={c.img}
-                      alt={c.name}
-                      width={40}
-                      height={40}
-                      className="rounded-full border"
-                    />
+                    {c.profile_photo ? (
+                        <Image
+                            src={c.profile_photo.startsWith('http') ? c.profile_photo : `${BACKEND.replace('/api', '')}/uploads/${c.profile_photo}`}
+                            alt={c.full_name}
+                            width={40}
+                            height={40}
+                            className="rounded-full border"
+                        />
+                    ) : (
+                        <div className="w-10 h-10 rounded-full border bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                            {c.full_name?.charAt(0)}
+                        </div>
+                    )}
                     <div>
-                      <p className="font-semibold text-slate-950">{c.name}</p>
+                      <p className="font-semibold text-slate-950">{c.full_name}</p>
                       <p className="flex items-center gap-1 text-xs text-gray-500">
                         <FaMapMarkerAlt className="text-[#00c9ff] text-sm" />
-                        {c.location}
+                        {c.city}, {c.state}
                       </p>
                     </div>
                   </div>
-                  <div className="px-3 py-3">{c.role}</div>
-                  <div className="px-3 py-3 text-gray-500">{c.date}</div>
+                  <div className="px-3 py-3">{c.job_category || c.position}</div>
+                  <div className="px-3 py-3 text-gray-500">{new Date(c.created_at).toLocaleDateString()}</div>
                   <div className="px-3 py-3">
                     <span className={getStatusClasses(c.status)}>
                       {c.status}
                     </span>
                   </div>
                   <div className="flex gap-3 px-3 py-3 justify-center col-span-2">
-                    <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
+                    <Link href={`/recruiters/candidates-list/${c.id}`} className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
                       <FaEye />
-                    </button>
+                    </Link>
                     <button className="p-2 hover:bg-blue-50 rounded-full text-[#42A5F5]">
                       <FaEnvelope />
                     </button>
@@ -291,28 +340,34 @@ const Candidateslist = () => {
                 {/* Mobile Card */}
                 <div className="sm:hidden px-3 py-4 space-y-2">
                   <div className="flex items-center gap-3 px-3 py-3">
-                    <Image
-                      src={c.img}
-                      alt={c.name}
-                      width={40}
-                      height={40}
-                      className="rounded-full border"
-                    />
+                    {c.profile_photo ? (
+                        <Image
+                            src={c.profile_photo.startsWith('http') ? c.profile_photo : `${BACKEND.replace('/api', '')}/uploads/${c.profile_photo}`}
+                            alt={c.full_name}
+                            width={40}
+                            height={40}
+                            className="rounded-full border"
+                        />
+                    ) : (
+                        <div className="w-10 h-10 rounded-full border bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                            {c.full_name?.charAt(0)}
+                        </div>
+                    )}
                     <div>
-                      <p className="font-semibold text-slate-950">{c.name}</p>
+                      <p className="font-semibold text-slate-950">{c.full_name}</p>
                       <p className="text-xs text-gray-500 flex items-center gap-1">
                         <FaMapMarkerAlt className="text-[#00c9ff]" />{" "}
-                        {c.location}
+                        {c.city}, {c.state}
                       </p>
                     </div>
                   </div>
                   <p className="text-sm">
-                    <span className="font-semibold">Applied For: </span>
-                    {c.role}
+                    <span className="font-semibold">Industry: </span>
+                    {c.job_category || c.position}
                   </p>
                   <p className="text-sm text-gray-500">
-                    <span className="font-semibold">Date: </span>
-                    {c.date}
+                    <span className="font-semibold">Joined: </span>
+                    {new Date(c.created_at).toLocaleDateString()}
                   </p>
                   <p>
                     <span className="font-semibold">Status: </span>
@@ -321,9 +376,9 @@ const Candidateslist = () => {
                     </span>
                   </p>
                   <div className="flex gap-4 justify-start mt-2">
-                    <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
+                    <Link href={`/recruiters/candidates-list/${c.id}`} className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
                       <FaEye />
-                    </button>
+                    </Link>
                     <button className="p-2 hover:bg-blue-50 rounded-full text-[#42A5F5]">
                       <FaEnvelope />
                     </button>
@@ -331,13 +386,15 @@ const Candidateslist = () => {
                 </div>
               </div>
             ))}
+                </>
+            )}
 
             {/* pagination */}
             <div className="flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600 gap-2 mt-5">
               <p>
                 Showing {startIndex + 1} to{" "}
-                {endIndex > candidates.length ? candidates.length : endIndex} of{" "}
-                {candidates.length} entries
+                {endIndex > total ? total : endIndex} of{" "}
+                {total} entries
               </p>
               <div className="flex items-center gap-1">
                 <button

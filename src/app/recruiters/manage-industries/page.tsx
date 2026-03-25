@@ -1,10 +1,10 @@
-import Postjob from "@/components/Recruiters/Post-job/Post-job";
+import ManageIndustries from "@/components/Recruiters/Manage-industries/Manage-industries";
 import ProtectedRoute from "@/components/Common/ProtectedRoute";
 
 export default function Page() {
     return (
         <ProtectedRoute allowedRole="recruiter" redirectTo="/recruiters">
-            <Postjob />
+            <ManageIndustries />
         </ProtectedRoute>
     );
 }

@@ -103,6 +103,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             label: "Candidates List",
             href: "/recruiters/candidates-list",
           },
+          {
+            icon: <FaBuilding />,
+            label: "Manage Industries",
+            href: "/recruiters/manage-industries",
+          },
           { icon: <FaBox />, label: "Packages", href: "/recruiters/packages" },
           {
             icon: <FaBell />,

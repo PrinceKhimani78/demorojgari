@@ -13,6 +13,7 @@ import { RxCross2 } from "react-icons/rx";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { sendOtp } from "@/services/otpService";
+import { INDUSTRY_OPTIONS } from "@/constants/industryData";
 type FeatureListProps = {
   items: string[];
   className?: string;
@@ -32,6 +33,9 @@ interface FormState {
   email: string;
   confirmPassword: string;
   otp: string;
+  companyName?: string;
+  industry?: string;
+  mobileNumber?: string;
 }
 const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg
@@ -73,7 +77,7 @@ const Recruiters = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [userType, setUserType] = useState<"candidates" | "recruiter">(
-    "candidates"
+    "recruiter"
   );
   const [formData, setFormData] = useState<FormState>({
     username: "",
@@ -82,6 +86,9 @@ const Recruiters = () => {
     email: "",
     confirmPassword: "",
     otp: "",
+    companyName: "",
+    industry: "",
+    mobileNumber: "",
   });
   const [otpLoading, setOtpLoading] = useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,14 +122,22 @@ const Recruiters = () => {
         alert("Passwords do not match!");
         return;
       }
-      const res = await register({
+      const registerPayload: any = {
         email: formData.email,
         password: formData.password,
         fullName: formData.fullName,
         otp: formData.otp,
-      });
+      };
+
+      if (userType === "recruiter") {
+        registerPayload.companyName = formData.companyName;
+        registerPayload.industry = formData.industry;
+        registerPayload.mobileNumber = formData.mobileNumber;
+      }
+
+      const res = await register(registerPayload, userType === "candidates" ? "candidate" : "recruiter");
       if (res.success) {
-        alert("Registration successful! You can now log in.");
+        alert(res.message || "we are working on your request");
         setMode("login");
       } else {
         alert(res.message || "Registration failed");
@@ -137,7 +152,7 @@ const Recruiters = () => {
           router.push("/recruiters/dashboard");
         }
       } else {
-        alert(res.message || "Login failed");
+        alert(res.message || "we are working on your request");
       }
     }
   };
@@ -997,6 +1012,41 @@ const Recruiters = () => {
                       value={formData.fullName}
                       onChange={handleChange}
                     />
+
+                    {userType === "recruiter" && (
+                      <>
+                        <input
+                          type="text"
+                          name="companyName"
+                          placeholder="Company Name"
+                          className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                          value={formData.companyName}
+                          onChange={handleChange}
+                        />
+                        <input
+                          type="text"
+                          name="mobileNumber"
+                          placeholder="Mobile Number"
+                          className="w-full p-2 rounded bg-white text-sm placeholder-slate-400 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                          value={formData.mobileNumber}
+                          onChange={handleChange}
+                        />
+                        <select
+                          name="industry"
+                          className="w-full p-2 rounded bg-white text-sm text-slate-700 ring-1 focus:bg-white focus:outline-none ring-gray-300 transition focus:ring-2 focus:ring-[#72B76A]"
+                          value={formData.industry}
+                          onChange={handleChange as any}
+                        >
+                          <option value="">Select Industry</option>
+                          {INDUSTRY_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          ))}
+                        </select>
+                      </>
+                    )}
+
                     <div className="relative">
                       <input
                         type="email"

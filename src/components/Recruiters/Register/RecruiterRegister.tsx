@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { INDUSTRY_OPTIONS } from "@/constants/industryData";
+import { useAuth } from "@/context/AuthContext";
 import Footer from "@/components/Footer/Footer";
 
 type Crumb = { name: string; href?: string };
@@ -19,6 +21,8 @@ interface FormState {
     companyName: string;
     fullName: string;
     email: string;
+    mobileNumber: string;
+    industry: string;
     password: string;
     confirmPassword: string;
 }
@@ -32,6 +36,8 @@ export default function RecruiterRegister() {
         companyName: "",
         fullName: "",
         email: "",
+        mobileNumber: "",
+        industry: "",
         password: "",
         confirmPassword: "",
     });
@@ -42,17 +48,22 @@ export default function RecruiterRegister() {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
         setError("");
     };
 
+    const { register, user, isAuthenticated } = useAuth();
+    
+    // If user is already a recruiter but pending, show success message immediately
+    const isPendingRecruiter = isAuthenticated && user?.role === "recruiter" && user?.status !== "Active";
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError("");
 
-        if (!form.companyName || !form.fullName || !form.email || !form.password) {
+        if (!form.companyName || !form.fullName || !form.email || !form.mobileNumber || !form.industry || !form.password) {
             setError("Please fill in all required fields.");
             return;
         }
@@ -69,21 +80,17 @@ export default function RecruiterRegister() {
 
         setLoading(true);
         try {
-            const res = await fetch(`${BACKEND}/auth/recruiter/register`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    company_name: form.companyName,
-                    full_name: form.fullName,
-                    email: form.email,
-                    password: form.password,
-                }),
-            });
+            const res = await register({
+                companyName: form.companyName,
+                fullName: form.fullName,
+                email: form.email,
+                mobileNumber: form.mobileNumber,
+                industry: form.industry,
+                password: form.password,
+            }, "recruiter");
 
-            const data = await res.json();
-
-            if (!res.ok) {
-                setError(data.message || "Registration failed. Please try again.");
+            if (!res.success) {
+                setError(res.message || "Registration failed. Please try again.");
                 return;
             }
 
@@ -95,22 +102,23 @@ export default function RecruiterRegister() {
         }
     };
 
-    if (success) {
+    if (success || isPendingRecruiter) {
+        const displayEmail = isPendingRecruiter ? user?.email : form.email;
         return (
             <>
                 <div className="min-h-[70vh] flex items-center justify-center px-4 py-14 bg-[#FFFFF0]">
                     <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-10 text-center">
                         <div className="w-16 h-16 rounded-full bg-[#72B76A]/20 flex items-center justify-center mx-auto mb-5">
-                            <span className="text-3xl">✅</span>
+                            <span className="text-3xl">⏳</span>
                         </div>
-                        <h2 className="fontAL font-bold text-2xl text-slate-800 mb-3">Registration Submitted!</h2>
-                        <p className="text-slate-600 text-sm mb-6">
-                            Your recruiter account is <strong>pending admin approval</strong>. We'll notify you at{" "}
-                            <strong>{form.email}</strong> once your account is approved.
+                        <h2 className="fontAL font-bold text-2xl text-slate-800 mb-3 uppercase tracking-tight">we are working on your request</h2>
+                        <p className="text-slate-600 text-sm mb-6 font-medium">
+                            Your recruiter account is currently <strong>awaiting admin approval</strong>. We'll notify you at{" "}
+                            <strong>{displayEmail}</strong> once your access is granted.
                         </p>
                         <Link
                             href="/"
-                            className="inline-block px-6 py-2.5 bg-[#72B76A] text-white rounded-lg font-semibold hover:bg-[#5e9b55] transition"
+                            className="inline-block px-10 py-3 bg-[#72B76A] text-white rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-[#5e9b55] transition shadow-lg shadow-green-100 active:scale-95"
                         >
                             Back to Home
                         </Link>
@@ -208,6 +216,36 @@ export default function RecruiterRegister() {
                             />
                         </div>
 
+                        {/* Mobile Number */}
+                        <div>
+                            <label className="block text-sm text-slate-600 mb-1">Mobile Number <span className="text-red-400">*</span></label>
+                            <input
+                                type="text"
+                                name="mobileNumber"
+                                value={form.mobileNumber}
+                                onChange={handleChange}
+                                placeholder="Enter mobile number"
+                                className="w-full p-2.5 rounded-lg bg-white text-sm placeholder-slate-400 ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-[#72B76A] transition"
+                            />
+                        </div>
+
+                        {/* Industry */}
+                        <div>
+                            <label className="block text-sm text-slate-600 mb-1">Primary Industry <span className="text-red-400">*</span></label>
+                            <select
+                                name="industry"
+                                value={form.industry}
+                                onChange={handleChange}
+                                className="w-full p-2.5 rounded-lg bg-white text-sm placeholder-slate-400 ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-[#72B76A] transition"
+                            >
+                                <option value="">Select Industry</option>
+                                {INDUSTRY_OPTIONS.map((opt) => (
+                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                ))}
+                            </select>
+                            <p className="text-[10px] text-slate-400 mt-1 italic">You will only see candidates from your approved industries.</p>
+                        </div>
+
 
                         {/* Password */}
                         <div>
@@ -272,7 +310,7 @@ export default function RecruiterRegister() {
 
                     <p className="mt-6 text-center text-sm text-slate-600">
                         Already have an account?{" "}
-                        <Link href="/candidates/login" className="text-[#72B76A] font-semibold hover:underline">
+                        <Link href="/recruiters" className="text-[#72B76A] font-semibold hover:underline">
                             Sign In
                         </Link>
                     </p>

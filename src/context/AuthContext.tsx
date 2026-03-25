@@ -14,7 +14,7 @@ export interface AuthUser {
     role: UserRole;
     profile_photo?: string;
     resume?: string;
-    job_category?: string;
+    status?: "Active" | "Inactive" | "PendingApproval";
 }
 
 interface AuthContextValue {
@@ -22,7 +22,7 @@ interface AuthContextValue {
     token: string | null;
     isLoading: boolean;
     login: (email: string, password: string, role: UserRole) => Promise<{ success: boolean; message?: string }>;
-    register: (data: any) => Promise<{ success: boolean; message?: string }>;
+    register: (data: any, role?: UserRole) => Promise<{ success: boolean; message?: string }>;
     logout: () => void;
     updateUserInfo: (updates: Partial<AuthUser>) => void;
     isAuthenticated: boolean;
@@ -66,7 +66,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const login = useCallback(
         async (email: string, password: string, role: UserRole) => {
             try {
-                const res = await fetch(`${BACKEND}/auth/login`, {
+                const endpoint = role === "recruiter" ? "/recruiter/auth/login" : "/auth/login";
+                const res = await fetch(`${BACKEND}${endpoint}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, password }),
@@ -84,6 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     full_name: data.data.user.fullName,
                     role: role,
                     profile_photo: data.data.user.profile_photo ?? undefined,
+                    status: data.data.user.status,
                 };
 
                 localStorage.setItem(TOKEN_KEY, data.data.token);
@@ -102,9 +104,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // ── Register ───────────────────────────────────────────────────────────────
     const register = useCallback(
-        async (data: any) => {
+        async (data: any, role: UserRole = "candidate") => {
             try {
-                const res = await fetch(`${BACKEND}/auth/register`, {
+                const endpoint = role === "recruiter" ? "/recruiter/auth/register" : "/auth/register";
+                const res = await fetch(`${BACKEND}${endpoint}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data),
@@ -116,8 +119,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     return { success: false, message: result.message || "Registration failed." };
                 }
 
-                // Auto-login on success
-                if (result.success && result.data?.token && result.data?.user) {
+                // For recruiters, we don't auto-login because they need approval
+                if (role === "candidate" && result.success && result.data?.token && result.data?.user) {
                     const authUser: AuthUser = {
                         id: result.data.user.id,
                         email: result.data.user.email,
@@ -133,7 +136,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     setUser(authUser);
                 }
 
-                return { success: true };
+                return { success: true, message: result.message };
             } catch {
                 return { success: false, message: "Network error. Please try again." };
             }

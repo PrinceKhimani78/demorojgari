@@ -1,2 +1,10 @@
 import Candidateslist from "@/components/Recruiters/Candidates-list/Candidates-list";
-export default Candidateslist;
+import ProtectedRoute from "@/components/Common/ProtectedRoute";
+
+export default function Page() {
+    return (
+        <ProtectedRoute allowedRole="recruiter" redirectTo="/recruiters">
+            <Candidateslist />
+        </ProtectedRoute>
+    );
+}

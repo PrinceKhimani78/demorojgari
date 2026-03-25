@@ -11,10 +11,11 @@ import {
   FaCode,
   FaUserCheck,
   FaBoxOpen,
-  FaStar,
-  FaTrash,
   FaMapMarkerAlt,
   FaEye,
+  FaBuilding,
+  FaStar,
+  FaTrash,
 } from "react-icons/fa";
 import Sidebar from "@/components/Common/Sidebar";
 import {
@@ -270,7 +271,15 @@ const Dashboard = () => {
           </div>
 
           {/* Profile */}
-          <RecruiterProfileHeader />
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+            <RecruiterProfileHeader />
+            <Link 
+              href="/recruiters/manage-industries"
+              className="px-4 py-2 bg-white border border-[#72B76A] text-[#72B76A] hover:bg-[#72B76A] hover:text-white rounded-lg text-sm font-semibold transition flex items-center gap-2 h-fit w-fit"
+            >
+              <FaBuilding size={14} /> Manage My Industries
+            </Link>
+          </div>
 
 
           {/* Stats */}

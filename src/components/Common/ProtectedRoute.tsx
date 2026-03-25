@@ -40,6 +40,13 @@ export default function ProtectedRoute({
                     ? "/recruiters/dashboard"
                     : "/candidates/dashboard";
             router.replace(fallback);
+            return;
+        }
+
+        // Recruiter not approved → redirect
+        if (user?.role === "recruiter" && user?.status !== "Active") {
+            router.replace("/recruiters/register"); // Or a specific pending page if we had one
+            return;
         }
     }, [isLoading, isAuthenticated, allowedRole, user, router, redirectTo]);
 
