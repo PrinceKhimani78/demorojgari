@@ -14,6 +14,7 @@ export interface AuthUser {
     role: UserRole;
     profile_photo?: string;
     resume?: string;
+    job_category?: string;
     status?: "Active" | "Inactive" | "PendingApproval";
 }
 
