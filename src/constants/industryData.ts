@@ -3,6 +3,8 @@ export type SelectOption = {
     value: string;
 };
 
+export const INDUSTRY_JOB_MAP: Record<string, string[]> = {};
+
 export const INDUSTRY_OPTIONS: SelectOption[] = [
     // PRIMARY SECTOR
     { label: "Agriculture & Farming", value: "Agriculture & Farming" },
