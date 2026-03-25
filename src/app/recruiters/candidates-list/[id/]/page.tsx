@@ -85,8 +85,8 @@ const CandidateProfilePage = () => {
             <main className="flex-1 bg-white rounded-lg shadow-lg overflow-hidden flex flex-col mb-10">
                 {/* Header Section */}
                 <div className="p-6 border-b">
-                    <button onClick={() => router.back()} className="mb-4 text-xs font-bold flex items-center gap-2 text-gray-500 hover:text-[#72B76A] transition">
-                        <FaArrowLeft /> BACK TO LIST
+                    <button onClick={() => router.back()} className="mb-4 text-xs flex items-center gap-2 text-gray-500 hover:text-[#72B76A] transition">
+                        <FaArrowLeft /> BRACK TO LIST
                     </button>
                     <div className="flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
                         {/* Photo */}
@@ -163,7 +163,7 @@ const CandidateProfilePage = () => {
                                 <FaBriefcase className="text-[#72B76A]" /> Work Experience
                             </h2>
                             <div className="space-y-4">
-                                {work_experience.length > 0 ? work_experience.map((work, idx) => (
+                                {work_experience.length > 0 ? work_experience.map((work: any, idx: number) => (
                                     <div key={idx} className="relative pl-6 border-l-2 border-[#EFE2F1]">
                                         <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-[#72B76A] border-2 border-white shadow-sm"></div>
                                         <h3 className="font-bold text-gray-900">{work.title}</h3>
@@ -185,7 +185,7 @@ const CandidateProfilePage = () => {
                                 <FaGraduationCap className="text-[#72B76A]" /> Education
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {education.length > 0 ? education.map((edu, idx) => (
+                                {education.length > 0 ? education.map((edu: any, idx: number) => (
                                     <div key={idx} className="bg-gray-50 p-4 rounded-lg border flex items-start gap-3 shadow-sm hover:shadow-md transition">
                                         <div className="bg-[#72B76A]/10 p-2 rounded-lg">
                                             <FaGraduationCap className="text-[#72B76A] text-xl" />
@@ -211,7 +211,7 @@ const CandidateProfilePage = () => {
                                 <FaCheck className="text-[#72B76A]" /> Skills & Ratings
                             </h2>
                             <div className="flex flex-wrap gap-2">
-                                {skills.length > 0 ? skills.map((skill, idx) => (
+                                {skills.length > 0 ? skills.map((skill: any, idx: number) => (
                                     <div key={idx} className="bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm text-sm text-gray-700 flex items-center gap-2">
                                         <span className="font-medium">{skill.skill}</span>
                                         <span className="bg-[#72B76A]/10 text-[#72B76A] px-2 py-0.5 rounded text-[10px] font-bold">
@@ -230,7 +230,7 @@ const CandidateProfilePage = () => {
                                 <FaCertificate className="text-[#00C9FF]" /> Certifications
                             </h2>
                             <div className="space-y-3">
-                                {certifications.length > 0 ? certifications.map((cert, idx) => (
+                                {certifications.length > 0 ? certifications.map((cert: any, idx: number) => (
                                     <div key={idx} className="border-b last:border-0 pb-3 last:pb-0">
                                         <h3 className="font-semibold text-gray-900 text-sm">{cert.name}</h3>
                                         <p className="text-gray-500 text-xs">{cert.year}</p>
