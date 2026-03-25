@@ -1,3 +1,4 @@
+"use client";
 import Sidebar from "@/components/Common/Sidebar";
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
