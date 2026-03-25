@@ -49,6 +49,7 @@ type JobData = {
   contact_number: string;
   created_at: string;
   status: string;
+  allow_calls?: boolean;
 };
 
 const formatSalary = (min?: string | number, max?: string | number) => {
