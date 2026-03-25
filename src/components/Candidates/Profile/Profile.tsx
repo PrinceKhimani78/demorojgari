@@ -371,6 +371,7 @@ const Profile = () => {
       fresher: workType === "fresher",
       expected_salary: form.expectedSalary || "",
       job_category: form.availabilityJobCategory,
+      preferred_industry: form.availabilityIndustry,
       interview_availability: form.availabilityCategory,
       pref_state: Array.isArray(form.availabilityState) ? form.availabilityState.join(", ") : "",
       pref_city: Array.isArray(form.availabilityCity) ? form.availabilityCity.join(", ") : "",
