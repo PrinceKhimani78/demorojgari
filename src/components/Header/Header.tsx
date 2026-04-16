@@ -8,7 +8,7 @@ import React, {
   FormEvent,
 } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FaArrowRightToBracket } from "react-icons/fa6";
 import Link from "next/link";
 import "../Home/Home.css";
@@ -36,6 +36,7 @@ const Header: React.FC = () => {
   const pathnameRaw = usePathname() || "/";
   const pathname = pathnameRaw.toLowerCase();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // route checks (case-insensitive)
   const isHome = pathname === "/";
@@ -121,10 +122,18 @@ const Header: React.FC = () => {
       if (res.success) {
         setShowPopup(false);
         setMenuOpen(false);
-        if (userType === "candidates") {
-          router.push("/candidates/dashboard");
+        
+        // Handle post-login redirection
+        const searchParams = new URLSearchParams(window.location.search);
+        const redirect = searchParams.get('redirect');
+        if (redirect) {
+          router.push(redirect);
         } else {
-          router.push("/recruiters/dashboard");
+          if (userType === "candidates") {
+            router.push("/candidates/dashboard");
+          } else {
+            router.push("/recruiters/dashboard");
+          }
         }
       } else {
         alert(res.message || "Registration failed");
@@ -134,10 +143,18 @@ const Header: React.FC = () => {
       if (res.success) {
         setShowPopup(false);
         setMenuOpen(false);
-        if (userType === "candidates") {
-          router.push("/candidates/dashboard");
+        
+        // Handle post-login redirection
+        const searchParams = new URLSearchParams(window.location.search);
+        const redirect = searchParams.get('redirect');
+        if (redirect) {
+          router.push(redirect);
         } else {
-          router.push("/recruiters/dashboard");
+          if (userType === "candidates") {
+            router.push("/candidates/dashboard");
+          } else {
+            router.push("/recruiters/dashboard");
+          }
         }
       } else {
         alert(res.message || "Login failed");
@@ -187,6 +204,41 @@ const Header: React.FC = () => {
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Listen for global openAuthModal event
+  useEffect(() => {
+    const handleOpenAuthModal = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const targetMode = customEvent.detail?.mode || "login";
+      const targetUserType = customEvent.detail?.userType || "candidates";
+      
+      setMode(targetMode);
+      setUserType(targetUserType);
+      setShowPopup(true);
+      setMenuOpen(false);
+    };
+
+    window.addEventListener("openAuthModal", handleOpenAuthModal);
+    return () => window.removeEventListener("openAuthModal", handleOpenAuthModal);
+  }, []);
+
+  // Check URL params for auth open request
+  useEffect(() => {
+    if (!searchParams) return;
+    const authAction = searchParams.get("auth");
+    if (authAction === "login" || authAction === "signup") {
+      setMode(authAction);
+      const roleParam = searchParams.get("role") as "candidates" | "recruiter";
+      if (roleParam === "candidates" || roleParam === "recruiter") {
+        setUserType(roleParam);
+      }
+      setShowPopup(true);
+      
+      // Optional: remove query params from URL without reloading
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [searchParams]);
 
   return (
     <>
@@ -247,6 +299,21 @@ const Header: React.FC = () => {
               />
             </Link>
           </div>
+          
+          {isAuthenticated && (
+            <div>
+              <Link
+                href={user?.role === "candidate" ? "/candidates/dashboard" : "/recruiters/dashboard"}
+                onClick={() => setMenuOpen(false)}
+                className={`relative inline-block group font-semibold ${(pathname.includes("/dashboard")) ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"}`}
+              >
+                Dashboard
+                <span
+                  className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${(pathname.includes("/dashboard")) ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"}`}
+                />
+              </Link>
+            </div>
+          )}
 
           <div>
             <Link
@@ -414,6 +481,18 @@ const Header: React.FC = () => {
                   }`}
               />
             </Link>
+
+            {isAuthenticated && (
+              <Link
+                href={user?.role === "candidate" ? "/candidates/dashboard" : "/recruiters/dashboard"}
+                className={`relative inline-block group font-semibold ${(pathname.includes("/dashboard")) ? "text-[#72B76A]" : "text-black hover:text-[#72B76A]"}`}
+              >
+                Dashboard
+                <span
+                  className={`absolute left-0 -bottom-0.5 h-[2px] bg-current transition-all duration-300 ${(pathname.includes("/dashboard")) ? "w-full text-[#72B76A]" : "w-0 group-hover:w-full"}`}
+                />
+              </Link>
+            )}
 
             <div className="relative group text-center">
               <Link

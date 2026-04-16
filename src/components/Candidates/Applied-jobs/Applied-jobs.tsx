@@ -1,92 +1,24 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Sidebar from "@/components/Common/Sidebar";
 import CandidateProfileHeader from "@/components/Candidates/Common/CandidateProfileHeader";
 import Link from "next/link";
 import { IoChevronForward } from "react-icons/io5";
 import { FiChevronRight } from "react-icons/fi";
-
-const cardData = [
-  {
-    id: 1,
-    date: "1 day ago",
-    btnText: "New",
-    btnColor: "#72B76A",
-    title: "Lorem ipsum dolor sit amet consectetur1",
-    desc: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus, explicabo ea. Odio!1",
-    link: "https://lorem ipsum dolor sit amet.1",
-    price: "$23908 /Month",
-    footerLink: " job details",
-  },
-  {
-    id: 2,
-    date: "8 day ago",
-    btnText: "Lorem1",
-    btnColor: "#FFCC23",
-    title: "Lorem ipsum dolor sit amet consectetur2",
-    desc: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus, explicabo ea. Odio!2",
-    link: "https://lorem ipsum dolor sit amet.2",
-    price: "$23907 /Month",
-    footerLink: "job details",
-  },
-  {
-    id: 3,
-    date: "5 day ago",
-    btnText: "Lorem3",
-    btnColor: "#AE70BB",
-    title: "Lorem ipsum dolor sit amet consectetur3",
-    desc: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus, explicabo ea. Odio!3",
-    link: "https://lorem ipsum dolor sit amet.3",
-    price: "$23909 /Month",
-    footerLink: "job details",
-  },
-  {
-    id: 4,
-    date: "5 day ago",
-    btnText: "Lorem4",
-    btnColor: "#00C9FF",
-    title: "Lorem ipsum dolor sit amet consectetur4",
-    desc: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus, explicabo ea. Odio!4",
-    link: "https://lorem ipsum dolor sit amet.4",
-    price: "$24909 /Month",
-    footerLink: "job details",
-  },
-  {
-    id: 5,
-    date: "5 day ago",
-    btnText: "Lorem5",
-    btnColor: "#023052",
-    title: "Lorem ipsum dolor sit amet consectetur5",
-    desc: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus, explicabo ea. Odio!5",
-    link: "https://lorem ipsum dolor sit amet.5",
-    price: "$25909 /Month",
-    footerLink: "job details",
-  },
-  {
-    id: 6,
-    date: "6 day ago",
-    btnText: "Lorem6",
-    btnColor: "#881A2D",
-    title: "Lorem ipsum dolor sit amet consectetur6",
-    desc: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus, explicabo ea. Odio!6",
-    link: "https://lorem ipsum dolor sit amet.6",
-    price: "$26909 /Month",
-    footerLink: "job details",
-  },
-];
-
-const payValue = (price: string) =>
-  parseInt(price.replace(/[^0-9]/g, ""), 10) || 0;
+import { useAuth } from "@/context/AuthContext";
 
 const Appliedjobs = () => {
+  const { token, isAuthenticated } = useAuth();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [applications, setApplications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const sortOptions = [
     "Most Recent",
-    "Freelance",
-    "Full Time",
-    "Internship",
-    "Part Time",
+    "Selected",
+    "Shortlisted",
+    "Applied",
   ] as const;
   type SortOpt = (typeof sortOptions)[number];
   const [sortBy, setSortBy] = useState<SortOpt>("Most Recent");
@@ -97,26 +29,56 @@ const Appliedjobs = () => {
   const [sortOpen, setSortOpen] = useState(false);
   const [showOpen, setShowOpen] = useState(false);
 
-  const sortedJobs = [...cardData].sort((a, b) => {
-    switch (sortBy) {
-      case "Freelance":
-        return a.id - b.id;
-      case "Full Time":
-      case "Part Time":
-        return payValue(b.price) - payValue(a.price);
-      case "Internship":
-        return payValue(a.price) - payValue(b.price);
-      case "Most Recent":
+  useEffect(() => {
+    if (!token) return;
+
+    fetch(`/api/applications/my-applications`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setApplications(data.data);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching applications:", err);
+        setLoading(false);
+      });
+  }, [token]);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Selected":
+        return "#72B76A";
+      case "Rejected":
+        return "#EF4444";
+      case "Shortlisted":
+        return "#3B82F6";
+      case "Interviewed":
+        return "#F59E0B";
       default:
-        return b.id - a.id;
+        return "#6B7280";
     }
+  };
+
+  const sortedJobs = [...applications].sort((a, b) => {
+    if (sortBy === "Most Recent") {
+      return (
+        new Date(b.applied_at).getTime() - new Date(a.applied_at).getTime()
+      );
+    }
+    return 0;
   });
-  type Crumb = { name: string; href?: string };
-  const crumbs: Crumb[] = [
-    { name: "Home", href: "/" },
-    { name: "Candidates", href: "/candidates" },
-    { name: "Applied-Jobs" },
-  ];
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#72B76A]"></div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -146,7 +108,7 @@ const Appliedjobs = () => {
                     lineHeight: 1.2,
                   }}
                 >
-                  Applied-jobs
+                  My Applications
                 </h1>
               </div>
               {/* Breadcrumbs (hidden on mobile) */}
@@ -172,7 +134,7 @@ const Appliedjobs = () => {
                   </li>
                   <li>
                     <span className="text-gray-700 font-medium">
-                      Applied-jobs
+                      My Applications
                     </span>
                   </li>
                 </ol>
@@ -181,7 +143,6 @@ const Appliedjobs = () => {
           </div>
           {/* Profile */}
           <CandidateProfileHeader />
-
 
           {/* Toolbar */}
           <div className="mb-12">
@@ -230,10 +191,11 @@ const Appliedjobs = () => {
                                 setSortBy(opt);
                                 setSortOpen(false);
                               }}
-                              className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-50 ${sortBy === opt
-                                ? "bg-slate-50 font-semibold"
-                                : ""
-                                }`}
+                              className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-50 ${
+                                sortBy === opt
+                                  ? "bg-slate-50 font-semibold"
+                                  : ""
+                              }`}
                             >
                               {opt}
                             </button>
@@ -276,8 +238,9 @@ const Appliedjobs = () => {
                               setShowN(n);
                               setShowOpen(false);
                             }}
-                            className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-50 ${showN === n ? "bg-slate-50 font-semibold" : ""
-                              }`}
+                            className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-50 ${
+                              showN === n ? "bg-slate-50 font-semibold" : ""
+                            }`}
                           >
                             Show {n}
                           </button>
@@ -290,82 +253,72 @@ const Appliedjobs = () => {
             </div>
           </div>
 
-          {/* Cards */}
-          <div className="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2">
-            {sortedJobs.slice(0, showN).map((card) => (
-              <div
-                key={card.id}
-                className="bg-white p-4 rounded-lg group shadow-md 
-                 transition-all duration-300 ease-in-out 
-                 hover:-translate-y-2 hover:shadow-xl hover:bg-[#F9FAFB]"
-              >
-                <div className="flex justify-between gap-10">
-                  <Link href="/" className="inline-block">
-                    <Image
-                      src="/images/company.webp"
-                      alt="Company logo"
-                      width={64}
-                      height={64}
-                      className="bg-white h-16 w-16 shadow-sm mt-0 sm:-mt-10 rounded-md"
-                    />
-                  </Link>
-
-                  <div className="flex gap-5 items-center">
-                    <p className="text-[#72B76A] text-xs">{card.date}</p>
-                    <button
-                      className="relative px-4 h-8 overflow-hidden border rounded-md text-white active:scale-90 
-                       transition-all ease-out duration-700 group-hover:scale-105"
-                      style={{
-                        backgroundColor: card.btnColor,
-                        borderColor: card.btnColor,
-                      }}
-                    >
-                      <span
-                        className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform 
-                              translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"
-                      ></span>
-                      <span className="relative flex gap-2 items-center text-xs font-semibold">
-                        {card.btnText}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-
-                <p className="font-semibold mt-5 group-hover:text-[#72B76A] transition-colors">
-                  {card.title}
+          {/* Table View */}
+          <div className="overflow-x-auto border border-slate-100 rounded-xl shadow-sm">
+            {sortedJobs.length === 0 ? (
+              <div className="py-20 text-center">
+                <p className="text-gray-500 mb-4 text-lg">
+                  You haven't applied for any jobs yet.
                 </p>
-
-                <p className="text-sm text-gray-500 mt-2 mb-5">{card.desc}</p>
-
-                {card.link.startsWith("http") ? (
-                  <a
-                    href={encodeURI(card.link)}
-                    target="/details"
-                    rel="noopener noreferrer"
-                    className="text-[#72B76A] text-sm hover:underline underline-offset-4"
-                  >
-                    {card.link}
-                  </a>
-                ) : (
-                  <Link
-                    href={card.link}
-                    className="text-[#72B76A] text-sm hover:underline underline-offset-4"
-                  >
-                    {card.link}
-                  </Link>
-                )}
-                <div className="flex items-center justify-between mt-5">
-                  <p className="font-semibold">{card.price}</p>
-
-                  <Link
-                    href={`/jobs/details`}
-                    className="text-[#72B76A] text-sm hover:underline underline-offset-4"
-                  >
-                    {card.footerLink || "Job details"}
-                  </Link>
-                </div>
+                <Link
+                  href="/jobs"
+                  className="px-6 py-2 bg-[#00C9FF] text-white rounded-lg font-bold shadow-md hover:bg-[#00b4e6] transition"
+                >
+                  Browse Jobs
+                </Link>
               </div>
-            ))}
+            ) : (
+                <table className="min-w-full divide-y divide-slate-100">
+                    <thead className="bg-slate-50">
+                        <tr>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Job Details</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Applied Date</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Salary</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                            <th className="px-6 py-4 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-slate-100">
+                        {sortedJobs.slice(0, showN).map((app) => (
+                            <tr key={app.id} className="hover:bg-slate-50 transition-colors group">
+                                <td className="px-6 py-5 whitespace-nowrap">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 font-bold border">
+                                            {app.Job?.title?.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <Link href={`/jobs/details?id=${app.Job?.id}`} className="font-bold text-slate-900 hover:text-[#00C9FF] transition-colors">{app.Job?.title}</Link>
+                                            <p className="text-xs text-slate-500">{app.Job?.company_name} • {app.Job?.location}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-5 whitespace-nowrap text-sm text-slate-600">
+                                    {new Date(app.applied_at).toLocaleDateString()}
+                                </td>
+                                <td className="px-6 py-5 whitespace-nowrap text-sm font-medium text-slate-700">
+                                    {app.Job?.salary_min ? `₹${app.Job.salary_min.toLocaleString()} /mo` : "N/A"}
+                                </td>
+                                <td className="px-6 py-5 whitespace-nowrap">
+                                    <span 
+                                        className="px-3 py-1 rounded-full text-[10px] font-bold text-white shadow-sm"
+                                        style={{ backgroundColor: getStatusColor(app.status) }}
+                                    >
+                                        {app.status}
+                                    </span>
+                                </td>
+                                <td className="px-6 py-5 whitespace-nowrap text-center">
+                                    <Link 
+                                        href={`/jobs/details?id=${app.Job?.id}`}
+                                        className="inline-flex items-center gap-1 text-sm font-bold text-[#72B76A] hover:underline"
+                                    >
+                                        View Details <FiChevronRight />
+                                    </Link>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
           </div>
         </main>
       </div>

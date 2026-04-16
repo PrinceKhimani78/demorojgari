@@ -7,6 +7,7 @@ import Link from "next/link";
 import { IoChevronForward } from "react-icons/io5";
 import { FiChevronRight } from "react-icons/fi";
 import RecruiterProfileHeader from "@/components/Recruiters/Common/RecruiterProfileHeader";
+import JobForm from "@/components/Recruiters/Common/JobForm";
 import {
   FaUser,
   FaDollarSign,
@@ -22,30 +23,7 @@ import {
 } from "react-icons/fa";
 import { ReactNode } from "react";
 
-interface InputFieldProps {
-  id: string;
-  label: string;
-  placeholder: string;
-  icon: ReactNode;
-}
-const InputField = ({ id, label, placeholder, icon }: InputFieldProps) => (
-  <div className="relative">
-    <label
-      htmlFor={id}
-      className="block text-sm font-medium text-gray-700 mb-1"
-    >
-      {label}
-    </label>
-    <span className="absolute left-3 top-8 text-[#72B76A]">{icon}</span>
-    <input
-      type="text"
-      id={id}
-      placeholder={placeholder}
-      className="w-full pl-10 p-2 rounded bg-blue-50 text-sm placeholder-slate-400 ring-1 ring-green-100 
-      transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#72B76A]"
-    />
-  </div>
-);
+
 const Postjob = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -112,179 +90,8 @@ const Postjob = () => {
           <RecruiterProfileHeader />
 
           {/* job details  */}
-          <div className="bg-white p-6">
-            <h3 className="text-lg font-semibold mb-6 border-b pb-3">
-              Job Details
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <InputField
-                id="title"
-                label="Job Title"
-                placeholder="Devid Smith"
-                icon={<FaUser />}
-              />
-              <InputField
-                id="category"
-                label="Job Category"
-                placeholder="Accounting and Finance"
-                icon={<FaBriefcase />}
-              />
-              <InputField
-                id="type"
-                label="Job Type"
-                placeholder="Full-time"
-                icon={<FaBriefcase />}
-              />
-              <InputField
-                id="salary"
-                label="Offered Salary"
-                placeholder="$ Salary"
-                icon={<FaDollarSign />}
-              />
-              <InputField
-                id="experience"
-                label="Experience"
-                placeholder="Minimum 3 years"
-                icon={<FaUser />}
-              />
-              <InputField
-                id="qualification"
-                label="Qualification"
-                placeholder="Qualification Title"
-                icon={<FaGraduationCap />}
-              />
-              <InputField
-                id="gender"
-                label="Gender"
-                placeholder="Select Gender"
-                icon={<FaVenusMars />}
-              />
-              <InputField
-                id="country"
-                label="Country"
-                placeholder="Country"
-                icon={<FaGlobe />}
-              />
-              <InputField
-                id="city"
-                label="City"
-                placeholder="City"
-                icon={<FaCity />}
-              />
-              <InputField
-                id="location"
-                label="Location"
-                placeholder="Type Address"
-                icon={<FaMapMarkerAlt />}
-              />
-              <InputField
-                id="latitude"
-                label="Latitude"
-                placeholder="Los Angeles"
-                icon={<FaMapMarkerAlt />}
-              />
-              <InputField
-                id="longitude"
-                label="Longitude"
-                placeholder="Los Angeles"
-                icon={<FaMapMarkerAlt />}
-              />
-              <InputField
-                id="email"
-                label="Email Address"
-                placeholder="Devid@example.com"
-                icon={<FaEnvelope />}
-              />
-              <InputField
-                id="website"
-                label="Website"
-                placeholder="https://..."
-                icon={<FaGlobe />}
-              />
-              <InputField
-                id="since"
-                label="Est. Since"
-                placeholder="Since..."
-                icon={<FaCalendarAlt />}
-              />
-            </div>
-
-            {/* Address */}
-            <div className="mt-6">
-              <InputField
-                id="fullAddress"
-                label="Complete Address"
-                placeholder="1363-1385 Sunset Blvd Los Angeles, CA 90026, USA"
-                icon={<FaHome />}
-              />
-            </div>
-
-            {/* Description */}
-            <div className="relative mt-6">
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Description
-              </label>
-              <textarea
-                id="description"
-                rows={4}
-                placeholder="Job description..."
-                className="w-full p-2 rounded  text-sm placeholder-slate-400 ring-1 ring-green-100 
-                transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#72B76A]"
-              />
-            </div>
-
-            {/* Dates */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-              <InputField
-                id="startDate"
-                label="Start Date"
-                placeholder="mm/dd/yyyy"
-                icon={<FaCalendarAlt />}
-              />
-              <InputField
-                id="endDate"
-                label="End Date"
-                placeholder="mm/dd/yyyy"
-                icon={<FaCalendarAlt />}
-              />
-            </div>
-
-            {/* Buttons */}
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:flex sm:gap-4">
-              {/* Publish Job */}
-              <button
-                type="submit"
-                className="w-full sm:w-auto relative px-4 h-9 overflow-hidden group border border-[#72B76A] bg-[#72B76A] rounded-md 
-    hover:bg-transparent text-white hover:text-[#72B76A] active:scale-90 transition-all ease-out duration-700 cursor-pointer text-sm"
-              >
-                <span
-                  className="absolute right-0 w-8 h-full top-0 transition-all duration-1000 transform 
-      translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"
-                ></span>
-                <span className="relative flex gap-2 items-center font-semibold justify-center">
-                  Publish Job
-                </span>
-              </button>
-
-              {/* Save Draft */}
-              <button
-                type="button"
-                className="w-full sm:w-auto relative px-4 h-9 overflow-hidden group border border-[#72B76A] bg-white text-[#72B76A] rounded-md 
-    hover:bg-[#72B76A] hover:text-white active:scale-90 transition-all ease-out duration-700 cursor-pointer text-sm"
-              >
-                <span
-                  className="absolute right-0 w-8 h-full top-0 transition-all duration-1000 transform 
-      translate-x-12 bg-white opacity-20 -skew-x-12 group-hover:-translate-x-24 ease"
-                ></span>
-                <span className="relative flex gap-2 items-center font-semibold justify-center">
-                  Save Draft
-                </span>
-              </button>
-            </div>
+          <div className="bg-white p-6 rounded-xl -mt-4 ring-1 ring-slate-100">
+            <JobForm />
           </div>
         </main>
         {showModal && (

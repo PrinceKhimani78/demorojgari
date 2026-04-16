@@ -1,8 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
 import {
   FaBriefcase,
   FaFileAlt,
@@ -28,6 +27,7 @@ import {
 import Sidebar from "@/components/Common/Sidebar";
 import CandidateProfileHeader from "@/components/Candidates/Common/CandidateProfileHeader";
 import { IoChevronForward } from "react-icons/io5";
+
 const profileViewsData = [
   { month: "January", viewers: 200 },
   { month: "February", viewers: 250 },
@@ -37,236 +37,152 @@ const profileViewsData = [
   { month: "June", viewers: 150 },
 ];
 
-const applicants = [
-  {
-    name: "Wanda Montgomery",
-    role: "Charted Accountant",
-    location: "New York",
-    rate: "$20 / Day",
-    image: "/images/profile1.webp",
-  },
-  {
-    name: "Alexander Black",
-    role: "Medical Professed",
-    location: "New York",
-    rate: "$7 / Hour",
-    image: "/images/profile1.webp",
-  },
-  {
-    name: "Ralph Johnson",
-    role: "Bank Manger",
-    location: "New York",
-    rate: "$180 / Day",
-    image: "/images/profile1.webp",
-  },
-  {
-    name: "Alexander Black",
-    role: "IT Contractor",
-    location: "New York",
-    rate: "$90 / Week",
-    image: "/images/profile1.webp",
-  },
-];
-
 const Dashbord = () => {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, token, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [stats, setStats] = useState({
+    totalApplications: 0,
+    savedJobs: 0,
+    messages: 0,
+    jobAlerts: 0,
+    recentApplications: []
+  });
+  const [fetching, setFetching] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push("/");
     }
   }, [isLoading, isAuthenticated, router]);
 
-  if (isLoading || !isAuthenticated) {
-    return <div className="h-screen flex items-center justify-center">Loading Dashboard...</div>;
+  useEffect(() => {
+    if (!token) return;
+
+    fetch(`/api/candidate-profile/dashboard/stats`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setStats(data.data);
+        }
+      })
+      .catch(err => console.error("Error fetching candidate stats:", err))
+      .finally(() => setFetching(false));
+  }, [token]);
+
+  if (isLoading || (fetching && !stats.totalApplications)) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#72B76A]"></div>
+      </div>
+    );
   }
+
   return (
     <>
       <div className="pl-2 pr-4 sm:px-2 py-2 flex gap-3 sm:gap-4 my-30 relative ">
-        {/* Sidebar */}
         <Sidebar
           type="candidate"
           mobileOpen={mobileOpen}
           setMobileOpen={setMobileOpen}
         />
-        {/* Main content */}
         <main className="flex-1 px-5 py-5 min-w-0 bg-white shadow rounded-lg space-y-8">
-          {/* Title + Breadcrumb */}
           <div className="border-b pb-4">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-              {/* Mobile toggle button */}
               <div className="flex gap-5 items-center ">
                 <IoChevronForward
                   onClick={() => setMobileOpen(true)}
                   className="text-[white] text-2xl cursor-pointer md:hidden bg-black rounded-full p-1"
                 />
-                <h1
-                  className="fontAL font-semibold capitalize text-xl md:text-2xl lg:text-3xl "
-                  style={{
-                    letterSpacing: "1px",
-                    wordSpacing: "2px",
-                    lineHeight: 1.2,
-                  }}
-                >
+                <h1 className="fontAL font-semibold capitalize text-xl md:text-2xl lg:text-3xl ">
                   Candidates Dashboard
                 </h1>
               </div>
-              {/* Breadcrumbs (hidden on mobile) */}
-              <nav
-                aria-label="Breadcrumb"
-                className="hidden sm:block text-sm text-gray-500 text-center sm:text-right"
-              >
-                <ol className="flex items-center justify-center sm:justify-end gap-2 flex-wrap">
-                  <li className="flex items-center gap-2">
-                    <Link href="/" className="hover:text-gray-700 transition">
-                      Home
-                    </Link>
-                    <FiChevronRight />
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Link
-                      href="/candidates"
-                      className="hover:text-gray-700 transition"
-                    >
-                      Candidates
-                    </Link>
-                    <FiChevronRight />
-                  </li>
-                  <li>
-                    <span className="text-gray-700 font-medium">Dashboard</span>
-                  </li>
+              <nav aria-label="Breadcrumb" className="hidden sm:block text-sm text-gray-500">
+                <ol className="flex items-center gap-2">
+                  <li><Link href="/" className="hover:text-gray-700">Home</Link></li>
+                  <li><FiChevronRight /></li>
+                  <li><Link href="/candidates" className="hover:text-gray-700">Candidates</Link></li>
+                  <li><FiChevronRight /></li>
+                  <li className="text-gray-700 font-medium">Dashboard</li>
                 </ol>
               </nav>
             </div>
           </div>
 
-          {/* Profile */}
           <CandidateProfileHeader />
 
-
-          {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              {
-                title: "Total Applications",
-                value: 25,
-                icon: <FaBriefcase />,
-                color: "bg-[#FFCC23]",
-              },
-              {
-                title: "Saved Jobs",
-                value: 435,
-                icon: <FaFileAlt />,
-                color: "bg-[#72B76A]",
-              },
-              {
-                title: "Messages",
-                value: 28,
-                icon: <FaEnvelope />,
-                color: "bg-[#AE70BB]",
-              },
-              {
-                title: "Job Alerts",
-                value: 18,
-                icon: <FaBell />,
-                color: "bg-[#00C9FF]",
-              },
+              { title: "Total Applications", value: stats.totalApplications, icon: <FaBriefcase />, color: "bg-[#FFCC23]" },
+              { title: "Saved Jobs", value: stats.savedJobs, icon: <FaFileAlt />, color: "bg-[#72B76A]" },
+              { title: "Messages", value: stats.messages, icon: <FaEnvelope />, color: "bg-[#AE70BB]" },
+              { title: "Job Alerts", value: stats.jobAlerts, icon: <FaBell />, color: "bg-[#00C9FF]" },
             ].map((card, i) => (
-              <div
-                key={i}
-                className={`${card.color} text-white p-6 rounded-lg shadow flex justify-between items-center`}
-              >
+              <div key={i} className={`${card.color} text-white p-6 rounded-lg shadow flex justify-between items-center transform hover:scale-102 transition-transform`}>
                 <div className="flex flex-col gap-2">
-                  <div className="text-3xl text-white">{card.icon}</div>
-                  <p className="text-sm">{card.title}</p>
+                  <div className="text-3xl">{card.icon}</div>
+                  <p className="text-sm font-medium">{card.title}</p>
                 </div>
                 <p className="text-3xl font-bold">{card.value}</p>
               </div>
             ))}
           </div>
 
-          {/* Profile Views */}
           <div className="bg-white shadow rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-4">Your Profile Views</h3>
-
-            <div className="h-72 w-full min-w-0 overflow-x-auto scrollbar-thin">
-              <div className="w-full min-w-0 h-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={profileViewsData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                    <XAxis dataKey="month" stroke="#6b7280" />
-                    <YAxis stroke="#6b7280" />
-                    <Tooltip />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="viewers"
-                      stroke="#42A5F5"
-                      strokeWidth={3}
-                      dot={{ r: 5, fill: "#42A5F5" }}
-                      activeDot={{ r: 8 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+            <div className="h-72 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={profileViewsData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="month" stroke="#6b7280" />
+                  <YAxis stroke="#6b7280" />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="viewers" stroke="#42A5F5" strokeWidth={3} dot={{ r: 5, fill: "#42A5F5" }} activeDot={{ r: 8 }} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Recent Applicants */}
           <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">Recent Applicants</h3>
-            <div className="divide-y divide-gray-400">
-              {applicants.map((applicant, i) => (
-                <div
-                  key={i}
-                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 px-2 hover:bg-gray-50 rounded-lg transition gap-4"
-                >
-                  <div className=" flex items-center gap-4  ">
-                    <Image
-                      src={applicant.image}
-                      alt={applicant.name}
-                      width={50}
-                      height={50}
-                      className="rounded-full border"
-                    />
-                    <div>
-                      <h4 className="font-semibold text-base sm:text-[20px]">
-                        {applicant.name}
-                      </h4>
-                      <p className="text-[10px] sm:text-[15px] text-gray-500">
-                        {applicant.role}
-                      </p>
-                      <div className="flex items-center gap-2 text-[10px] sm:text-sm text-gray-600 mt-1">
-                        <FaMapMarkerAlt className="text-[#42A5F5]" />
-                        <span>{applicant.location}</span>
-                        <span className="text-green-600 font-medium">
-                          {applicant.rate}
-                        </span>
+            <h3 className="text-lg font-semibold mb-4">Recent Applications</h3>
+            <div className="divide-y divide-gray-100 italic">
+              {stats.recentApplications && stats.recentApplications.length > 0 ? (
+                stats.recentApplications.map((app: any, i) => (
+                  <div key={i} className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 px-2 hover:bg-gray-50 rounded-lg transition gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded border bg-slate-100 flex items-center justify-center text-slate-400 font-bold">LOGO</div>
+                      <div>
+                        <h4 className="font-semibold text-lg hover:text-[#00C9FF] transition-colors">
+                          <Link href={`/jobs/details?id=${app.job_id}`}>{app.Job?.title}</Link>
+                        </h4>
+                        <p className="text-sm text-gray-500">{app.Job?.company_name}</p>
+                        <div className="flex items-center gap-4 text-xs mt-1">
+                          <span className="flex items-center gap-1 text-gray-500">
+                             <FaMapMarkerAlt className="text-[#00C9FF]" /> {app.Job?.location}
+                          </span>
+                          <span className="text-blue-600 font-semibold">{app.status}</span>
+                          <span className="text-gray-400">Applied on: {new Date(app.applied_at).toLocaleDateString()}</span>
+                        </div>
                       </div>
                     </div>
+                    <div className="flex gap-2">
+                       <Link href={`/jobs/details?id=${app.job_id}`} className="p-2 border rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all">
+                          <FaEye />
+                       </Link>
+                    </div>
                   </div>
-
-                  {/* Actions */}
-                  <div className="flex sm:flex-row flex-row sm:justify-end justify-center gap-3 ">
-                    <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
-                      <FaEye />
-                    </button>
-                    <button className="p-2 hover:bg-blue-50 rounded-full text-[#42A5F5]">
-                      <FaEnvelope />
-                    </button>
-                    <button className="text-red-600 rounded-full p-2 hover:bg-[rgba(255,0,0,0.1)] transition-colors">
-                      <FaTrash />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="py-10 text-center text-gray-400 not-italic">No recent applications found.</div>
+              )}
             </div>
           </div>
         </main>
       </div>
-      {/* <Footer /> */}
     </>
   );
 };

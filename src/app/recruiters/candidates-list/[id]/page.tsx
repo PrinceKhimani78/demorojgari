@@ -85,8 +85,8 @@ const CandidateProfilePage = () => {
             <main className="flex-1 bg-white rounded-lg shadow-lg overflow-hidden flex flex-col mb-10">
                 {/* Header Section */}
                 <div className="p-6 border-b">
-                    <button onClick={() => router.back()} className="mb-4 text-xs font-bold flex items-center gap-2 text-gray-500 hover:text-[#72B76A] transition">
-                        <FaArrowLeft /> BACK TO LIST
+                    <button onClick={() => router.back()} className="mb-4 text-xs font-bold flex items-center gap-2 text-gray-500 hover:text-[#72B76A] transition uppercase">
+                        <FaArrowLeft /> Back to List
                     </button>
                     <div className="flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
                         {/* Photo */}

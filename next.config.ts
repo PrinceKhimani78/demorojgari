@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "seeklogo.com" },
       { protocol: "https", hostname: "upload.wikimedia.org" },
       { protocol: "http", hostname: "localhost" },
+      { protocol: "http", hostname: "localhost", port: "4000" },
+      { protocol: "http", hostname: "localhost", port: "3000" },
       { protocol: "http", hostname: "127.0.0.1" },
     ],
   },
@@ -26,7 +28,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:4000/api/:path*',
+        destination: 'http://127.0.0.1:4000/api/:path*',
       },
     ];
   },

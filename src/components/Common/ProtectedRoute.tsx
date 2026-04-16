@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
     children: React.ReactNode;
     /** Which role is allowed on this page. Default: any authenticated user. */
     allowedRole?: UserRole;
-    /** Where to redirect if not logged in. Default: /candidates/login */
+    /** Where to redirect if not logged in. Default: /?auth=login */
     redirectTo?: string;
 }
 
@@ -19,7 +19,7 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({
     children,
     allowedRole,
-    redirectTo = "/candidates/login",
+    redirectTo = "/?auth=login",
 }: ProtectedRouteProps) {
     const { isAuthenticated, isLoading, user } = useAuth();
     const router = useRouter();

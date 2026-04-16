@@ -419,7 +419,7 @@ const Candidates = () => {
                 towards your dream job today!
               </p>
 
-              <Link href="/candidates/login">
+              <Link href="/?auth=login">
                 <button
                   className="relative mt-4 px-5 h-10 overflow-hidden group border border-[#FFD633] 
              bg-[#FFD633] rounded-lg hover:bg-transparent text-gray-900 hover:text-white 
