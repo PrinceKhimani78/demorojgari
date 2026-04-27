@@ -682,7 +682,7 @@ const Home = () => {
               {/* RIGHT: floating cards column */}
               <FloatingCardsAuto
                 cards={socialCards}
-                sideImageUrl="https://static.vecteezy.com/system/resources/previews/048/415/844/non_2x/3d-icon-simple-female-character-working-on-laptop-while-sitting-in-chair-free-pngwebp"
+                sideImageUrl="https://static.vecteezy.com/system/resources/previews/048/415/844/non_2x/3d-icon-simple-female-character-working-on-laptop-while-sitting-in-chair-free-png.webp"
                 duration={18}
               />
             </div>
@@ -695,7 +695,7 @@ const Home = () => {
             <div
               className="absolute inset-0 -z-10 bg-cover bg-[5%_center] lg:bg-[40%_center] bg-no-repeat"
               style={{
-                backgroundImage: 'url("/images/RI_banner_bgwebp")',
+                backgroundImage: 'url("/images/RI_banner_bg.webp")',
                 transform: `translateY(${scrollPosition * 0.1}px)`,
               }}
               role="img"
@@ -861,7 +861,7 @@ const Home = () => {
                 {/* RIGHT: floating cards column 
                 <FloatingCardsAuto
                   cards={socialCards}
-                  sideImageUrl="https://static.vecteezy.com/system/resources/previews/048/415/844/non_2x/3d-icon-simple-female-character-working-on-laptop-while-sitting-in-chair-free-pngwebp"
+                  sideImageUrl="https://static.vecteezy.com/system/resources/previews/048/415/844/non_2x/3d-icon-simple-female-character-working-on-laptop-while-sitting-in-chair-free-png.webp"
                   speed={10}
                   resumeSpeed={16}
                 />
