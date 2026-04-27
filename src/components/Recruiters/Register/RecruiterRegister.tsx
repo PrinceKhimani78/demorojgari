@@ -27,7 +27,7 @@ interface FormState {
     confirmPassword: string;
 }
 
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com";
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_API_URL || "https://api.rojgariindia.com/api";
 
 export default function RecruiterRegister() {
     const router = useRouter();
