@@ -14,7 +14,8 @@ export async function register() {
     // Log uncaught exceptions
     process.on('uncaughtException', (err) => {
       logger.error('Uncaught Exception thrown:', err);
-      // Optional: process.exit(1) if you want it to restart immediately
+      // Exit immediately so PM2 can auto-restart the server and recover
+      process.exit(1);
     });
   }
 }
