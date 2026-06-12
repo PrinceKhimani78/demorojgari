@@ -515,6 +515,11 @@ const Profile = () => {
                 <h3 className="text-lg font-semibold mb-6 border-b pb-3 flex items-center gap-2 text-[#72B76A]">
                   <FaBriefcase /> WORK EXPERIENCE
                 </h3>
+                {errors.experiences && (
+                  <p className="text-red-500 text-sm mb-4 flex items-center gap-1">
+                    <FaInfoCircle /> {errors.experiences}
+                  </p>
+                )}
 
                 {experiences.map((exp, idx) => (
                   <div key={idx} className="mb-8 p-4 border rounded-lg relative bg-gray-50/50">
@@ -541,6 +546,11 @@ const Profile = () => {
               <h3 className="text-lg font-semibold mb-6 border-b pb-3 flex items-center gap-2 text-[#72B76A]">
                 <FaGraduationCap /> EDUCATION
               </h3>
+              {errors.educationList && (
+                <p className="text-red-500 text-sm mb-4 flex items-center gap-1">
+                  <FaInfoCircle /> {errors.educationList}
+                </p>
+              )}
 
               {educationList.map((edu, idx) => (
                 <div key={idx} className="mb-6 p-4 border rounded-lg relative bg-gray-50/50">
@@ -561,6 +571,11 @@ const Profile = () => {
               <h3 className="text-lg font-semibold mb-6 border-b pb-3 flex items-center gap-2 text-[#72B76A]">
                 <IoChevronForward className="rotate-90" /> SKILLS
               </h3>
+              {errors.skillsList && (
+                <p className="text-red-500 text-sm mb-4 flex items-center gap-1">
+                  <FaInfoCircle /> {errors.skillsList}
+                </p>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {skillsList.map((skill, idx) => (
                   <div key={idx} className="flex gap-2 items-end">

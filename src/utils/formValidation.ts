@@ -193,28 +193,28 @@ export function validateForm(payload: unknown) {
 
     if (path[0] === "experiences") {
       const [, index, field] = path;
-      const key = `${String(field)}-${String(index)}`;
+      const key = index !== undefined ? `${String(field)}-${String(index)}` : "experiences";
       mapped[key] = err.message;
       return;
     }
 
     if (path[0] === "educationList") {
       const [, index, field] = path;
-      const key = `${String(field)}-${String(index)}`;
+      const key = index !== undefined ? `${String(field)}-${String(index)}` : "educationList";
       mapped[key] = err.message;
       return;
     }
 
     if (path[0] === "skillsList") {
       const [, index, field] = path;
-      const key = `skill-${String(field)}-${String(index)}`;
+      const key = index !== undefined ? `skill-${String(field)}-${String(index)}` : "skillsList";
       mapped[key] = err.message;
       return;
     }
 
     if (path[0] === "certificationList") {
       const [, index, field] = path;
-      const key = `cert-${String(field)}-${String(index)}`;
+      const key = index !== undefined ? `cert-${String(field)}-${String(index)}` : "certificationList";
       mapped[key] = err.message;
       return;
     }
