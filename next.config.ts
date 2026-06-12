@@ -25,13 +25,10 @@ const nextConfig: NextConfig = {
   },
 
   async rewrites() {
-    // In local dev, proxy to localhost:4000. In production, proxy to the live backend.
-    const isDev = process.env.NODE_ENV !== 'production';
-    const backendBase = process.env.BACKEND_INTERNAL_URL || (isDev ? 'http://localhost:4000' : 'https://api.rojgariindia.com');
     return [
       {
         source: '/api/:path*',
-        destination: `${backendBase}/api/:path*`,
+        destination: 'https://api.rojgariindia.com/api/:path*',
       },
     ];
   },
