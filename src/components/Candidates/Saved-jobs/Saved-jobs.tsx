@@ -8,155 +8,56 @@ import Link from "next/link";
 import { IoChevronForward } from "react-icons/io5";
 
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-const jobs = [
-  {
-    id: 1,
-    logo: "/images/arrow1.webp",
-    title: "Art Production Specialist",
-    company: "Coderbotics Solutions",
-    date: "28/06/2023",
-  },
-  {
-    id: 2,
-    logo: "/images/miscrosoft.webp",
-    title: "IT Department Manager",
-    company: "Microsoft Solution",
-    date: "28/06/2023",
-  },
-  {
-    id: 3,
-    logo: "/images/companyname.webp",
-    title: "Recreation & Fitness Worker",
-    company: "Galaxy IT Solution",
-    date: "28/06/2023",
-  },
-  {
-    id: 4,
-    logo: "/images/arrow1.webp",
-    title: "Frontend Developer",
-    company: "TechWorld Pvt Ltd",
-    date: "29/06/2023",
-  },
-  {
-    id: 5,
-    logo: "/images/companyname.webp",
-    title: "Backend Engineer",
-    company: "Cloudify Systems",
-    date: "29/06/2023",
-  },
-  {
-    id: 6,
-    logo: "/images/miscrosoft.webp",
-    title: "Full Stack Developer",
-    company: "NextGen IT",
-    date: "30/06/2023",
-  },
-  {
-    id: 7,
-    logo: "/images/arrow1.webp",
-    title: "Data Analyst",
-    company: "Insight Analytics",
-    date: "30/06/2023",
-  },
-  {
-    id: 8,
-    logo: "/images/companyname.webp",
-    title: "UI/UX Designer",
-    company: "PixelPerfect Designs",
-    date: "01/07/2023",
-  },
-  {
-    id: 9,
-    logo: "/images/miscrosoft.webp",
-    title: "Project Manager",
-    company: "Agile Corp",
-    date: "01/07/2023",
-  },
-  {
-    id: 10,
-    logo: "/images/arrow1.webp",
-    title: "Mobile App Developer",
-    company: "Appify Solutions",
-    date: "02/07/2023",
-  },
-  {
-    id: 11,
-    logo: "/images/companyname.webp",
-    title: "QA Tester",
-    company: "BugFree Labs",
-    date: "02/07/2023",
-  },
-  {
-    id: 12,
-    logo: "/images/arrow1.webp",
-    title: "Marketing Specialist",
-    company: "Growthify Agency",
-    date: "03/07/2023",
-  },
-  {
-    id: 13,
-    logo: "/images/miscrosoft.webp",
-    title: "Cyber Security Analyst",
-    company: "SecureNet Pvt Ltd",
-    date: "03/07/2023",
-  },
-  {
-    id: 14,
-    logo: "/images/companyname.webp",
-    title: "DevOps Engineer",
-    company: "CloudOps Hub",
-    date: "04/07/2023",
-  },
-  {
-    id: 15,
-    logo: "/images/arrow1.webp",
-    title: "Content Writer",
-    company: "Creative Minds",
-    date: "04/07/2023",
-  },
-  {
-    id: 16,
-    logo: "/images/miscrosoft.webp",
-    title: "HR Manager",
-    company: "PeopleFirst Ltd",
-    date: "05/07/2023",
-  },
-  {
-    id: 17,
-    logo: "/images/companyname.webp",
-    title: "Finance Executive",
-    company: "FinTrack Solutions",
-    date: "05/07/2023",
-  },
-  {
-    id: 18,
-    logo: "/images/arrow1.webp",
-    title: "Graphic Designer",
-    company: "DesignHub Studio",
-    date: "06/07/2023",
-  },
-  {
-    id: 19,
-    logo: "/images/miscrosoft.webp",
-    title: "SEO Specialist",
-    company: "RankBoost Agency",
-    date: "06/07/2023",
-  },
-  {
-    id: 20,
-    logo: "/images/companyname.webp",
-    title: "Business Analyst",
-    company: "StrategyWorks",
-    date: "07/07/2023",
-  },
-];
+import { useAuth } from "@/context/AuthContext";
 
 const Savedjobs = () => {
+  const { token, isAuthenticated } = useAuth();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [entries, setEntries] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const totalPages = Math.ceil(jobs.length / entries);
+  React.useEffect(() => {
+    if (isAuthenticated && token) {
+      fetchSavedJobs();
+    }
+  }, [isAuthenticated, token]);
+
+  const fetchSavedJobs = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/applications/saved-jobs", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success && data.data) {
+        setJobs(data.data);
+      }
+    } catch (err) {
+      console.error("Error fetching saved jobs:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemove = async (jobId: string) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/applications/saved-jobs/${jobId}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setJobs(jobs.filter(j => j.job_id !== jobId));
+      }
+    } catch (err) {
+      console.error("Error removing saved job:", err);
+    }
+  };
+
+  const totalPages = Math.ceil(jobs.length / entries) || 1;
 
   const startIndex = (currentPage - 1) * entries;
   const endIndex = startIndex + entries;
@@ -281,9 +182,13 @@ const Savedjobs = () => {
             </div>
 
             {/* Data Rows */}
-            {currentJobs.map((job, i) => (
+            {loading ? (
+              <div className="p-10 text-center text-gray-500 font-medium">Loading saved jobs...</div>
+            ) : currentJobs.length === 0 ? (
+              <div className="p-10 text-center text-gray-500 font-medium">You have not saved any jobs yet.</div>
+            ) : currentJobs.map((item, i) => (
               <div
-                key={job.id}
+                key={item.id}
                 className={`grid grid-cols-1 sm:grid-cols-4 ${i % 2 === 0 ? "bg-white" : "bg-gray-50"
                   } border-b border-gray-400`}
               >
@@ -291,8 +196,8 @@ const Savedjobs = () => {
                 <div className="px-3 py-2 border-r last:border-r-0 border-gray-400 grid grid-cols-[40px_1fr] gap-3 items-center font-medium text-[#00C9FF]">
                   {/* Logo */}
                   <Image
-                    src={job.logo}
-                    alt={job.title}
+                    src={item.job?.company_logo || "/images/companyname.webp"}
+                    alt={item.job?.title || "Job"}
                     width={32}
                     height={32}
                     className="rounded"
@@ -303,7 +208,9 @@ const Savedjobs = () => {
                     <span className="sm:hidden font-semibold text-gray-700 text-xs">
                       Job Title:
                     </span>
-                    <span>{job.title}</span>
+                    <Link href={`/jobs/details?id=${item.job_id}`} className="hover:underline">
+                      {item.job?.title || "Unknown Job"}
+                    </Link>
                   </div>
                 </div>
 
@@ -312,7 +219,7 @@ const Savedjobs = () => {
                   <span className="sm:hidden font-semibold text-gray-700">
                     Company:
                   </span>
-                  {job.company}
+                  {item.job?.company_name || "Unknown Company"}
                 </div>
 
                 {/* Date */}
@@ -320,7 +227,7 @@ const Savedjobs = () => {
                   <span className="sm:hidden font-semibold text-gray-700">
                     Date:
                   </span>
-                  {job.date}
+                  {new Date(item.created_at).toLocaleDateString()}
                 </div>
 
                 {/* Action */}
@@ -328,10 +235,12 @@ const Savedjobs = () => {
                   <span className="sm:hidden font-semibold text-gray-700">
                     Action:
                   </span>
-                  <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
-                    <FaEye />
-                  </button>
-                  <button className="text-red-600 rounded-full p-2 hover:bg-[rgba(255,0,0,0.1)] transition-colors">
+                  <Link href={`/jobs/details?id=${item.job_id}`}>
+                    <button className="p-2 rounded-full text-[#00233e] hover:bg-[rgba(0,35,62,0.1)] transition-colors">
+                      <FaEye />
+                    </button>
+                  </Link>
+                  <button onClick={() => handleRemove(item.job_id)} className="text-red-600 rounded-full p-2 hover:bg-[rgba(255,0,0,0.1)] transition-colors">
                     <FaTrash />
                   </button>
                 </div>
