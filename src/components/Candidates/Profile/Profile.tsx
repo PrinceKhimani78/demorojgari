@@ -444,6 +444,9 @@ const Profile = () => {
 
   if (fetching) return <div className="flex justify-center items-center h-screen"><Spin size="large" /></div>;
 
+  console.log("DEBUG - form.availabilityIndustry:", form.availabilityIndustry);
+  console.log("DEBUG - INDUSTRY_JOB_MAP matching options:", INDUSTRY_JOB_MAP[form.availabilityIndustry]);
+
   return (
     <>
       <div className="pl-2 pr-4 sm:px-2 py-2 flex gap-3 sm:gap-4 my-30 relative">
