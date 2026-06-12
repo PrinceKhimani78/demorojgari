@@ -92,6 +92,8 @@ const JobDetailsContent = () => {
   const [showQuestionModal, setShowQuestionModal] = useState(false);
   const [answers, setAnswers] = useState<{ [key: number]: string }>({});
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [applyError, setApplyError] = useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const parsedQuestions: string[] = React.useMemo(() => {
@@ -197,12 +199,15 @@ const JobDetailsContent = () => {
       if (data.success) {
         setApplied(true);
         setApplicationStatus("Applied");
+        setShowSuccess(true);
+        setApplyError(null);
+        setTimeout(() => setShowSuccess(false), 5000);
       } else {
-        alert(data.message || "Failed to apply");
+        setApplyError(data.message || "Failed to apply. Please try again.");
       }
     } catch (err) {
       console.error(err);
-      alert("An error occurred during application.");
+      setApplyError("A network error occurred. Please try again.");
     } finally {
       setApplying(false);
       setShowQuestionModal(false);
@@ -392,12 +397,27 @@ const JobDetailsContent = () => {
                   </div>
                 </div>
 
-                <div className="flex-shrink-0 mt-2 sm:mt-0">
+                <div className="flex-shrink-0 mt-2 sm:mt-0 flex flex-col items-end gap-2">
+                  {/* Success banner */}
+                  {showSuccess && (
+                    <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium px-4 py-2 rounded-xl animate-pulse">
+                      <span>🎉</span>
+                      <span>Application submitted successfully!</span>
+                    </div>
+                  )}
+                  {/* Error banner */}
+                  {applyError && (
+                    <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm font-medium px-4 py-2 rounded-xl">
+                      <span>⚠️</span>
+                      <span>{applyError}</span>
+                      <button onClick={() => setApplyError(null)} className="ml-1 text-red-400 hover:text-red-600">✕</button>
+                    </div>
+                  )}
                   {applied ? (
                     <div className="flex flex-col items-center gap-2">
                       <button
                         disabled
-                        className="w-full sm:w-auto px-8 h-11 bg-emerald-500 rounded-lg text-white font-bold opacity-70 cursor-not-allowed shadow-md"
+                        className="w-full sm:w-auto px-8 h-11 bg-emerald-500 rounded-lg text-white font-bold opacity-80 cursor-not-allowed shadow-md"
                       >
                         ✓ Applied
                       </button>
@@ -652,7 +672,9 @@ const JobDetailsContent = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="px-6 py-4 border-b flex items-center justify-between bg-slate-50">
-              <h3 className="text-lg font-bold text-slate-800">Employer Screening Questions</h3>
+              <h3 className="text-lg font-bold text-slate-800">
+                {parsedQuestions.length > 0 ? "Employer Screening Questions" : "Apply for this Job"}
+              </h3>
               <button 
                 onClick={() => setShowQuestionModal(false)}
                 className="text-slate-400 hover:text-slate-600 transition"
@@ -664,9 +686,11 @@ const JobDetailsContent = () => {
             </div>
             
             <div className="p-6 overflow-y-auto space-y-6 flex-1">
-              <p className="text-sm text-slate-500 mb-4">
-                The employer has requested that you answer the following questions to be considered for this position.
-              </p>
+              {parsedQuestions.length > 0 && (
+                <p className="text-sm text-slate-500 mb-4">
+                  The employer has requested that you answer the following questions to be considered for this position.
+                </p>
+              )}
               
               {parsedQuestions.map((q, index) => (
                 <div key={index} className="space-y-2">
