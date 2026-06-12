@@ -123,18 +123,20 @@ const Dashbord = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: "Total Applications", value: stats.totalApplications, icon: <FaBriefcase />, color: "bg-[#FFCC23]" },
-              { title: "Saved Jobs", value: stats.savedJobs, icon: <FaFileAlt />, color: "bg-[#72B76A]" },
-              { title: "Messages", value: stats.messages, icon: <FaEnvelope />, color: "bg-[#AE70BB]" },
-              { title: "Job Alerts", value: stats.jobAlerts, icon: <FaBell />, color: "bg-[#00C9FF]" },
+              { title: "Total Applications", value: stats.totalApplications, icon: <FaBriefcase />, color: "bg-[#FFCC23]", link: "/candidates/applied-jobs" },
+              { title: "Saved Jobs", value: stats.savedJobs, icon: <FaFileAlt />, color: "bg-[#72B76A]", link: "/candidates/saved-jobs" },
+              { title: "Messages", value: stats.messages, icon: <FaEnvelope />, color: "bg-[#AE70BB]", link: "#" },
+              { title: "Job Alerts", value: stats.jobAlerts, icon: <FaBell />, color: "bg-[#00C9FF]", link: "/candidates/job-alerts" },
             ].map((card, i) => (
-              <div key={i} className={`${card.color} text-white p-6 rounded-lg shadow flex justify-between items-center transform hover:scale-102 transition-transform`}>
-                <div className="flex flex-col gap-2">
-                  <div className="text-3xl">{card.icon}</div>
-                  <p className="text-sm font-medium">{card.title}</p>
+              <Link href={card.link} key={i}>
+                <div className={`${card.color} text-white p-6 rounded-lg shadow flex justify-between items-center transform hover:scale-102 transition-transform cursor-pointer h-full`}>
+                  <div className="flex flex-col gap-2">
+                    <div className="text-3xl">{card.icon}</div>
+                    <p className="text-sm font-medium">{card.title}</p>
+                  </div>
+                  <p className="text-3xl font-bold">{card.value}</p>
                 </div>
-                <p className="text-3xl font-bold">{card.value}</p>
-              </div>
+              </Link>
             ))}
           </div>
 
