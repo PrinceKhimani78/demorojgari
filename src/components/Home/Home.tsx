@@ -189,6 +189,8 @@ const typeColors: Record<string, string> = {
 
 const Home = () => {
   const [realJobs, setRealJobs] = useState<any[]>([]);
+  const [whatOptions, setWhatOptions] = useState<string[]>(["Job Title", "Designer", "Developer"]);
+  const [typeOptions, setTypeOptions] = useState<string[]>(["All Category", "Designing", "Development", "Marketing"]);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -197,6 +199,30 @@ const Home = () => {
         const data = await res.json();
         if (data.success && data.data) {
           setRealJobs(data.data.slice(0, 6));
+
+          // Dynamically extract unique job titles for "WHAT" dropdown
+          const uniqueTitles = Array.from(
+            new Set(
+              data.data
+                .map((job: any) => job.title)
+                .filter((title: any) => typeof title === "string" && title.trim() !== "")
+            )
+          ) as string[];
+          if (uniqueTitles.length > 0) {
+            setWhatOptions(["Job Title", ...uniqueTitles]);
+          }
+
+          // Dynamically extract unique categories for "TYPE" dropdown
+          const uniqueCategories = Array.from(
+            new Set(
+              data.data
+                .map((job: any) => job.job_category)
+                .filter((cat: any) => typeof cat === "string" && cat.trim() !== "")
+            )
+          ) as string[];
+          if (uniqueCategories.length > 0) {
+            setTypeOptions(["All Category", ...uniqueCategories]);
+          }
         }
       } catch (err) {
         console.error("Error fetching jobs for home:", err);
@@ -212,10 +238,6 @@ const Home = () => {
   const [what, setWhat] = useState("Job Title");
   const [type, setType] = useState("All Category");
   const [location, setLocation] = useState("");
-
-  // ✅ Define dropdown options
-  const whatOptions = ["Job Title", "Designer", "Developer"];
-  const typeOptions = ["All Category", "Designing", "Development", "Marketing"];
 
   const whatRef = useRef<HTMLDivElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
