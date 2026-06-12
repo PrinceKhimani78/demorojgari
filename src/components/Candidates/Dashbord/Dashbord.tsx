@@ -59,16 +59,20 @@ const Dashbord = () => {
   useEffect(() => {
     if (!token) return;
 
-    fetch(`/api/candidate-profile/dashboard/stats`, {
+    fetch(`/api/applications/my-applications`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setStats(data.data);
+          setStats(prev => ({
+            ...prev,
+            totalApplications: data.data.length,
+            recentApplications: data.data
+          }));
         }
       })
-      .catch(err => console.error("Error fetching candidate stats:", err))
+      .catch(err => console.error("Error fetching applications:", err))
       .finally(() => setFetching(false));
   }, [token]);
 
