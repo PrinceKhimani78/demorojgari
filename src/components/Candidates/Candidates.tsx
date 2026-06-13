@@ -176,7 +176,7 @@ const Candidates = () => {
                 {crumbs.map((c, i) => {
                   const isLast = i === crumbs.length - 1;
                   return (
-                     <li key={c.name} className="flex items-center gap-2">
+                    <li key={c.name} className="flex items-center gap-2">
                       {i > 0 && (
                         <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-slate-400" aria-hidden="true">
                           <path d="M7.05 4.55a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1 0 1.4l-4 4a1 1 0 1 1-1.4-1.4L9.88 10 7.05 7.15a1 1 0 0 1 0-1.4z" />
@@ -205,17 +205,17 @@ const Candidates = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {[
-            { icon: "📄", title: "Free Resume Review", desc: "Get expert feedback on your CV to ensure it stands out to top corporate recruiters." },
-            { icon: "🎯", title: "Smart Job Matching", desc: "Our AI-driven platform recommends roles that perfectly align with your skills and experience." },
+            { icon: "🏢", title: "Verified Employers", desc: "Access exclusive opportunities from highly reputed corporate employers across various industries." },
+            { icon: "🎯", title: "Precision Job Matching", desc: "We connect you with roles that perfectly align with your unique skills and career aspirations." },
             { icon: "⚡", title: "Direct HR Access", desc: "Skip the queue. Apply directly and get your profile in front of hiring managers instantly." }
           ].map((benefit, idx) => (
-            <motion.div 
+            <motion.div
               key={idx}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className="flex flex-col items-center text-center p-6"
+              className="flex flex-col items-center text-center p-8 bg-white/70 backdrop-blur-md border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-3xl"
             >
               <div className="w-20 h-20 rounded-2xl bg-[#72B76A]/10 flex items-center justify-center text-4xl mb-6 shadow-inner">
                 {benefit.icon}
@@ -230,29 +230,29 @@ const Candidates = () => {
       {/* The Journey (Redesigned Timeline) */}
       <section className="py-20 px-5 lg:px-[5%] 2xl:px-[15%] overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="order-2 lg:order-1 relative">
+          <div className="order-2 relative">
             {/* Vertical Line */}
-            <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-[#FFCC23] to-[#72B76A] rounded-full hidden md:block"></div>
-            
-            <div className="space-y-12 relative">
+            <div className="absolute left-7 top-6 bottom-8 w-1 bg-gradient-to-b from-[#FFCC23] to-[#72B76A] rounded-full hidden md:block"></div>
+
+            <div className="space-y-10 relative">
               {[
                 { step: "01", title: "Build Your Profile", desc: "Sign up and create a comprehensive profile highlighting your skills, experience, and career aspirations.", color: "bg-[#FFCC23]" },
                 { step: "02", title: "Discover Opportunities", desc: "Browse thousands of verified job listings or let our smart algorithms recommend the perfect roles for you.", color: "bg-[#00c9ff]" },
                 { step: "03", title: "Apply Seamlessly", desc: "Apply to multiple jobs with a single click and track your application status in real-time.", color: "bg-[#ae70bb]" },
                 { step: "04", title: "Get Hired", desc: "Ace your interviews with our preparation tips and secure your dream job at a top company.", color: "bg-[#72B76A]" }
               ].map((item, idx) => (
-                <motion.div 
+                <motion.div
                   key={idx}
                   initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.15 }}
-                  className="flex gap-6 items-start relative z-10"
+                  className="flex gap-6 items-center relative z-10"
                 >
-                  <div className={`w-16 h-16 rounded-2xl ${item.color} text-white flex items-center justify-center font-bold text-xl shadow-lg shrink-0`}>
+                  <div className={`w-14 h-14 rounded-2xl ${item.color} text-white flex items-center justify-center font-bold text-lg shadow-lg shrink-0`}>
                     {item.step}
                   </div>
-                  <div className="pt-2">
+                  <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
                     <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
                   </div>
@@ -260,10 +260,10 @@ const Candidates = () => {
               ))}
             </div>
           </div>
-          <div className="order-1 lg:order-2">
+          <div className="order-1">
             <p className="fontPOP text-[#FFCC23] text-sm tracking-widest uppercase">Your Path to Success</p>
             <h2 className="fontAL font-semibold capitalize text-2xl md:text-3xl lg:text-4xl mt-5 text-gray-900" style={{ letterSpacing: "1px", wordSpacing: "2px", lineHeight: 1.2 }}>A Simple Process to Land Your Dream Job</h2>
-            <p className="text-gray-600 mb-8 leading-relaxed">
+            <p className="text-gray-600 mt-5 mb-8 leading-relaxed">
               We've streamlined the job search process so you can focus on what matters most: preparing for your interviews and advancing your career. Follow our proven 4-step journey.
             </p>
             <FeatureList
@@ -278,25 +278,40 @@ const Candidates = () => {
       </section>
 
       {/* Featured Skills / Categories */}
-      <section className="py-20 px-5 lg:px-[5%] 2xl:px-[15%]">
-        <div className="text-center mb-12">
-          <h2 className="fontAL font-semibold capitalize text-2xl md:text-3xl lg:text-4xl mt-5 text-gray-900" style={{ letterSpacing: "1px", wordSpacing: "2px", lineHeight: 1.2 }}>Trending Job Categories</h2>
-          <p className="text-gray-500 mt-4">Explore opportunities in the most sought-after industries.</p>
-        </div>
+      <div className="bg-[#CCF4F3] pt-20 pb-40 px-5 lg:px-[5%] 2xl:px-[15%] mt-10">
+        <p
+          className="fontPOP text-[#00C9FF] text-sm tracking-widest uppercase text-center"
+          style={{ letterSpacing: "1px", lineHeight: 1.3 }}
+        >
+          Categories
+        </p>
+        <h2
+          className="fontAL font-semibold capitalize text-center text-2xl md:text-3xl lg:text-4xl mt-5 mx-auto max-w-[800px] text-gray-900"
+          style={{ letterSpacing: "1px", wordSpacing: "2px", lineHeight: 1.2 }}
+        >
+          Trending <span className="text-[#00C9FF]">Job Categories</span>
+        </h2>
+        <p className="text-gray-600 text-center mt-4">
+          Explore opportunities in the most sought-after industries.
+        </p>
+      </div>
+
+      {/* Categories Wrapper */}
+      <div className="bg-[#F2FCF1] -mt-20 mx-5 lg:mx-[10%] 2xl:mx-[20%] p-10 rounded-xl shadow-sm mb-20 relative z-10">
         <div className="flex flex-wrap justify-center gap-4">
           {["Information Technology", "Healthcare", "Finance & Banking", "Engineering", "Marketing & Sales", "Human Resources", "Education", "Manufacturing", "Customer Support"].map((skill, idx) => (
-            <div key={idx} className="px-6 py-3 rounded-full border border-gray-200 bg-white shadow-sm hover:shadow-md hover:border-[#72B76A] hover:text-[#72B76A] transition-all cursor-pointer text-sm font-medium text-gray-700">
+            <div key={idx} className="px-6 py-3 rounded-full border border-[#e5e5e5] bg-white shadow-sm hover:shadow-md hover:border-[#00C9FF] hover:text-[#00C9FF] transition-all cursor-pointer text-sm font-medium text-gray-700">
               {skill}
             </div>
           ))}
         </div>
-      </section>
+      </div>
 
       {/* Call to Action */}
       <div className="px-5 lg:px-[5%] 2xl:px-[15%] pb-20 pt-10">
         <div className="bg-gradient-to-r from-[#00c9ff]/80 to-[#005c99]/90 rounded-3xl p-10 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-10 relative overflow-hidden">
           <div className="absolute right-0 top-0 w-1/2 h-full bg-[url('/images/map-img.webp')] opacity-10 bg-cover bg-center"></div>
-          
+
           <div className="relative z-10 max-w-xl text-center lg:text-left">
             <h2 className="fontAL font-bold text-3xl md:text-4xl text-white mb-6 leading-tight">Ready to Take the Next Step in Your Career?</h2>
             <p className="text-white/80 text-sm md:text-base mb-8 leading-relaxed">
@@ -309,7 +324,7 @@ const Candidates = () => {
                   setMode("signup");
                   setUserType("candidates");
                 }}
-                className="relative px-6 h-11 overflow-hidden group border border-[#FFCC23] bg-[#FFCC23] rounded-lg hover:bg-transparent text-white hover:text-[#FFCC23] active:scale-90 transition-all ease-out duration-700 shadow-lg"
+                className="relative px-6 h-11 overflow-hidden group border border-[#0A2540] bg-[#0A2540] rounded-lg hover:bg-transparent text-white hover:text-[#0A2540] active:scale-90 transition-all ease-out duration-700 shadow-lg"
               >
                 <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-20 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-64 ease"></span>
                 <span className="relative flex justify-center items-center text-sm font-semibold">Create Free Profile</span>
@@ -320,22 +335,22 @@ const Candidates = () => {
                   setMode("login");
                   setUserType("candidates");
                 }}
-                className="relative px-6 h-11 overflow-hidden group border-2 border-[#FFCC23] bg-transparent rounded-lg hover:bg-[#FFCC23] text-[#FFCC23] hover:text-white active:scale-90 transition-all ease-out duration-700"
+                className="relative px-6 h-11 overflow-hidden group border-2 border-[#0A2540] bg-transparent rounded-lg hover:bg-[#0A2540] text-[#0A2540] hover:text-white active:scale-90 transition-all ease-out duration-700"
               >
                 <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-20 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-64 ease"></span>
                 <span className="relative flex justify-center items-center text-sm font-semibold">Sign In</span>
               </button>
             </div>
           </div>
-          
+
           <div className="relative z-10 hidden lg:block">
-             <Image
-                src="/images/girl.webp"
-                alt="Candidate Success"
-                height={350}
-                width={350}
-                className="drop-shadow-2xl"
-              />
+            <Image
+              src="/images/girl.webp"
+              alt="Candidate Success"
+              height={350}
+              width={350}
+              className="drop-shadow-2xl"
+            />
           </div>
         </div>
       </div>
@@ -374,31 +389,31 @@ const Candidates = () => {
                       ➤ Please Note
                     </p>
                     <ul className="text-xs space-y-2">
-                       <li>
-                         - Verify your email with the secure OTP sent to you.
-                       </li>
-                       <li>
-                         - Complete your profile fully to increase job interview calls.
-                       </li>
-                       <li>
-                         - Upload a recent resume in PDF, DOC, or DOCX formats.
-                       </li>
-                       <li>
-                         - Update your skill list regularly to match new job postings.
-                       </li>
-                       <li>
-                         - Keep your current contact number active for HR coordinators.
-                       </li>
-                       <li>
-                         - Review job requirements and salary details before applying.
-                       </li>
-                       <li>
-                         - We will never ask you to pay any charges for registrations.
-                       </li>
-                       <li>
-                         - Keep your account password secure and do not share it.
-                       </li>
-                     </ul>
+                      <li>
+                        - Verify your email with the secure OTP sent to you.
+                      </li>
+                      <li>
+                        - Complete your profile fully to increase job interview calls.
+                      </li>
+                      <li>
+                        - Upload a recent resume in PDF, DOC, or DOCX formats.
+                      </li>
+                      <li>
+                        - Update your skill list regularly to match new job postings.
+                      </li>
+                      <li>
+                        - Keep your current contact number active for HR coordinators.
+                      </li>
+                      <li>
+                        - Review job requirements and salary details before applying.
+                      </li>
+                      <li>
+                        - We will never ask you to pay any charges for registrations.
+                      </li>
+                      <li>
+                        - Keep your account password secure and do not share it.
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -441,9 +456,8 @@ const Candidates = () => {
                   <button
                     type="button"
                     onClick={() => setUserType("candidates")}
-                    className={`relative z-10 w-32 h-9 flex items-center justify-center text-sm font-semibold rounded-lg transition-colors duration-300 ${
-                      userType === "candidates" ? "text-white" : "text-gray-600 hover:text-black"
-                    }`}
+                    className={`relative z-10 w-32 h-9 flex items-center justify-center text-sm font-semibold rounded-lg transition-colors duration-300 ${userType === "candidates" ? "text-white" : "text-gray-600 hover:text-black"
+                      }`}
                   >
                     Candidates
                     {userType === "candidates" && (
@@ -466,9 +480,8 @@ const Candidates = () => {
                         setUserType("recruiter");
                       }
                     }}
-                    className={`relative z-10 w-32 h-9 flex items-center justify-center text-sm font-semibold rounded-lg transition-colors duration-300 ${
-                      userType === "recruiter" ? "text-white" : "text-gray-600 hover:text-black"
-                    }`}
+                    className={`relative z-10 w-32 h-9 flex items-center justify-center text-sm font-semibold rounded-lg transition-colors duration-300 ${userType === "recruiter" ? "text-white" : "text-gray-600 hover:text-black"
+                      }`}
                   >
                     Recruiters
                     {userType === "recruiter" && (

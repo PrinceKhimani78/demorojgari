@@ -267,7 +267,7 @@ const Recruiters = () => {
                 {crumbs.map((c, i) => {
                   const isLast = i === crumbs.length - 1;
                   return (
-                     <li key={c.name} className="flex items-center gap-2">
+                    <li key={c.name} className="flex items-center gap-2">
                       {i > 0 && (
                         <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-slate-400" aria-hidden="true">
                           <path d="M7.05 4.55a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1 0 1.4l-4 4a1 1 0 1 1-1.4-1.4L9.88 10 7.05 7.15a1 1 0 0 1 0-1.4z" />
@@ -300,7 +300,7 @@ const Recruiters = () => {
             { icon: "👨‍💼", title: "Dedicated Manager", desc: "Get personalized support from an Account Manager dedicated to your company's success." },
             { icon: "🎯", title: "Targeted Outreach", desc: "Access passive candidates who aren't actively looking but are open to the right offer." }
           ].map((item, idx) => (
-            <motion.div 
+            <motion.div
               key={idx}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -324,32 +324,32 @@ const Recruiters = () => {
           <div>
             <p className="fontPOP text-[#00c9ff] text-sm tracking-widest uppercase">Seamless Workflow</p>
             <h2 className="fontAL font-semibold capitalize text-2xl md:text-3xl lg:text-4xl mt-5 text-gray-900" style={{ letterSpacing: "1px", wordSpacing: "2px", lineHeight: 1.2 }}>A Corporate Recruitment Process Built for Scale</h2>
-            <p className="text-gray-600 mb-8 leading-relaxed text-sm md:text-base">
+            <p className="text-gray-600 mt-5 mb-10 leading-relaxed text-sm md:text-base">
               Our platform allows HR teams and hiring managers to manage the entire recruitment lifecycle from a single, intuitive dashboard. Post jobs, review applicants, and coordinate interviews effortlessly.
             </p>
             <div className="relative mt-10">
               {/* Vertical Line */}
-              <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-[#FFCC23] to-[#72B76A] rounded-full hidden md:block"></div>
-              
-              <div className="space-y-12 relative">
+              <div className="absolute left-7 top-6 bottom-8 w-1 bg-gradient-to-b from-[#FFCC23] to-[#72B76A] rounded-full hidden md:block"></div>
+
+              <div className="space-y-10 relative">
                 {[
                   { step: "01", title: "Create Your Company Profile", desc: "Establish your employer brand and showcase your company culture.", color: "bg-[#FFCC23]" },
                   { step: "02", title: "Post Vacancies & Source", desc: "Publish detailed job descriptions or actively search our resume database.", color: "bg-[#00c9ff]" },
                   { step: "03", title: "Screen & Shortlist", desc: "Use advanced filters to identify the top 5% of candidates for your roles.", color: "bg-[#ae70bb]" },
                   { step: "04", title: "Interview & Hire", desc: "Connect with candidates directly and make data-driven hiring decisions.", color: "bg-[#72B76A]" }
                 ].map((item, idx) => (
-                  <motion.div 
+                  <motion.div
                     key={idx}
                     initial={{ opacity: 0, x: -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.15 }}
-                    className="flex gap-6 items-start relative z-10"
+                    className="flex gap-6 items-center relative z-10"
                   >
-                    <div className={`w-16 h-16 rounded-2xl ${item.color} text-white flex items-center justify-center font-bold text-xl shadow-lg shrink-0`}>
+                    <div className={`w-14 h-14 rounded-2xl ${item.color} text-white flex items-center justify-center font-bold text-lg shadow-lg shrink-0`}>
                       {item.step}
                     </div>
-                    <div className="pt-2">
+                    <div>
                       <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
                       <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
                     </div>
@@ -359,20 +359,20 @@ const Recruiters = () => {
             </div>
           </div>
           <div className="relative">
-             <div className="absolute inset-0 bg-gradient-to-tr from-[#00c9ff]/20 to-transparent rounded-[3rem] -z-10 blur-3xl"></div>
-             <Image
-                src="/images/company.webp"
-                alt="Corporate Office"
-                width={600}
-                height={500}
-                className="rounded-2xl shadow-2xl object-cover w-full h-auto border-4 border-white"
-              />
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#00c9ff]/20 to-transparent rounded-[3rem] -z-10 blur-3xl"></div>
+            <Image
+              src="/images/recruitment_widgets_matte.png"
+              alt="Recruitment Software Dashboard"
+              width={600}
+              height={500}
+              className="rounded-2xl shadow-2xl object-cover w-full h-auto mix-blend-multiply"
+            />
           </div>
         </div>
       </section>
 
       {/* Pricing Teaser */}
-      <section className="py-20 px-5 lg:px-[5%] 2xl:px-[15%]">
+      {/* <section className="py-20 px-5 lg:px-[5%] 2xl:px-[15%]">
         <div className="bg-white rounded-3xl p-10 lg:p-16 border border-gray-100 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-10">
           <div className="max-w-2xl text-center lg:text-left">
             <h2 className="fontAL font-semibold capitalize text-2xl md:text-3xl lg:text-4xl mt-5 text-gray-900" style={{ letterSpacing: "1px", wordSpacing: "2px", lineHeight: 1.2 }}>Flexible Plans for Every Business Size</h2>
@@ -387,13 +387,13 @@ const Recruiters = () => {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Call to Action (Login/Register) */}
       <div className="px-5 lg:px-[5%] 2xl:px-[15%] pb-20 pt-10">
         <div className="bg-gradient-to-r from-[#00c9ff]/80 to-[#005c99]/90 rounded-3xl p-10 lg:p-16 flex flex-col items-center text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-[url('/images/map-img.webp')] opacity-10 bg-cover bg-center"></div>
-          
+
           <div className="relative z-10 max-w-2xl mx-auto">
             <h2 className="fontAL font-bold text-3xl md:text-4xl text-white mb-6 leading-tight">Ready to Find Your Next Great Hire?</h2>
             <p className="text-white/80 text-sm md:text-base mb-8 leading-relaxed">
@@ -526,17 +526,15 @@ const Recruiters = () => {
                 <div className="relative flex p-1 mb-6 bg-gray-100 rounded-xl w-[272px] mx-auto md:mx-0">
                   {/* Sliding pill */}
                   <div
-                    className={`absolute top-1 bottom-1 w-[128px] bg-[#72B76A] rounded-lg transition-transform duration-300 ease-in-out ${
-                      userType === "recruiter" ? "translate-x-[132px]" : "translate-x-0"
-                    }`}
+                    className={`absolute top-1 bottom-1 w-[128px] bg-[#72B76A] rounded-lg transition-transform duration-300 ease-in-out ${userType === "recruiter" ? "translate-x-[132px]" : "translate-x-0"
+                      }`}
                   />
                   {/* Candidates Button */}
                   <button
                     type="button"
                     onClick={() => setUserType("candidates")}
-                    className={`relative z-10 w-32 h-9 flex items-center justify-center text-sm font-semibold rounded-lg transition-colors duration-300 ${
-                      userType === "candidates" ? "text-white" : "text-gray-600 hover:text-black"
-                    }`}
+                    className={`relative z-10 w-32 h-9 flex items-center justify-center text-sm font-semibold rounded-lg transition-colors duration-300 ${userType === "candidates" ? "text-white" : "text-gray-600 hover:text-black"
+                      }`}
                   >
                     Candidates
                   </button>
@@ -551,9 +549,8 @@ const Recruiters = () => {
                         setUserType("recruiter");
                       }
                     }}
-                    className={`relative z-10 w-32 h-9 flex items-center justify-center text-sm font-semibold rounded-lg transition-colors duration-300 ${
-                      userType === "recruiter" ? "text-white" : "text-gray-600 hover:text-black"
-                    }`}
+                    className={`relative z-10 w-32 h-9 flex items-center justify-center text-sm font-semibold rounded-lg transition-colors duration-300 ${userType === "recruiter" ? "text-white" : "text-gray-600 hover:text-black"
+                      }`}
                   >
                     Recruiters
                   </button>

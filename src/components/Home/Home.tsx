@@ -193,8 +193,11 @@ const Home = () => {
   const [realJobs, setRealJobs] = useState<any[]>([]);
   const [noJobsFound, setNoJobsFound] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
-  const [whatOptions, setWhatOptions] = useState<string[]>(["All Category"]);
-  const [typeOptions, setTypeOptions] = useState<string[]>(["Job Type"]);
+  const defaultCategories = ["Design", "Development", "Marketing", "Sales", "Operations"];
+  const defaultTypes = ["Full-time", "Part-time", "Contract", "Internship", "Freelance"];
+
+  const [whatOptions, setWhatOptions] = useState<string[]>(["All Category", ...defaultCategories]);
+  const [typeOptions, setTypeOptions] = useState<string[]>(["Job Type", ...defaultTypes]);
   const router = useRouter();
 
   useEffect(() => {
@@ -208,27 +211,25 @@ const Home = () => {
 
           // Dynamically extract unique job categories for "WHAT" dropdown
           const uniqueCategories = Array.from(
-            new Set(
-              data.data
+            new Set([
+              ...defaultCategories,
+              ...data.data
                 .map((job: any) => job.job_category)
                 .filter((cat: any) => typeof cat === "string" && cat.trim() !== "")
-            )
+            ])
           ) as string[];
-          if (uniqueCategories.length > 0) {
-            setWhatOptions(["All Category", ...uniqueCategories]);
-          }
+          setWhatOptions(["All Category", ...uniqueCategories]);
 
           // Dynamically extract unique employment types for "TYPE" dropdown
           const uniqueTypes = Array.from(
-            new Set(
-              data.data
+            new Set([
+              ...defaultTypes,
+              ...data.data
                 .map((job: any) => job.employment_type)
                 .filter((type: any) => typeof type === "string" && type.trim() !== "")
-            )
+            ])
           ) as string[];
-          if (uniqueTypes.length > 0) {
-            setTypeOptions(["Job Type", ...uniqueTypes]);
-          }
+          setTypeOptions(["Job Type", ...uniqueTypes]);
         }
       } catch (err) {
         console.error("Error fetching jobs for home:", err);
@@ -1277,22 +1278,35 @@ const Home = () => {
                   )}
                 </p>
 
-                <ul className="mt-5 space-y-3">
-                  <li>• Rajkot, Ahmedabad, and Gujarat region</li>
-                  <li>• Mumbai, Pune, and Maharashtra region</li>
-                  <li>• Delhi NCR, Noida, and Gurgaon</li>
-                  <li>• Bangalore, Hyderabad, and South India tech hubs</li>
+                <ul className="mt-6 space-y-4 text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#72B76A] mt-1">✔</span>
+                    <span><strong>Pan-India Network:</strong> Connecting talent and opportunities seamlessly across every state, city, and remote location.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#72B76A] mt-1">✔</span>
+                    <span><strong>Technology & IT:</strong> Bridging the gap between innovative tech startups and world-class engineering professionals.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#72B76A] mt-1">✔</span>
+                    <span><strong>Corporate & Finance:</strong> Sourcing top-tier candidates for headquarters, financial institutions, and leading enterprises.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#72B76A] mt-1">✔</span>
+                    <span><strong>Manufacturing & Trade:</strong> Powering core industrial sectors and emerging markets with a skilled, reliable workforce.</span>
+                  </li>
                 </ul>
               </div>
 
               <div>
                 <Link href="/" className="flex items-center h-full">
                   <Image
-                    src="/images/map-img.webp"
-                    alt="World map sketch"
-                    width={500}
-                    height={300}
-                    className="rounded-md object-contain object-center"
+                    src="/images/india-map.png"
+                    alt="India map sketch"
+                    width={400}
+                    height={400}
+                    className="rounded-md object-contain object-center mx-auto"
+                    style={{ filter: "drop-shadow(10px 15px 15px rgba(2, 48, 82, 0.4))" }}
                   />
                 </Link>
               </div>
@@ -1357,7 +1371,16 @@ const Home = () => {
                       Upload your resume to make it visible to hundreds of top employers in India. Our partner companies search our resume database daily to find qualified candidates for open positions.
                     </p>
 
-                    <button className="relative mt-8 px-4 h-9 overflow-hidden group border border-[#AE70BB] bg-[#AE70BB] rounded-lg from-gray-700/50 to-black hover:bg-transparent text-white hover:text-[#AE70BB] active:scale-90 transition-all ease-out duration-700 cursor-pointer">
+                    <button
+                      onClick={() => {
+                        window.dispatchEvent(
+                          new CustomEvent("openAuthModal", {
+                            detail: { mode: "signup", userType: "candidates" },
+                          })
+                        );
+                      }}
+                      className="relative mt-8 px-4 h-9 overflow-hidden group border border-[#AE70BB] bg-[#AE70BB] rounded-lg from-gray-700/50 to-black hover:bg-transparent text-white hover:text-[#AE70BB] active:scale-90 transition-all ease-out duration-700 cursor-pointer"
+                    >
                       <span className="absolute right-0 w-10 h-full top-0 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 -skew-x-12 group-hover:-translate-x-24 ease"></span>
                       <span className="relative flex gap-2 items-center text-sm font-semibold">
                         Upload Now
@@ -1378,7 +1401,7 @@ const Home = () => {
                 lineHeight: 1.3,
               }}
             >
-              Top companies
+              Top industries
             </p>
 
             <p
@@ -1390,7 +1413,7 @@ const Home = () => {
               }}
             >
               find
-              <span className="text-[#00C9FF]"> best companies </span>
+              <span className="text-[#00C9FF]"> best opportunities </span>
               for yourself here because you deserve it
             </p>
           </div>

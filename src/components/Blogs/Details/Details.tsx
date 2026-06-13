@@ -135,13 +135,13 @@ const Details = () => {
                         Recruitment isn't just about matching resumes to descriptions. It's about aligning a candidate's long-term career aspirations with a company's vision and core culture.
                       </p>
                       <p className="mt-4 font-bold text-gray-900 tracking-wide pl-6">
-                        ROJGARI PLACEMENTS
+                        ROJGARI INDIA
                       </p>
                     </div>
                     <h2 className="text-lg font-semibold text-neutral-900">
                       Get Your Resume Done Right
                     </h2>
- 
+
                     <p>
                       Keep your CV concise, clear, and focused on achievements rather than just a list of daily responsibilities. Use active verbs and quantify your success with numbers and metrics where possible, showing hiring teams the exact value you will bring.
                     </p>
