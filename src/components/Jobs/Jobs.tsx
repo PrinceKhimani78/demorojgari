@@ -1,10 +1,12 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Grid from "./Grid/Grid";
 
 const Jobs = () => {
   return (
     <div>
-      <Grid />
+      <Suspense fallback={<div>Loading jobs...</div>}>
+        <Grid />
+      </Suspense>
     </div>
   );
 };
